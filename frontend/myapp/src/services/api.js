@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:8000/api/';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
-    withCredentials: true, // Añadir si necesitas manejar autenticación
+    withCredentials: true,
 });
 
 export const getTasks = async () => {

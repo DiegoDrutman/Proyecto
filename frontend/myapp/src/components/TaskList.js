@@ -10,26 +10,45 @@ const TaskList = () => {
     }, []);
 
     const fetchTasks = async () => {
-        const response = await getTasks();
-        setTasks(response.data);
-    };
-
-    const handleCreateTask = async () => {
-        if (newTask.title && newTask.description) {
-            await createTask(newTask);
-            fetchTasks();
-            setNewTask({ title: '', description: '' });
+        try {
+            const response = await getTasks();
+            setTasks(response.data);
+        } catch (error) {
+            console.error('Error fetching tasks:', error);
         }
     };
 
-    const handleUpdateTask = async (updatedTask) => {
-        await updateTask(updatedTask);
-        fetchTasks();
+    const handleCreateTask = async () => {
+        try {
+            if (newTask.title && newTask.description) {
+                console.log('Creating task:', newTask);
+                await createTask({ ...newTask, user: 1 });  // Añadir usuario por defecto para pruebas
+                fetchTasks();
+                setNewTask({ title: '', description: '' });
+            } else {
+                console.error('Title and description are required.');
+            }
+        } catch (error) {
+            console.error('Error creating task:', error);
+        }
+    };
+
+    const handleUpdateTask = async (task) => {
+        try {
+            await updateTask(task);
+            fetchTasks();
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
     };
 
     const handleDeleteTask = async (taskId) => {
-        await deleteTask(taskId);
-        fetchTasks();
+        try {
+            await deleteTask(taskId);
+            fetchTasks();
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
     };
 
     const handleTaskChange = (id, field, value) => {

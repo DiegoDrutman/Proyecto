@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getTasks, createTask, updateTask, deleteTask } from '../services/api';
 
-const TaskList = () => {
+const TaskList = ({ projectId }) => {
     const [tasks, setTasks] = useState([]);
-    const [newTask, setNewTask] = useState({ title: '', description: '' });
+    const [newTask, setNewTask] = useState({ project: projectId, title: '', description: '', due_date: '' });
 
-    useEffect(() => {
-        fetchTasks();
-    }, []);
-
-    const fetchTasks = async () => {
+    const fetchTasks = useCallback(async () => {
         try {
             const response = await getTasks();
-            setTasks(response.data);
+            setTasks(response.data.filter(task => task.project === projectId));
         } catch (error) {
             console.error('Error fetching tasks:', error);
         }
-    };
+    }, [projectId]);
+
+    useEffect(() => {
+        fetchTasks();
+    }, [fetchTasks]);
 
     const handleCreateTask = async () => {
         try {
             if (newTask.title && newTask.description) {
-                console.log('Creating task:', newTask);
-                await createTask({ ...newTask, user: 1 });  // Añadir usuario por defecto para pruebas
+                await createTask(newTask);
                 fetchTasks();
-                setNewTask({ title: '', description: '' });
+                setNewTask({ project: projectId, title: '', description: '', due_date: '' });
             } else {
                 console.error('Title and description are required.');
             }
@@ -60,7 +59,7 @@ const TaskList = () => {
 
     return (
         <div>
-            <h1>Task List</h1>
+            <h2>Task List</h2>
             <div>
                 <input
                     type="text"
@@ -73,6 +72,12 @@ const TaskList = () => {
                     placeholder="Description"
                     value={newTask.description}
                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                />
+                <input
+                    type="date"
+                    placeholder="Due Date"
+                    value={newTask.due_date}
+                    onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
                 />
                 <button onClick={handleCreateTask}>Add Task</button>
             </div>
@@ -89,6 +94,12 @@ const TaskList = () => {
                             type="text"
                             value={task.description}
                             onChange={(e) => handleTaskChange(task.id, 'description', e.target.value)}
+                            onBlur={() => handleUpdateTask(task)}
+                        />
+                        <input
+                            type="date"
+                            value={task.due_date}
+                            onChange={(e) => handleTaskChange(task.id, 'due_date', e.target.value)}
                             onBlur={() => handleUpdateTask(task)}
                         />
                         <button onClick={() => handleDeleteTask(task.id)}>Delete</button>

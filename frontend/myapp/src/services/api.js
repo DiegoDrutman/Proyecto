@@ -7,6 +7,23 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
+export const getProjects = async () => {
+    return await axiosInstance.get('projects/');
+};
+
+export const createProject = async (project) => {
+    console.log('Sending project data:', project); // Verifica los datos enviados
+    return await axiosInstance.post('projects/', project);
+};
+
+export const updateProject = async (project) => {
+    return await axiosInstance.put(`projects/${project.id}/`, project);
+};
+
+export const deleteProject = async (projectId) => {
+    return await axiosInstance.delete(`projects/${projectId}/`);
+};
+
 export const getTasks = async () => {
     return await axiosInstance.get('tasks/');
 };
@@ -21,4 +38,20 @@ export const updateTask = async (task) => {
 
 export const deleteTask = async (taskId) => {
     return await axiosInstance.delete(`tasks/${taskId}/`);
+};
+
+export const getCollaborations = async () => {
+    return await axiosInstance.get('collaborations/');
+};
+
+export const createCollaboration = async (collaboration) => {
+    return await axiosInstance.post('collaborations/', collaboration);
+};
+
+export const updateCollaboration = async (collaboration) => {
+    return await axiosInstance.put(`collaborations/${collaboration.id}/`, collaboration);
+};
+
+export const deleteCollaboration = async (collaborationId) => {
+    return await axiosInstance.delete(`collaborations/${collaborationId}/`);
 };

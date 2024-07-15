@@ -8,5 +8,5 @@ router.register(r'tasks', TaskViewSet)
 router.register(r'collaborations', CollaborationViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
 ]

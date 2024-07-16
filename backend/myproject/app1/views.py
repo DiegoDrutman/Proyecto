@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Project, Task, Collaboration
-from .serializers import ProjectSerializer, TaskSerializer, CollaborationSerializer
+from .models import Project, Task, Collaboration, User
+from .serializers import ProjectSerializer, TaskSerializer, UserSerializer, CollaborationSerializer
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
@@ -9,6 +9,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class CollaborationViewSet(viewsets.ModelViewSet):
     queryset = Collaboration.objects.all()

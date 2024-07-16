@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import ProjectDetails from './pages/ProjectDetails';
 import ProjectList from './components/ProjectList';
+import UserForm from './components/UserForm'; // Importa el formulario de creación de usuario
 import { getProjects } from './services/api';
 
 const AppContainer = styled(Container)`
@@ -42,6 +43,7 @@ const App = () => {
                     <Route path="/projects/:id" element={<ProjectDetails />} />
                     <Route path="/dashboard" element={<Dashboard fetchProjects={fetchProjects} />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/create-user" element={<UserForm />} /> {/* Añadir ruta para el formulario de creación de usuario */}
                 </Routes>
             </AppContainer>
         </Router>

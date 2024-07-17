@@ -14,12 +14,6 @@ const HomePage = ({ fetchProjects }) => (
         <Typography variant="h4" gutterBottom>
             Home Page
         </Typography>
-        <ProjectForm fetchProjects={fetchProjects} />
-        <Box mt={2}>
-            <Button variant="contained" color="primary" component={Link} to="/projects">
-                View Projects
-            </Button>
-        </Box>
     </StyledContainer>
 );
 

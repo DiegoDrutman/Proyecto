@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Container, CssBaseline } from '@mui/material';
 import styled from 'styled-components';
 import HomePage from './pages/Home';
-import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import ProjectDetails from './pages/ProjectDetails';
 import ProjectList from './components/ProjectList';
@@ -41,7 +40,6 @@ const App = () => {
           <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
           <Route path="/projects/:id" element={<ProjectDetails />} />
           <Route path="/view-projects" element={<ViewProjects />} />  {/* Configura la ruta para ViewProjects */}
-          <Route path="/dashboard" element={<Dashboard fetchProjects={fetchProjects} />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </AppContainer>

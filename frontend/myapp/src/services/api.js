@@ -1,3 +1,4 @@
+// src/services/api.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api/';
@@ -25,6 +26,8 @@ const handleRequest = async (request) => {
         throw error;
     }
 };
+
+export const authenticateUser = async (credentials) => handleRequest(() => axiosInstance.post('auth/login/', credentials));
 
 export const getProjects = async () => handleRequest(() => axiosInstance.get('projects/'));
 export const createProject = async (project) => handleRequest(() => axiosInstance.post('projects/', project));

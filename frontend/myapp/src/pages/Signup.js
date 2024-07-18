@@ -1,9 +1,9 @@
-// src/pages/Login.js
+// src/pages/Signup.js
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
 import styled from 'styled-components';
-import { useNavigate, Link } from 'react-router-dom';
-import { authenticateUser } from '../services/api'; // Asegúrate de tener esta función en tus servicios de API
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../services/api'; // Asegúrate de tener esta función en tus servicios de API
 
 const StyledContainer = styled(Container)`
   max-width: 400px;
@@ -15,35 +15,43 @@ const StyledContainer = styled(Container)`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
-const Login = ({ setIsAuthenticated }) => {
+const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await authenticateUser({ email, password });
+      const response = await registerUser({ email, password });
       if (response.success) {
-        setIsAuthenticated(true);
-        navigate('/projects'); // Redirigir a la página de proyectos
+        setSuccessMessage('Account created successfully. Please log in.');
+        setTimeout(() => {
+          navigate('/login'); // Redirigir a la página de login después de unos segundos
+        }, 2000);
       } else {
         setErrorMessage(response.message);
       }
     } catch (error) {
-      setErrorMessage('Login failed. Please check your credentials and try again.');
+      setErrorMessage('Registration failed. Please try again.');
     }
   };
 
   return (
     <StyledContainer>
       <Typography variant="h4" gutterBottom>
-        Login
+        Sign Up
       </Typography>
       {errorMessage && (
         <Alert severity="error" onClose={() => setErrorMessage('')} sx={{ mb: 2 }}>
           {errorMessage}
+        </Alert>
+      )}
+      {successMessage && (
+        <Alert severity="success" onClose={() => setSuccessMessage('')} sx={{ mb: 2 }}>
+          {successMessage}
         </Alert>
       )}
       <form onSubmit={handleSubmit}>
@@ -67,14 +75,11 @@ const Login = ({ setIsAuthenticated }) => {
           />
         </Box>
         <Button variant="contained" color="primary" type="submit">
-          Login
+          Sign Up
         </Button>
       </form>
-      <Typography variant="body2" sx={{ mt: 2 }}>
-        Don't have an account? <Link to="/signup">Sign Up</Link>
-      </Typography>
     </StyledContainer>
   );
 };
 
-export default Login;
+export default Signup;

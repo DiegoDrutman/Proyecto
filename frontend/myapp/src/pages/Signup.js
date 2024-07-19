@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert } from '@mui/material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../services/api'; // Asegúrate de tener esta función en tus servicios de API
+import { createUser } from '../services/api'; // Asegúrate de tener esta función en tus servicios de API
 
 const StyledContainer = styled(Container)`
   max-width: 400px;
@@ -19,23 +19,19 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await registerUser({ email, password });
+      const response = await createUser({ email, password });
       if (response.success) {
-        setSuccessMessage('Account created successfully. Please log in.');
-        setTimeout(() => {
-          navigate('/login'); // Redirigir a la página de login después de unos segundos
-        }, 2000);
+        navigate('/login'); // Redirigir a la página de login
       } else {
         setErrorMessage(response.message);
       }
     } catch (error) {
-      setErrorMessage('Registration failed. Please try again.');
+      setErrorMessage('Registration failed. Please check your details and try again.');
     }
   };
 
@@ -47,11 +43,6 @@ const Signup = () => {
       {errorMessage && (
         <Alert severity="error" onClose={() => setErrorMessage('')} sx={{ mb: 2 }}>
           {errorMessage}
-        </Alert>
-      )}
-      {successMessage && (
-        <Alert severity="success" onClose={() => setSuccessMessage('')} sx={{ mb: 2 }}>
-          {successMessage}
         </Alert>
       )}
       <form onSubmit={handleSubmit}>

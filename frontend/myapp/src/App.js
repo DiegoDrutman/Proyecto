@@ -9,8 +9,9 @@ import ProjectDetails from './pages/ProjectDetails';
 import ProjectList from './components/ProjectList';
 import ProjectForm from './components/ProjectForm';
 import Navigation from './components/Navigation';
-import Signup from './pages/SignUp';
-import Settings from './pages/Settings'; // Importar la página de configuración
+import Signup from './pages/SignUp'; // Importa la página de registro
+import Settings from './pages/Settings'; // Importa la página de configuración
+import ViewProjects from './pages/ViewProjects'; // Importa la página de vista de proyectos
 import { getProjects } from './services/api';
 
 const AppContainer = styled(Container)`
@@ -18,7 +19,7 @@ const AppContainer = styled(Container)`
 `;
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [setIsAuthenticated] = useState(false);
 
     const fetchProjects = async () => {
         try {
@@ -42,9 +43,10 @@ const App = () => {
                     <Route path="/projects" element={<ProjectList />} />
                     <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
                     <Route path="/projects/:id" element={<ProjectDetails />} />
+                    <Route path="/view-projects" element={<ViewProjects />} /> {/* Nueva ruta de vista de proyectos */}
                     <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/settings" element={<Settings />} /> {/* Nueva ruta de configuración */}
+                    <Route path="/settings" element={<Settings />} />
                 </Routes>
             </AppContainer>
         </Router>

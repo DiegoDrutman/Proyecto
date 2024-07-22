@@ -39,17 +39,26 @@ const App = () => {
     return (
         <Router>
             <CssBaseline />
-            <Navigation />
             <AppContainer>
                 <Routes>
-                    <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
-                    <Route path="/projects" element={<ProjectList />} />
-                    <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
-                    <Route path="/projects/:id" element={<ProjectDetails />} />
-                    <Route path="/view-projects" element={<ViewProjects />} />
                     <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route
+                        path="/*"
+                        element={
+                            <>
+                                <Navigation />
+                                <Routes>
+                                    <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
+                                    <Route path="/projects" element={<ProjectList />} />
+                                    <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
+                                    <Route path="/projects/:id" element={<ProjectDetails />} />
+                                    <Route path="/view-projects" element={<ViewProjects />} />
+                                    <Route path="/settings" element={<Settings />} />
+                                </Routes>
+                            </>
+                        }
+                    />
                 </Routes>
             </AppContainer>
         </Router>

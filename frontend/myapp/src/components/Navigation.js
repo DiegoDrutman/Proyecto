@@ -5,12 +5,31 @@ import styled from 'styled-components';
 import logo from '../assets/logo.png';
 
 const NavBar = styled(AppBar)`
-  background-color: #0073e6;
+  background-color: #E5E4E2;
+  box-shadow: none;
 `;
 
 const Logo = styled('img')`
   height: 50px;
   margin-right: 10px;
+`;
+
+const NavButton = styled(Button)`
+  color: #222222 !important; /* Asegurarse de que el color se aplique */  
+  border-radius: 5px !important; /* Añade bordes redondeados para un mejor diseño */
+  padding: 8px 16px !important; /* Ajusta el padding para que sean más grandes */
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9) !important; /* Fondo más claro en hover */
+  }
+`;
+
+const NavM = styled(Button)`
+  color: #004080 !important; /* Asegurarse de que el color se aplique */
+  border-radius: 5px !important; /* Añade bordes redondeados para un mejor diseño */
+  padding: 8px 16px !important; /* Ajusta el padding para que sean más grandes */
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9) !important; /* Fondo más claro en hover */
+  }
 `;
 
 const Navigation = () => {
@@ -19,23 +38,19 @@ const Navigation = () => {
       <Toolbar>
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
           <Logo src={logo} alt="TaskWave Logo" />
-          <Typography variant="h6">
+          <NavM component={Link} to="/">
+          <Typography variant="h4" sx={{ color: '#004080' }}>
             TaskWave
           </Typography>
+          </NavM>
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
-          <Button color="inherit" component={Link} to="/projects">
-            Projects
-          </Button>
-          <Button color="inherit" component={Link} to="/settings">
-            Settings
-          </Button>
-          <Button color="inherit" component={Link} to="/login">
+          <NavButton component={Link} to="/projects/add" >
+            Get Started
+          </NavButton>
+          <NavButton component={Link} to="/login">
             Login
-          </Button>
+          </NavButton>
         </Box>
       </Toolbar>
     </NavBar>

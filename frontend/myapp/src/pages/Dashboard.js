@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 const StyledContainer = styled(Container)`
   margin-top: 20px;
   padding: 40px;
-  background-color: #f4f6f8;
+  background-color: #E5E4E2;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;

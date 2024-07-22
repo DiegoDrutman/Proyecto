@@ -2,7 +2,6 @@ import React from 'react';
 import { Typography, Button, Box } from '@mui/material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import backgroundImage from '../assets/background.webp';
 import manageProjectsIcon from '../assets/project_management_icon.webp';
 import collaborateIcon from '../assets/collaboration_icon.webp';
 import stayOrganizedIcon from '../assets/stay_organized_icon.webp';
@@ -14,20 +13,18 @@ const FullScreenContainer = styled(Box)`
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-image: url(${backgroundImage});
-  background-size: cover;
-  background-position: center center;
-  color: white;
+  background-color: #E5E4E2;
+  color: #333;
   text-align: center;
 `;
 
 const ContentWrapper = styled(Box)`
   display: grid;
-  gap: 5px;
+  gap: 20px;
   justify-items: center;
   max-width: 1200px;
   width: 100%;
-  padding: 20px;
+  padding: 40px 20px;
 `;
 
 const FeatureGrid = styled(Box)`
@@ -39,15 +36,15 @@ const FeatureGrid = styled(Box)`
 `;
 
 const FeaturePaper = styled(Box)`
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 10px;
-  color: white;
+  color: #333;
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -137,10 +134,10 @@ const HomePage = ({ isAuthenticated }) => {
         </FeatureGrid>
 
         <Box mt={4} p={4} bgcolor="rgba(0, 0, 0, 0.7)" borderRadius="10px" width="80%">
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h5" gutterBottom color="white">
             Why TaskWave?
           </Typography>
-          <Typography variant="body1">
+          <Typography variant="body1" color="white">
             TaskWave is designed to simplify project management, enhance collaboration, and boost productivity. Join thousands of users who have transformed their workflow with TaskWave.
           </Typography>
         </Box>

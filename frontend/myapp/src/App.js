@@ -1,7 +1,6 @@
-// src/App.js
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Container, CssBaseline } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import styled from 'styled-components';
 import HomePage from './pages/Home';
 import Login from './pages/Login';
@@ -9,17 +8,21 @@ import ProjectDetails from './pages/ProjectDetails';
 import ProjectList from './components/ProjectList';
 import ProjectForm from './components/ProjectForm';
 import Navigation from './components/Navigation';
-import Signup from './pages/SignUp'; // Importa la página de registro
-import Settings from './pages/Settings'; // Importa la página de configuración
-import ViewProjects from './pages/ViewProjects'; // Importa la página de vista de proyectos
+import Signup from './pages/SignUp';
+import Settings from './pages/Settings';
+import ViewProjects from './pages/ViewProjects';
 import { getProjects } from './services/api';
 
-const AppContainer = styled(Container)`
-  margin-top: 20px;
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
 `;
 
 const App = () => {
-    const [setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const fetchProjects = async () => {
         try {
@@ -39,11 +42,11 @@ const App = () => {
             <Navigation />
             <AppContainer>
                 <Routes>
-                    <Route path="/" element={<HomePage fetchProjects={fetchProjects} />} />
+                    <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
                     <Route path="/projects" element={<ProjectList />} />
                     <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
                     <Route path="/projects/:id" element={<ProjectDetails />} />
-                    <Route path="/view-projects" element={<ViewProjects />} /> {/* Nueva ruta de vista de proyectos */}
+                    <Route path="/view-projects" element={<ViewProjects />} />
                     <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/settings" element={<Settings />} />

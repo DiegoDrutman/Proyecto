@@ -1,50 +1,57 @@
 import React from 'react';
-import { Typography, Container, Grid, Paper, Button, Box } from '@mui/material';
+import { Typography, Button, Box } from '@mui/material';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import complementaryBackgroundImage from '../assets/background.webp'; // Imagen de fondo complementaria
+import backgroundImage from '../assets/background.webp';
 import manageProjectsIcon from '../assets/project_management_icon.webp';
 import collaborateIcon from '../assets/collaboration_icon.webp';
 import stayOrganizedIcon from '../assets/stay_organized_icon.webp';
 
-const StyledContainer = styled(Container)`
-  margin-top: 20px;
+const FullScreenContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-image: url(${backgroundImage});
+  background-size: cover;
+  background-position: center center;
+  color: white;
   text-align: center;
-  background-color: #f4f6f8;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
-const SectionPaper = styled(Paper)`
+const ContentWrapper = styled(Box)`
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  max-width: 1200px;
+  width: 100%;
   padding: 20px;
-  margin-top: 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  transition: transform 0.3s;
+`;
+
+const FeatureGrid = styled(Box)`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  justify-items: center;
+`;
+
+const FeaturePaper = styled(Box)`
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
   &:hover {
     transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   }
 `;
 
-const FeatureBox = styled(Box)`
-  background-image: url(${complementaryBackgroundImage});
-  background-size: cover;
-  background-position: center;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-top: 20px;
-  position: relative;
-`;
-
-const FeatureBoxContent = styled(Box)`
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 20px;
-  border-radius: 10px;
-  display: inline-block;
-`;
-
-const HomePage = ({ fetchProjects, isAuthenticated }) => {
+const HomePage = ({ isAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleButtonClick = (path) => {
@@ -56,26 +63,26 @@ const HomePage = ({ fetchProjects, isAuthenticated }) => {
   };
 
   return (
-    <StyledContainer>
-      <Typography variant="h2" gutterBottom>
-        Welcome to TaskWave
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Your Ultimate Project Management Solution
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleButtonClick('/projects/add')}
-        sx={{ mt: 2, mb: 4 }}
-      >
-        Get Started
-      </Button>
+    <FullScreenContainer>
+      <ContentWrapper>
+        <Typography variant="h2" gutterBottom>
+          Welcome to TaskWave
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          Your Ultimate Project Management Solution
+        </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => handleButtonClick('/projects/add')}
+          sx={{ mt: 2, mb: 4, px: 4, py: 2, fontSize: '1.2rem' }}
+        >
+          Get Started
+        </Button>
 
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={4}>
-          <SectionPaper>
-            <img src={manageProjectsIcon} alt="Manage Projects" style={{ width: '100%', height: 'auto' }} />
+        <FeatureGrid>
+          <FeaturePaper>
+            <img src={manageProjectsIcon} alt="Manage Projects" style={{ width: '100px', height: '100px' }} />
             <Typography variant="h4" gutterBottom>
               Manage Projects
             </Typography>
@@ -84,17 +91,16 @@ const HomePage = ({ fetchProjects, isAuthenticated }) => {
             </Typography>
             <Button
               variant="outlined"
-              color="primary"
+              color="secondary"
               onClick={() => handleButtonClick('/projects')}
               sx={{ mt: 2 }}
             >
               View Projects
             </Button>
-          </SectionPaper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <SectionPaper>
-            <img src={collaborateIcon} alt="Collaborate Effectively" style={{ width: '100%', height: 'auto' }} />
+          </FeaturePaper>
+
+          <FeaturePaper>
+            <img src={collaborateIcon} alt="Collaborate Effectively" style={{ width: '100px', height: '100px' }} />
             <Typography variant="h4" gutterBottom>
               Collaborate Effectively
             </Typography>
@@ -103,17 +109,16 @@ const HomePage = ({ fetchProjects, isAuthenticated }) => {
             </Typography>
             <Button
               variant="outlined"
-              color="primary"
+              color="secondary"
               onClick={() => handleButtonClick('/collaborations')}
               sx={{ mt: 2 }}
             >
               Collaborations
             </Button>
-          </SectionPaper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <SectionPaper>
-            <img src={stayOrganizedIcon} alt="Stay Organized" style={{ width: '100%', height: 'auto' }} />
+          </FeaturePaper>
+
+          <FeaturePaper>
+            <img src={stayOrganizedIcon} alt="Stay Organized" style={{ width: '100px', height: '100px' }} />
             <Typography variant="h4" gutterBottom>
               Stay Organized
             </Typography>
@@ -122,27 +127,25 @@ const HomePage = ({ fetchProjects, isAuthenticated }) => {
             </Typography>
             <Button
               variant="outlined"
-              color="primary"
+              color="secondary"
               onClick={() => handleButtonClick('/tasks')}
               sx={{ mt: 2 }}
             >
               View Tasks
             </Button>
-          </SectionPaper>
-        </Grid>
-      </Grid>
+          </FeaturePaper>
+        </FeatureGrid>
 
-      <FeatureBox mt={4}>
-        <FeatureBoxContent>
-          <Typography variant="h6" gutterBottom>
+        <Box mt={4} p={4} bgcolor="rgba(0, 0, 0, 0.7)" borderRadius="10px" width="80%">
+          <Typography variant="h5" gutterBottom>
             Why TaskWave?
           </Typography>
           <Typography variant="body1">
             TaskWave is designed to simplify project management, enhance collaboration, and boost productivity. Join thousands of users who have transformed their workflow with TaskWave.
           </Typography>
-        </FeatureBoxContent>
-      </FeatureBox>
-    </StyledContainer>
+        </Box>
+      </ContentWrapper>
+    </FullScreenContainer>
   );
 };
 

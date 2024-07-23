@@ -15,11 +15,16 @@ const Logo = styled('img')`
 `;
 
 const NavButton = styled(Button)`
-  color: #222222 !important; /* Asegurarse de que el color se aplique */  
-  border-radius: 5px !important; /* Añade bordes redondeados para un mejor diseño */
-  padding: 8px 16px !important; /* Ajusta el padding para que sean más grandes */
+  color: #004080 !important; /* Texto principal */
+  background-color: #ffffff !important; /* Fondo blanco */
+  border-radius: 20px !important; /* Bordes redondeados */
+  padding: 5px 20px !important; /* Ajusta el padding para que sean más grandes */
+  font-size: 0.8rem !important; /* Tamaño de fuente */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+  transition: background-color 0.3s, transform 0.3s; /* Transiciones suaves */
   &:hover {
-    background-color: rgba(255, 255, 255, 0.9) !important; /* Fondo más claro en hover */
+    background-color: #f0f0f0 !important; /* Fondo más claro en hover */
+    transform: translateY(-2px); /* Efecto de elevación en hover */
   }
 `;
 
@@ -35,20 +40,17 @@ const NavM = styled(Button)`
 const Navigation = () => {
   return (
     <NavBar position="static">
-      <Toolbar>
-        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+      <Toolbar sx={{ flexWrap: 'wrap', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Logo src={logo} alt="TaskWave Logo" />
           <NavM component={Link} to="/">
-          <Typography variant="h4" sx={{ color: '#004080' }}>
-            TaskWave
-          </Typography>
+            <Typography variant="h4" sx={{ color: '#004080', '@media (max-width: 600px)': { fontSize: '1.5rem' } }}>
+              TaskWave
+            </Typography>
           </NavM>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <NavButton component={Link} to="/projects/add" >
-            Get Started
-          </NavButton>
-          <NavButton component={Link} to="/login">
+        <Box sx={{ display: 'flex', gap: 2, '@media (max-width: 600px)': { flexDirection: 'column', alignItems: 'center', gap: 1, width: '100%' } }}>
+          <NavButton component={Link} to="/login" sx={{ '@media (max-width: 600px)': { width: '100%' } }}>
             Login
           </NavButton>
         </Box>

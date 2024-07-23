@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import styled from 'styled-components';
 import HomePage from './pages/Home';
+import ProjectCreationWizard from './components/ProjectCreationWizard';
 import Login from './pages/Login';
 import ProjectDetails from './pages/ProjectDetails';
 import ProjectList from './components/ProjectList';
@@ -50,6 +51,7 @@ const App = () => {
                                 <Navigation />
                                 <Routes>
                                     <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
+                                    <Route path="/project-creation-wizard" element={<ProjectCreationWizard />} />
                                     <Route path="/projects" element={<ProjectList />} />
                                     <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
                                     <Route path="/projects/:id" element={<ProjectDetails />} />

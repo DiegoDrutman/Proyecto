@@ -9,18 +9,19 @@ import stayOrganizedIcon from '../assets/stay_organized_icon.webp';
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Cambiar a flex-start para que el contenido comience desde arriba */
   align-items: center;
   width: 100vw;
   height: 100vh;
   background-color: #E5E4E2;
   color: #333;
   text-align: center;
+  padding-top: 30px; /* Ajuste para evitar la superposición con el navbar */
 `;
 
 const ContentWrapper = styled(Box)`
   display: grid;
-  gap: 20px;
+  gap: 10px;
   justify-items: center;
   max-width: 1200px;
   width: 100%;
@@ -30,14 +31,14 @@ const ContentWrapper = styled(Box)`
 const FeatureGrid = styled(Box)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 40px;
   width: 100%;
   justify-items: center;
 `;
 
 const FeaturePaper = styled(Box)`
   background-color: #f0f0f0;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   color: #333;
   text-align: center;
@@ -52,57 +53,53 @@ const HomePage = ({ isAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleButtonClick = (path) => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    } else {
       navigate(path);
-    }
   };
 
   return (
     <FullScreenContainer>
       <ContentWrapper>
         <Typography variant="h2" gutterBottom>
-          Welcome to TaskWave
+          Bienvenido a TaskWave
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Your Ultimate Project Management Solution
+          Tu Solución Definitiva de Gestión de Proyectos
         </Typography>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => handleButtonClick('/projects/add')}
+          onClick={() => handleButtonClick('/project-creation-wizard')}
           sx={{ mt: 2, mb: 4, px: 4, py: 2, fontSize: '1.2rem' }}
         >
-          Get Started
+          Crea tu proyecto!
         </Button>
 
         <FeatureGrid>
           <FeaturePaper>
             <img src={manageProjectsIcon} alt="Manage Projects" style={{ width: '100px', height: '100px' }} />
             <Typography variant="h4" gutterBottom>
-              Manage Projects
+              Gestionar Proyectos
             </Typography>
             <Typography variant="body1">
-              Easily create, update, and track your projects with TaskWave. Stay on top of your deadlines and collaborate with your team seamlessly.
+              Crea, actualiza y desarrolla tus proyectos fácilmente con TaskWave. Mantente al tanto de tus plazos y colabora con tu equipo sin inconvenientes.
             </Typography>
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => handleButtonClick('/projects')}
+              onClick={() => handleButtonClick('/login')}
               sx={{ mt: 2 }}
             >
-              View Projects
+              Ver Proyectos
             </Button>
           </FeaturePaper>
 
           <FeaturePaper>
             <img src={collaborateIcon} alt="Collaborate Effectively" style={{ width: '100px', height: '100px' }} />
             <Typography variant="h4" gutterBottom>
-              Collaborate Effectively
+              Colaboración
             </Typography>
             <Typography variant="body1">
-              Work together with your team in real-time. Assign tasks, monitor progress, and achieve your goals efficiently.
+              Trabaja junto a tu equipo en tiempo real. Asigna tareas, monitorea el progreso y logra tus objetivos de manera eficiente.
             </Typography>
             <Button
               variant="outlined"
@@ -110,35 +107,35 @@ const HomePage = ({ isAuthenticated }) => {
               onClick={() => handleButtonClick('/collaborations')}
               sx={{ mt: 2 }}
             >
-              Collaborations
+              Colaboradores
             </Button>
           </FeaturePaper>
 
           <FeaturePaper>
             <img src={stayOrganizedIcon} alt="Stay Organized" style={{ width: '100px', height: '100px' }} />
             <Typography variant="h4" gutterBottom>
-              Stay Organized
+              Organización
             </Typography>
             <Typography variant="body1">
-              Keep your tasks and projects organized. Use our intuitive interface to manage your workflow and increase productivity.
+              Mantén tus tareas y proyectos organizados. Usa nuestra interfaz intuitiva para gestionar tu flujo de trabajo y aumentar la productividad.
             </Typography>
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => handleButtonClick('/tasks')}
+              onClick={() => handleButtonClick('/login')}
               sx={{ mt: 2 }}
             >
-              View Tasks
+              Mis Tareas
             </Button>
           </FeaturePaper>
         </FeatureGrid>
 
         <Box mt={4} p={4} bgcolor="rgba(0, 0, 0, 0.7)" borderRadius="10px" width="80%">
           <Typography variant="h5" gutterBottom color="white">
-            Why TaskWave?
+            ¿Por qué TaskWave?
           </Typography>
           <Typography variant="body1" color="white">
-            TaskWave is designed to simplify project management, enhance collaboration, and boost productivity. Join thousands of users who have transformed their workflow with TaskWave.
+            TaskWave está diseñado para simplificar la gestión de proyectos, mejorar la colaboración y aumentar la productividad. Únete a miles de usuarios que han transformado su flujo de trabajo con TaskWave.
           </Typography>
         </Box>
       </ContentWrapper>

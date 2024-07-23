@@ -35,7 +35,6 @@ const ProjectCreationWizard = () => {
   const [projectType, setProjectType] = useState('');
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
-  const [additionalInfo, setAdditionalInfo] = useState('');
   const [objectives, setObjectives] = useState('');
   const [teamMembers, setTeamMembers] = useState([]);
   const [registrationInfo, setRegistrationInfo] = useState({

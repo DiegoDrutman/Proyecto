@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Project, Task
 
 User = get_user_model()
 
@@ -36,7 +35,7 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password')
 
         if email and password:
-            user = authenticate(username=email, password=password)
+            user = authenticate(request=self.context.get('request'), username=email, password=password)
 
             if not user:
                 raise serializers.ValidationError('Invalid credentials')
@@ -50,18 +49,3 @@ class LoginSerializer(serializers.Serializer):
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }
-
-class ProjectSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    team_members = UserSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Project
-        fields = ['id', 'name', 'description', 'type', 'owner', 'created_at', 'updated_at', 'objectives', 'team_members']
-
-class TaskSerializer(serializers.ModelSerializer):
-    assigned_to = UserSerializer(read_only=True)
-
-    class Meta:
-        model = Task    
-        fields = ['id', 'title', 'description', 'completed', 'due_date', 'assigned_to', 'created_at', 'updated_at']

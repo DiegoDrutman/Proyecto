@@ -1,3 +1,4 @@
+// src/components/Navigation.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
@@ -15,25 +16,25 @@ const Logo = styled('img')`
 `;
 
 const NavButton = styled(Button)`
-  color: #004080 !important; /* Texto principal */
-  background-color: #ffffff !important; /* Fondo blanco */
-  border-radius: 20px !important; /* Bordes redondeados */
-  padding: 5px 20px !important; /* Ajusta el padding para que sean más grandes */
-  font-size: 0.8rem !important; /* Tamaño de fuente */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
-  transition: background-color 0.3s, transform 0.3s; /* Transiciones suaves */
+  color: #004080 !important;
+  background-color: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 5px 20px !important;
+  font-size: 0.8rem !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s;
   &:hover {
-    background-color: #f0f0f0 !important; /* Fondo más claro en hover */
-    transform: translateY(-2px); /* Efecto de elevación en hover */
+    background-color: #f0f0f0 !important;
+    transform: translateY(-2px);
   }
 `;
 
 const NavM = styled(Button)`
-  color: #004080 !important; /* Asegurarse de que el color se aplique */
-  border-radius: 5px !important; /* Añade bordes redondeados para un mejor diseño */
-  padding: 8px 16px !important; /* Ajusta el padding para que sean más grandes */
+  color: #004080 !important;
+  border-radius: 5px !important;
+  padding: 8px 16px !important;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.9) !important; /* Fondo más claro en hover */
+    background-color: rgba(255, 255, 255, 0.9) !important;
   }
 `;
 

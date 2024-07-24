@@ -52,16 +52,18 @@
   `;
 
   const RightContainer = styled(Box)`
-    display: none;
+  display: none;
 
-    @media (min-width: 768px) {
-      display: block;
-      width: 35%; /* Ajustado al 35% para diseño dividido */
-      background-image: url(${illustration});
-      background-size: cover;
-      background-position: center;
-    }
-  `;
+  @media (min-width: 768px) {
+    display: block;
+    width: 35%; /* Ajustado al 35% para diseño dividido */
+    background-image: url(${illustration});
+    background-size: contain; /* Ajuste para que la imagen sea responsive */
+    background-position: center;
+    background-repeat: no-repeat; /* Asegura que la imagen no se repita */
+  }
+`;
+
 
   const Header = styled(Box)`
     position: fixed;

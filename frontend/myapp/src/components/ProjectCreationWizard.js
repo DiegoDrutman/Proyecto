@@ -13,19 +13,20 @@ const FullScreenContainer = styled(Box)`
   background-color: #E5E4E2;
   color: #333;
   text-align: center;
-  padding-top: 30px;
+  padding-top: 120px;
 `;
 
 const ContentWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 600px;
+  max-width: 800px;
   width: 100%;
   padding: 40px 20px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 30px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  margin-top: 40px;
 `;
 
 const ProjectCreationWizard = () => {
@@ -85,6 +86,9 @@ const ProjectCreationWizard = () => {
       <ContentWrapper>
         {step === 1 && (
           <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
             <Typography variant="h4" gutterBottom>
               Selecciona el tipo de proyecto
             </Typography>
@@ -107,6 +111,9 @@ const ProjectCreationWizard = () => {
 
         {step === 2 && (
           <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
             <Typography variant="h4" gutterBottom>
               Detalles del proyecto
             </Typography>
@@ -137,8 +144,11 @@ const ProjectCreationWizard = () => {
 
         {step === 3 && projectType === 'programming' && (
           <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
             <Typography variant="h4" gutterBottom>
-              Configuración específica del proyecto
+              Configuración específica del proyecto                   
             </Typography>
             <FormControlLabel
               control={<Checkbox name="additionalInfo" value="linkGitHub" onChange={handleInputChange} />}
@@ -155,6 +165,9 @@ const ProjectCreationWizard = () => {
 
         {step === 3 && projectType === 'business' && (
           <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
             <Typography variant="h4" gutterBottom>
               Configuración específica del proyecto
             </Typography>
@@ -173,6 +186,9 @@ const ProjectCreationWizard = () => {
 
         {step === 3 && projectType === 'financial' && (
           <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
             <Typography variant="h4" gutterBottom>
               Configuración específica del proyecto
             </Typography>
@@ -191,6 +207,45 @@ const ProjectCreationWizard = () => {
 
         {step === 4 && (
           <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
+            <Typography variant="h4" gutterBottom>
+              ¿El proyecto es personal o de empresa?
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setProjectType('personal');
+                  handleNext();
+                }}
+              >
+                Personal
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setProjectType('empresa');
+                  handleNext();
+                }}
+              >
+                Empresa
+              </Button>
+            </Box>
+            <Button variant="outlined" color="secondary" onClick={handleBack} sx={{ mt: 2 }}>
+              Atrás
+            </Button>
+          </div>
+        )}
+
+{step === 5 && (
+          <div>
+            <Typography variant="h3" gutterBottom>
+              Pregunta {step}/5 de tu proyecto.
+            </Typography>
             <Typography variant="h4" gutterBottom>
               Información adicional
             </Typography>
@@ -223,79 +278,15 @@ const ProjectCreationWizard = () => {
               variant="outlined"
               color="secondary"
               onClick={() => navigate('/collaborations')}
-              sx={{ mt: 2 }}
+              sx={{ mt: 2, mr: 10 }}
             >
               Agregar Miembros
             </Button>
             <Button variant="outlined" color="secondary" onClick={handleBack} sx={{ mt: 2 }}>
               Atrás
             </Button>
-            <Button variant="contained" color="secondary" onClick={handleNext} sx={{ ml: 2, mt: 2 }}>
+            <Button variant="contained" color="secondary" onClick={() => navigate('/signup')} sx={{ ml: 2, mt: 2 }}>
               Siguiente
-            </Button>
-          </div>
-        )}
-
-        {step === 5 && (
-          <div>
-            <Typography variant="h4" gutterBottom>
-              Resumen del proyecto
-            </Typography>
-            <Typography variant="body1">Tipo de proyecto: {projectType}</Typography>
-            <Typography variant="body1">Nombre del proyecto: {projectName}</Typography>
-            <Typography variant="body1">Descripción del proyecto: {projectDescription}</Typography>
-            <Typography variant="body1">Objetivos: {objectives}</Typography>
-            <Typography variant="body1">Miembros del equipo: {teamMembers.join(', ')}</Typography>
-            <Button variant="outlined" color="secondary" onClick={handleBack}>
-              Atrás
-            </Button>
-            <Button variant="contained" color="secondary" onClick={() => navigate('/signup')} sx={{ ml: 2 }}>
-              Confirmar
-            </Button>
-          </div>
-        )}
-
-        {step === 6 && (
-          <div>
-            <Typography variant="h4" gutterBottom>
-              Registro
-            </Typography>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Nombre de Usuario"
-              name="username"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Email"
-              name="email"
-              type="email"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Contraseña"
-              name="password"
-              type="password"
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Confirmar Contraseña"
-              name="confirmPassword"
-              type="password"
-              onChange={handleInputChange}
-            />
-            <Button variant="outlined" color="secondary" onClick={handleBack}>
-              Atrás
-            </Button>
-            <Button variant="contained" color="secondary" onClick={handleNext} sx={{ ml: 2 }}>
-              Registrarse
             </Button>
           </div>
         )}

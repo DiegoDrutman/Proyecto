@@ -1,3 +1,4 @@
+// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -11,7 +12,7 @@ const theme = createTheme({
             main: '#E5E4E2',
         },
         secondary: {
-            main: '#004080',
+            main: '#004080', // Azul oscuro
         },
     },
     typography: {

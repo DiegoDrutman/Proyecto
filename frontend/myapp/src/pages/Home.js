@@ -104,7 +104,7 @@ const HomePage = ({ isAuthenticated }) => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => handleButtonClick('/collaborations')}
+              onClick={() => handleButtonClick('/login')}
               sx={{ mt: 2 }}
             >
               Colaboradores

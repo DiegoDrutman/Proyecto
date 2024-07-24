@@ -1,35 +1,33 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
 
 class Project(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
+    PROJECT_TYPES = [
+        ('programming', 'Programming'),
+        ('business', 'Business'),
+        ('financial', 'Financial'),
+        ('training', 'Training'),
+        ('education', 'Education'),
+        ('artistic', 'Artistic'),
+    ]
+    name = models.CharField(max_length=255, default='Unnamed Project')
+    description = models.TextField(blank=True)
+    type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='programming')
+    owner = models.ForeignKey(User, related_name='projects', on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
+    objectives = models.TextField(blank=True, null=True)
+    team_members = models.ManyToManyField(User, related_name='team_projects')
 
 class Task(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks', default=1)
-    title = models.CharField(max_length=200)
-    description = models.TextField()
+    project = models.ForeignKey(Project, related_name='tasks', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
     completed = models.BooleanField(default=False)
-    due_date = models.DateField(null=True, blank=True)
+    due_date = models.DateField(blank=True, null=True)
+    assigned_to = models.ForeignKey(User, related_name='tasks', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.title
-
-class Collaboration(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='collaborations')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=100)
-    joined_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.project.title}"

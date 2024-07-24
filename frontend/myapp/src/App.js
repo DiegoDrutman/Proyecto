@@ -5,13 +5,8 @@ import styled from 'styled-components';
 import HomePage from './pages/Home';
 import ProjectCreationWizard from './components/ProjectCreationWizard';
 import Login from './pages/Login';
-import ProjectDetails from './pages/ProjectDetails';
-import ProjectList from './components/ProjectList';
-import ProjectForm from './components/ProjectForm';
 import Navigation from './components/Navigation';
 import Signup from './pages/SignUp';
-import Settings from './pages/Settings';
-import ViewProjects from './pages/ViewProjects';
 import { getProjects } from './services/api';
 
 const AppContainer = styled.div`
@@ -52,11 +47,6 @@ const App = () => {
                                 <Routes>
                                     <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
                                     <Route path="/project-creation-wizard" element={<ProjectCreationWizard />} />
-                                    <Route path="/projects" element={<ProjectList />} />
-                                    <Route path="/projects/add" element={<ProjectForm fetchProjects={fetchProjects} />} />
-                                    <Route path="/projects/:id" element={<ProjectDetails />} />
-                                    <Route path="/view-projects" element={<ViewProjects />} />
-                                    <Route path="/settings" element={<Settings />} />
                                 </Routes>
                             </>
                         }

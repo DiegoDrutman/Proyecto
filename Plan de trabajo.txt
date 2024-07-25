@@ -3,7 +3,7 @@ Descripción: Una aplicación que ayude a los usuarios a gestionar sus proyectos
 
 Tecnologías
 Backend: Python Django
-Frontend: ReactJS
+Frontend: JavaScript ReactJS
 Machine Learning: TensorFlow, PyTorch (para análisis y recomendaciones)
 Base de Datos: PostgreSQL
 Despliegue: Docker, Kubernetes, AWS

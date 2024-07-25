@@ -12,7 +12,7 @@ const FullScreenContainer = styled(Box)`
   justify-content: flex-start; /* Cambiar a flex-start para que el contenido comience desde arriba */
   align-items: center;
   width: 100vw;
-  height: 100vh;
+  height: 150vh;
   background-color: #E5E4E2;
   color: #333;
   text-align: center;
@@ -89,7 +89,7 @@ const HomePage = ({ isAuthenticated }) => {
               onClick={() => handleButtonClick('/login')}
               sx={{ mt: 2 }}
             >
-              Ver Proyectos
+              Mis Proyectos
             </Button>
           </FeaturePaper>
 

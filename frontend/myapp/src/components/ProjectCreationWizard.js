@@ -98,9 +98,9 @@ const ProjectCreationWizard = () => {
                 <MenuItem value="programming">Programación</MenuItem>
                 <MenuItem value="business">Servicios</MenuItem>
                 <MenuItem value="financial">Finanzas</MenuItem>
-                <MenuItem value="financial">Entrenamiento</MenuItem>
-                <MenuItem value="financial">Educativo</MenuItem>
-                <MenuItem value="financial">Artistico</MenuItem>
+                <MenuItem value="training">Entrenamiento</MenuItem>
+                <MenuItem value="educational">Educativo</MenuItem>
+                <MenuItem value="artistic">Artístico</MenuItem>
               </Select>
             </FormControl>
             <Button variant="contained" color="secondary" onClick={handleNext}>
@@ -122,6 +122,7 @@ const ProjectCreationWizard = () => {
               margin="normal"
               label="Nombre del proyecto"
               name="projectName"
+              value={projectName}
               onChange={handleInputChange}
             />
             <TextField
@@ -129,6 +130,7 @@ const ProjectCreationWizard = () => {
               margin="normal"
               label="Descripción del proyecto"
               name="projectDescription"
+              value={projectDescription}
               multiline
               rows={4}
               onChange={handleInputChange}
@@ -241,7 +243,7 @@ const ProjectCreationWizard = () => {
           </div>
         )}
 
-{step === 5 && (
+        {step === 5 && (
           <div>
             <Typography variant="h3" gutterBottom>
               Pregunta {step}/5 de tu proyecto.
@@ -254,6 +256,7 @@ const ProjectCreationWizard = () => {
               margin="normal"
               label="Objetivos del proyecto"
               name="objectives"
+              value={objectives}
               multiline
               rows={4}
               onChange={handleInputChange}

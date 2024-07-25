@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import styled from 'styled-components';
 import { useNavigate, Link } from 'react-router-dom';
-import { createUser } from '../services/api'; // Asegúrate de tener esta función en tus servicios de API
-import illustration from '../assets/Taskwave.png'; // Asegúrate de que la ruta de la imagen sea correcta
-import logo from '../assets/logo.png'; // Asegúrate de que la ruta del logo sea correcta
+import { createUser } from '../services/api';
+import illustration from '../assets/Taskwave.png';
+import logo from '../assets/logo.png';
 
 const FullScreenContainer = styled(Box)`
   display: flex;
@@ -58,7 +58,7 @@ const RightContainer = styled(Box)`
     width: 35%; /* Ajustado al 35% para diseño dividido */
     background-image: url(${illustration});
     background-size: contain; /* Ajuste para que la imagen sea responsive */
-    background-position: center;
+    background-position: right;
     background-repeat: no-repeat; /* Asegura que la imagen no se repita */
   }
 `;

@@ -58,7 +58,7 @@ const RightContainer = styled(Box)`
     width: 35%;
     background-image: url(${illustration});
     background-size: contain;
-    background-position: center;
+    background-position: right;
     background-repeat: no-repeat;
   }
 `;
@@ -122,7 +122,7 @@ const Login = ({ setIsAuthenticated }) => {
         <Typography variant="h4" gutterBottom>
           Te damos la Bienvenida a TaskWave.
         </Typography>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Empieza ya tu prueba gratis. No se necesita tarjeta de crédito.
         </Typography>
         <StyledContainer>

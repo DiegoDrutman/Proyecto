@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Typography, Box, CircularProgress, Alert, List, ListItem, ListItemText } from '@mui/material';
-import { getProjects, createProject } from '../services/api';
+import { getProjects } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import logo from '../assets/logo.png';
@@ -36,16 +36,6 @@ const LogoWrapper = styled(Box)`
 const Logo = styled('img')`
   height: 50px;
   margin-right: 10px;
-`;
-
-const NavButton = styled(Button)`
-  color: white !important;
-  border-radius: 5px !important;
-  padding: 8px 16px !important;
-  background-color: transparent !important;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-  }
 `;
 
 const ContentWrapper = styled(Box)`
@@ -92,16 +82,6 @@ const Projects = () => {
 
     fetchProjects();
   }, []);
-
-  const handleAddProject = async () => {
-    try {
-      const newProject = { name: 'New Project', description: 'Project description' };
-      const createdProject = await createProject(newProject);
-      setProjects([...projects, createdProject]);
-    } catch (error) {
-      setError('Failed to create project.');
-    }
-  };
 
   const handleButtonClick = (path) => {
     navigate(path);

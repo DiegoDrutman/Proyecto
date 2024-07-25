@@ -6,9 +6,8 @@ import HomePage from './pages/Home';
 import ProjectCreationWizard from './components/ProjectCreationWizard';
 import Login from './pages/Login';
 import Navigation from './components/Navigation';
-import Signup from './pages/SignUp';
+import Signup from './pages/Signup';
 import { getProjects } from './services/api';
-import PrivateRoute from './components/PrivateRoute';
 import Projects from './pages/Projects';
 import ProjectNavigation from './components/ProjectNavigation'; // Importa la navegación específica de proyectos
 

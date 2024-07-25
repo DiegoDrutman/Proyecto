@@ -96,16 +96,18 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await createUser({ email, password });
-      if (response.success) {
-        navigate('/login'); // Redirigir a la página de login
-      } else {
-        setErrorMessage(response.message);
-      }
+        const response = await createUser({ username: email, email, password }); // Asegúrate de que los campos están correctamente mapeados
+        console.log("API Response:", response); // Verifica lo que realmente está devolviendo la API
+        if (response && response.success) {
+            navigate('/login'); // Redirigir a la página de login
+        } else {
+            setErrorMessage(response.message || 'Registration failed. Please check your details and try again.');
+        }
     } catch (error) {
-      setErrorMessage('Registration failed. Please check your details and try again.');
+        console.error("Registration Error:", error);
+        setErrorMessage(error.message || 'Registration failed. Please check your details and try again.');
     }
-  };
+};
 
   return (
     <FullScreenContainer>
@@ -121,7 +123,7 @@ const Signup = () => {
         <Typography variant="h4" gutterBottom>
           Te damos la Bienvenida a TaskWave.
         </Typography>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Empieza ya tu prueba gratis. No se necesita tarjeta de crédito.
         </Typography>
         <StyledContainer>

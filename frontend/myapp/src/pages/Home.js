@@ -1,31 +1,55 @@
 import React from 'react';
 import { Typography, Button, Box } from '@mui/material';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import manageProjectsIcon from '../assets/project_management_icon.webp';
 import collaborateIcon from '../assets/collaboration_icon.webp';
 import stayOrganizedIcon from '../assets/stay_organized_icon.webp';
 
+// Animaciones
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+// Colores modernos y tipografía estilizada
+const colors = {
+  primary: '#004080',
+  secondary: '#2196f3',
+  light: '#f5f5f5',
+  dark: '#fff',
+  accent: 'rgba(0, 0, 0, 0.7)',
+};
+
+// Estilo de los componentes
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Cambiar a flex-start para que el contenido comience desde arriba */
+  justify-content: flex-start;
   align-items: center;
   width: 100vw;
-  height: 150vh;
+  min-height: 100vh;  // Cambiado de height a min-height
+  overflow-x: hidden;  // Oculta desplazamiento horizontal
+  overflow-y: auto;    // Añadido para permitir desplazamiento vertical solo cuando sea necesario
   background-color: #E5E4E2;
   color: #333;
   text-align: center;
-  padding-top: 30px; /* Ajuste para evitar la superposición con el navbar */
+  padding-top: 0px;
+  animation: ${fadeIn} 0.5s ease-in-out;
 `;
 
 const ContentWrapper = styled(Box)`
   display: grid;
   gap: 10px;
   justify-items: center;
-  max-width: 1200px;
+  max-width: 1700px;
   width: 100%;
   padding: 40px 20px;
+  animation: ${fadeIn} 0.5s ease-in-out;
 `;
 
 const FeatureGrid = styled(Box)`
@@ -38,11 +62,13 @@ const FeatureGrid = styled(Box)`
 
 const FeaturePaper = styled(Box)`
   background-color: #f0f0f0;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
   color: #333;
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
+  animation: ${fadeIn} 0.5s ease-in-out;
+
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -53,18 +79,28 @@ const HomePage = ({ isAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleButtonClick = (path) => {
-      navigate(path);
+    navigate(path);
   };
 
   return (
     <FullScreenContainer>
       <ContentWrapper>
-        <Typography variant="h2" gutterBottom>
-          Bienvenido a TaskWave
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Tu Solución Definitiva de Gestión de Proyectos
-        </Typography>
+      <Typography
+        variant="h2"
+        fontSize={70}
+        color={colors.secondary}
+        sx={{ marginBottom: 1 }} // Ajusta el margen inferior aquí
+      >
+        TaskWave
+      </Typography>
+      <Typography
+        variant="h3"
+        fontSize={45}
+        fontStyle="italic"
+        sx={{ marginBottom: 2 }} // Ajusta el margen inferior aquí
+      >
+        Tu Solución Definitiva de Gestión de Proyectos
+      </Typography>
         <Button
           variant="contained"
           color="secondary"
@@ -73,11 +109,10 @@ const HomePage = ({ isAuthenticated }) => {
         >
           Crea tu proyecto!
         </Button>
-
         <FeatureGrid>
           <FeaturePaper>
             <img src={manageProjectsIcon} alt="Manage Projects" style={{ width: '100px', height: '100px' }} />
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom color={colors.primary}>
               Gestionar Proyectos
             </Typography>
             <Typography variant="body1">
@@ -86,16 +121,16 @@ const HomePage = ({ isAuthenticated }) => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => handleButtonClick('/login')}
+              onClick={() => handleButtonClick('/manage-projects')}
               sx={{ mt: 2 }}
             >
-              Mis Proyectos
+              Gestionar
             </Button>
           </FeaturePaper>
 
           <FeaturePaper>
             <img src={collaborateIcon} alt="Collaborate Effectively" style={{ width: '100px', height: '100px' }} />
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom color={colors.primary}>
               Colaboración
             </Typography>
             <Typography variant="body1">
@@ -107,13 +142,12 @@ const HomePage = ({ isAuthenticated }) => {
               onClick={() => handleButtonClick('/login')}
               sx={{ mt: 2 }}
             >
-              Colaboradores
+              Añadir
             </Button>
           </FeaturePaper>
-
           <FeaturePaper>
             <img src={stayOrganizedIcon} alt="Stay Organized" style={{ width: '100px', height: '100px' }} />
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom color={colors.primary}>
               Organización
             </Typography>
             <Typography variant="body1">
@@ -125,19 +159,18 @@ const HomePage = ({ isAuthenticated }) => {
               onClick={() => handleButtonClick('/login')}
               sx={{ mt: 2 }}
             >
-              Mis Tareas
+              Organizar
             </Button>
           </FeaturePaper>
         </FeatureGrid>
-
-        <Box mt={4} p={4} bgcolor="rgba(0, 0, 0, 0.7)" borderRadius="10px" width="80%">
+        <FeaturePaper mt={4} p={4} bgcolor="rgba(0, 0, 0, 0.7)" borderRadius="10px" width="80%">
           <Typography variant="h5" gutterBottom color="white">
             ¿Por qué TaskWave?
           </Typography>
           <Typography variant="body1" color="white">
             TaskWave está diseñado para simplificar la gestión de proyectos, mejorar la colaboración y aumentar la productividad. Únete a miles de usuarios que han transformado su flujo de trabajo con TaskWave.
           </Typography>
-        </Box>
+        </FeaturePaper>
       </ContentWrapper>
     </FullScreenContainer>
   );

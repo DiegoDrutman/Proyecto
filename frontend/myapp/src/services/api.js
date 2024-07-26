@@ -25,6 +25,7 @@ axiosInstance.interceptors.request.use(
 const handleRequest = async (request) => {
     try {
         const response = await request();
+        console.log('API response:', response.data); // Log para verificar la respuesta de la API
         return response.data;
     } catch (error) {
         console.error('API request error:', error);
@@ -58,3 +59,6 @@ export const updateProject = async (project) => handleRequest(() => axiosInstanc
 export const deleteProject = async (projectId) => handleRequest(() => axiosInstance.delete(`projects/${projectId}/`));
 export const createUser = async (user) => handleRequest(() => axiosInstance.post('register/', user));
 export const getUsers = async () => handleRequest(() => axiosInstance.get('users/'));
+export const getProjectStats = async () => handleRequest(() => axiosInstance.get('project-stats/'));
+export const getTasks = async () => handleRequest(() => axiosInstance.get('tasks/'));
+export const getCollaborators = async () => handleRequest(() => axiosInstance.get('collaborators/'));

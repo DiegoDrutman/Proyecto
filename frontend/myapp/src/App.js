@@ -8,8 +8,9 @@ import Login from './pages/Login';
 import Navigation from './components/Navigation';
 import Signup from './pages/Signup';
 import { getProjects } from './services/api';
+import PrivateRoute from './components/PrivateRoute';
 import Projects from './pages/Projects';
-import ProjectNavigation from './components/ProjectNavigation'; // Importa la navegación específica de proyectos
+import ManageProjects from './pages/Informative';
 
 const AppContainer = styled.div`
   display: flex;
@@ -17,6 +18,7 @@ const AppContainer = styled.div`
   min-height: 100vh;
   width: 100vw;
   margin: 0;
+  overflow-x: hidden; /* Ocultar desplazamiento horizontal */
 `;
 
 const App = () => {
@@ -49,16 +51,11 @@ const App = () => {
                                 <Routes>
                                     <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
                                     <Route path="/project-creation-wizard" element={<ProjectCreationWizard />} />
+                                    <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+                                        <Route path="/projects" element={<Projects />} />
+                                    </Route>
+                                    <Route path="/manage-projects" element={<ManageProjects />} />
                                 </Routes>
-                            </>
-                        }
-                    />
-                    <Route
-                        path="/projects/*"
-                        element={
-                            <>
-                                <ProjectNavigation />
-                                <Projects />
                             </>
                         }
                     />

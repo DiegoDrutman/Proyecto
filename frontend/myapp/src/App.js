@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import styled from 'styled-components';
 import HomePage from './pages/Home';
-import ProjectCreationWizard from './components/ProjectCreationWizard';
+import DocumentUpload from './pages/DocumentUpload';
 import Login from './pages/Login';
 import Navigation from './components/Navigation';
 import Signup from './pages/Signup';
-import { getProjects } from './services/api';
+import { getDocuments } from './services/api';  // Cambiado de getProjects a getDocuments
 import PrivateRoute from './components/PrivateRoute';
-import Projects from './pages/Projects';
-import ManageProjects from './pages/Informative';
+import DocumentList from './pages/DocumentList';
+import DocumentReview from './pages/DocumentReview';
 
 const AppContainer = styled.div`
   display: flex;
@@ -18,47 +18,38 @@ const AppContainer = styled.div`
   min-height: 100vh;
   width: 100vw;
   margin: 0;
-  overflow-x: hidden; /* Ocultar desplazamiento horizontal */
+  overflow-x: hidden;  // Ocultar desplazamiento horizontal
 `;
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const fetchProjects = async () => {
+    const fetchDocuments = async () => {
         try {
-            await getProjects();
+            await getDocuments();  // Cambiado de getProjects a getDocuments
         } catch (error) {
-            console.error('Error fetching projects:', error);
+            console.error('Error fetching documents:', error);
         }
     };
 
     useEffect(() => {
-        fetchProjects();
+        fetchDocuments();
     }, []);
 
     return (
         <Router>
             <CssBaseline />
             <AppContainer>
+                <Navigation />
                 <Routes>
                     <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route
-                        path="/*"
-                        element={
-                            <>
-                                <Navigation />
-                                <Routes>
-                                    <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
-                                    <Route path="/project-creation-wizard" element={<ProjectCreationWizard />} />
-                                    <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
-                                        <Route path="/projects" element={<Projects />} />
-                                    </Route>
-                                    <Route path="/manage-projects" element={<ManageProjects />} />
-                                </Routes>
-                            </>
-                        }
-                    />
+                    <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
+                    <Route path="/document-upload" element={<DocumentUpload />} />
+                    <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+                        <Route path="/document-list" element={<DocumentList />} />
+                        <Route path="/document-review/:id" element={<DocumentReview />} />
+                    </Route>
                 </Routes>
             </AppContainer>
         </Router>

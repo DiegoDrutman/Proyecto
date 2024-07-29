@@ -1,38 +1,35 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  background-color: #f4f4f4; /* Fondo más claro para mejorar la legibilidad */
+  color: #333; /* Texto en tono oscuro para contraste */
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #005792; /* Un color más profesional y suave */
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(12px + 2vmin);
   color: white;
 }
 
 .App-link {
-  color: #E5E4E2;
+  color: #61dafb; /* Manteniendo un enlace claro pero más vibrante */
 }
 
-@keyframes App-logo-spin {
+/* Si se requiere alguna animación, mantenerla sutil y profesional */
+@keyframes subtleFadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
+}
+
+/* Ejemplo de uso de la animación en componentes específicos */
+.AnimatedComponent {
+  animation: subtleFadeIn 3s ease-in-out;
 }

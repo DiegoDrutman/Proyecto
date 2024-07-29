@@ -53,12 +53,11 @@ export const authenticateUser = async (credentials) => {
     return response;
 };
 
-export const getProjects = async () => handleRequest(() => axiosInstance.get('projects/'));
-export const createProject = async (project) => handleRequest(() => axiosInstance.post('projects/', project));
-export const updateProject = async (project) => handleRequest(() => axiosInstance.put(`projects/${project.id}/`, project));
-export const deleteProject = async (projectId) => handleRequest(() => axiosInstance.delete(`projects/${projectId}/`));
+// Nuevas funciones para manejar documentos
+export const getDocuments = async () => handleRequest(() => axiosInstance.get('documents/'));
+export const uploadDocument = async (document) => handleRequest(() => axiosInstance.post('documents/', document));
+export const updateDocument = async (document) => handleRequest(() => axiosInstance.put(`documents/${document.id}/`, document));
+export const deleteDocument = async (documentId) => handleRequest(() => axiosInstance.delete(`documents/${documentId}/`));
+
 export const createUser = async (user) => handleRequest(() => axiosInstance.post('register/', user));
 export const getUsers = async () => handleRequest(() => axiosInstance.get('users/'));
-export const getProjectStats = async () => handleRequest(() => axiosInstance.get('project-stats/'));
-export const getTasks = async () => handleRequest(() => axiosInstance.get('tasks/'));
-export const getCollaborators = async () => handleRequest(() => axiosInstance.get('collaborators/'));

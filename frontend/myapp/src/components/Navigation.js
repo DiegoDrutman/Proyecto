@@ -6,35 +6,27 @@ import styled from 'styled-components';
 import logo from '../assets/logo.png';
 
 const NavBar = styled(AppBar)`
-  background-color: #E5E4E2;
+  background-color: #FFFFFF;  // Cambiado a blanco
   box-shadow: none;
+  color: #333;  // Asegura visibilidad del texto
 `;
 
 const Logo = styled('img')`
-  height: 50px;
-  margin-right: 10px;
+  height: 70px;
+  margin-right: 20px;  // Ajustado para separación visual
 `;
 
 const NavButton = styled(Button)`
-  color: #004080 !important;
-  background-color: #ffffff !important;
+  color: #FFFFFF !important;  // Texto blanco
+  background-color: #004080 !important;  // Fondo azul
   border-radius: 20px !important;
-  padding: 5px 20px !important;
-  font-size: 0.8rem !important;
+  padding: 10px 20px !important;  // Ajustado el padding para mejor estética
+  font-size: 1rem !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s, transform 0.3s;
   &:hover {
-    background-color: #f0f0f0 !important;
+    background-color: #0059b2 !important;  // Un azul ligeramente más claro en hover
     transform: translateY(-2px);
-  }
-`;
-
-const NavM = styled(Button)`
-  color: #004080 !important;
-  border-radius: 5px !important;
-  padding: 8px 16px !important;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.9) !important;
   }
 `;
 
@@ -43,15 +35,19 @@ const Navigation = () => {
     <NavBar position="static">
       <Toolbar sx={{ flexWrap: 'wrap', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Logo src={logo} alt="TaskWave Logo" />
-          <NavM component={Link} to="/">
-            <Typography variant="h4" sx={{ color: '#004080', '@media (max-width: 600px)': { fontSize: '1.5rem' } }}>
-              TaskWave
-            </Typography>
-          </NavM>
+          <Logo src={logo} alt="DocumentFlow Logo" />
+          <Typography component={Link} to="/" variant="h4" sx={{ color: '#004080', fontWeight: 'bold', textDecoration: 'none' }}>
+            TaskWave
+          </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 2, '@media (max-width: 600px)': { flexDirection: 'column', alignItems: 'center', gap: 1, width: '100%' } }}>
-          <NavButton component={Link} to="/login" sx={{ '@media (max-width: 600px)': { width: '100%' } }}>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <NavButton component={Link} to="/document-upload">
+            Upload Document
+          </NavButton>
+          <NavButton component={Link} to="/document-list">
+            My Documents
+          </NavButton>
+          <NavButton component={Link} to="/login">
             Login
           </NavButton>
         </Box>

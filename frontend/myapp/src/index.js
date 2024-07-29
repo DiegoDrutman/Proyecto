@@ -5,25 +5,30 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
+import './index.css';   
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#E5E4E2',
+            main: '#FFFFFF', // Color primario más representativo
         },
         secondary: {
-            main: '#004080', // Azul oscuro
+            main: '#FFFFFF', // Un color secundario complementario y vibrante
         },
+        background: {
+            default: '#FFFFFF' // Asegura coherencia en el fondo
+        }
     },
     typography: {
+        fontFamily: 'Roboto, Helvetica, Arial, sans-serif', // Confirmar la fuente aquí para coherencia
         h1: {
-            fontSize: '2rem',
+            fontSize: '2.4rem', // Ajustado para mejor legibilidad
         },
         h4: {
-            fontSize: '1.5rem',
+            fontSize: '1.6rem',
         },
         body1: {
-            fontSize: '1rem',
+            fontSize: '1.1rem', // Ligeramente más grande para mejorar la legibilidad
         },
     },
 });

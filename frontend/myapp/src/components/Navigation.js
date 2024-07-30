@@ -42,10 +42,10 @@ const Navigation = () => {
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
           <NavButton component={Link} to="/document-upload">
-            Upload Document
+            Subir Documento
           </NavButton>
           <NavButton component={Link} to="/document-list">
-            My Documents
+            Mis Documentos
           </NavButton>
           <NavButton component={Link} to="/login">
             Login

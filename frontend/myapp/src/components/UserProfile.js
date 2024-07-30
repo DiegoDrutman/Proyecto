@@ -22,9 +22,9 @@ const UserProfile = () => {
     bio: ''
   });
 
-  // Supongamos que estos datos vienen de una API
+  // Simulación de llamada a la API
   useEffect(() => {
-    // Aquí simularíamos una llamada a la API para obtener la información del usuario
+    // Aquí deberías hacer una llamada real a la API
     setUser({ name: 'Jane Doe', email: 'jane.doe@example.com', bio: 'Enthusiastic learner and web developer.' });
   }, []);
 
@@ -37,8 +37,9 @@ const UserProfile = () => {
   };
 
   const handleSave = () => {
-    // Aquí iría la lógica para guardar los datos actualizados del usuario en la base de datos
+    // Aquí iría la lógica para guardar los datos actualizados del usuario
     console.log('Saving user info:', user);
+    // Agrega la llamada a la API para guardar los cambios
   };
 
   return (

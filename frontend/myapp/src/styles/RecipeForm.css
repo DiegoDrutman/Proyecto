@@ -1,0 +1,27 @@
+.recipe-form {
+    display: flex;
+    flex-direction: column;
+    margin: 16px;
+  }
+  
+  .recipe-form__input,
+  .recipe-form__textarea {
+    margin-bottom: 8px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .recipe-form__textarea {
+    resize: vertical;
+  }
+  
+  .recipe-form__button {
+    background-color: #f0a500;
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

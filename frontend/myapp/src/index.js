@@ -1,34 +1,38 @@
-// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
-import './index.css';   
+import { createTheme } from '@mui/material/styles'; 
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#FFFFFF', // Color primario más representativo
+            main: '#DAA520',
         },
         secondary: {
-            main: '#FFFFFF', // Un color secundario complementario y vibrante
+            main: '#A67C00',
         },
         background: {
-            default: '#FFFFFF' // Asegura coherencia en el fondo
-        }
+            default: '#FFF8DC',
+            paper: '#FFFAF0',
+        },
+        text: {
+            primary: '#654321',
+            secondary: '#333333',
+        },
     },
     typography: {
-        fontFamily: 'Roboto, Helvetica, Arial, sans-serif', // Confirmar la fuente aquí para coherencia
+        fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
         h1: {
-            fontSize: '2.4rem', // Ajustado para mejor legibilidad
+            fontSize: '2.4rem',
         },
         h4: {
             fontSize: '1.6rem',
         },
         body1: {
-            fontSize: '1.1rem', // Ligeramente más grande para mejorar la legibilidad
+            fontSize: '1.1rem',
         },
     },
 });
@@ -38,12 +42,11 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <Router>
+        <App />
+      </Router>
     </ThemeProvider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

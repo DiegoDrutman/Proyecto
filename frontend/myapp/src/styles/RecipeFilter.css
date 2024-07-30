@@ -1,0 +1,12 @@
+.recipe-filter {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+  }
+  
+  .recipe-filter__select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  

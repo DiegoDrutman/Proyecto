@@ -10,10 +10,9 @@ const axiosInstance = axios.create({
     },
 });
 
-// Añadir un interceptor para incluir el token en cada solicitud
 axiosInstance.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('token'); // Asegúrate de almacenar el token en localStorage al iniciar sesión
+        const token = localStorage.getItem('token'); // Verifica que el token esté guardado correctamente
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -33,7 +32,7 @@ const handleRequest = async (request) => {
             console.error('Response data:', error.response.data);
             console.error('Response status:', error.response.status);
             console.error('Response headers:', error.response.headers);
-            throw new Error(error.response.data.message || 'API request failed');
+            throw new Error(error.response.data.detail || 'API request failed');
         } else if (error.request) {
             console.error('Request data:', error.request);
             throw new Error('No response received from server');
@@ -44,20 +43,30 @@ const handleRequest = async (request) => {
     }
 };
 
+// Autenticación de usuario
 export const authenticateUser = async (credentials) => {
     const response = await handleRequest(() => axiosInstance.post('token/', {
         username: credentials.email,
         password: credentials.password
     }));
-    localStorage.setItem('token', response.access); // Almacena el token en localStorage
+    localStorage.setItem('token', response.token); // Almacena el token en localStorage
     return response;
 };
 
-// Nuevas funciones para manejar documentos
-export const getDocuments = async () => handleRequest(() => axiosInstance.get('documents/'));
-export const uploadDocument = async (document) => handleRequest(() => axiosInstance.post('documents/', document));
-export const updateDocument = async (document) => handleRequest(() => axiosInstance.put(`documents/${document.id}/`, document));
-export const deleteDocument = async (documentId) => handleRequest(() => axiosInstance.delete(`documents/${documentId}/`));
+// Registro de usuario
+export const createUser = async (user) => {
+    const response = await handleRequest(() => axiosInstance.post('register/', user));
+    return response;
+};
 
-export const createUser = async (user) => handleRequest(() => axiosInstance.post('register/', user));
-export const getUsers = async () => handleRequest(() => axiosInstance.get('users/'));
+// Obtener recetas
+export const getRecipes = async () => handleRequest(() => axiosInstance.get('recipes/'));
+
+// Subir receta
+export const uploadRecipe = async (recipe) => handleRequest(() => axiosInstance.post('recipes/', recipe));
+
+// Actualizar receta
+export const updateRecipe = async (recipe) => handleRequest(() => axiosInstance.put(`recipes/${recipe.id}/`, recipe));
+
+// Borrar receta
+export const deleteRecipe = async (recipeId) => handleRequest(() => axiosInstance.delete(`recipes/${recipeId}/`));

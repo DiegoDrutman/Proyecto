@@ -3,14 +3,14 @@ import { Box, Button, TextField, Typography, Container, Alert } from '@mui/mater
 import { authenticateUser } from '../services/api';
 
 const Login = ({ setIsAuthenticated }) => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await authenticateUser({ email, password });
+            const response = await authenticateUser({ username, password });
             localStorage.setItem('token', response.token); // Guarda el token en localStorage
             setIsAuthenticated(true);
         } catch (error) {
@@ -45,13 +45,13 @@ const Login = ({ setIsAuthenticated }) => {
                         margin="normal"
                         required
                         fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="username"
                         autoFocus
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <TextField
                         margin="normal"

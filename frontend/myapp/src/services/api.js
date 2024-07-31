@@ -12,9 +12,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('token'); // Verifica que el token esté guardado correctamente
+        const token = localStorage.getItem('token'); // Obtiene el token de localStorage
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Token ${token}`; // Usa el prefijo 'Token' para los tokens de DRF
         }
         return config;
     },
@@ -45,8 +45,8 @@ const handleRequest = async (request) => {
 
 // Autenticación de usuario
 export const authenticateUser = async (credentials) => {
-    const response = await handleRequest(() => axiosInstance.post('token/', {
-        username: credentials.email,
+    const response = await handleRequest(() => axiosInstance.post('api-token-auth/', {
+        username: credentials.username, // Asegúrate de usar 'username' en lugar de 'email'
         password: credentials.password
     }));
     localStorage.setItem('token', response.token); // Almacena el token en localStorage

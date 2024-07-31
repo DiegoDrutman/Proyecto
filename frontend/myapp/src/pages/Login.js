@@ -26,7 +26,7 @@ const Login = ({ setIsAuthenticated }) => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     padding: 3,
-                    marginTop: 8,
+                    marginTop: 40, // Incrementa el margen superior para bajar el componente
                     borderRadius: 2,
                     boxShadow: 3,
                 }}

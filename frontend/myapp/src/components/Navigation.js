@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
 import styled from 'styled-components';
+import { Link as ScrollLink } from 'react-scroll'; // Importar Link de react-scroll
 import logo from '../assets/logo.png';
 
 const NavBar = styled(AppBar)`
@@ -29,45 +30,40 @@ const NavButton = styled(Button)`
   }
 `;
 
-const NavLink = styled(Typography)`
-  color: #FFFFFF;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-  margin-right: 20px;
-  font-size: 2rem;
-`;
-
-const scrollToSection = (id) => {
-  const section = document.getElementById(id);
-  if (section) {
-    window.scrollTo({
-      top: section.offsetTop - 70, // Ajustar el desplazamiento si el header está fijo
-      behavior: 'smooth'
-    });
-  }
-};
-
-const Navigation = () => {
+const Navigation = ({ isAuthenticated, onLogin, onLogout }) => {
   return (
     <NavBar position="fixed">
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Logo src={logo} alt="Logo" />
-          <NavLink onClick={() => scrollToSection('home')}>
-            MealMaker
-          </NavLink>
+          <ScrollLink to="home" smooth={true} duration={500}>
+            <Typography variant="h4" component="div" sx={{ color: '#FFFFFF', fontWeight: 'bold', cursor: 'pointer' }}>
+              MealMaker
+            </Typography>
+          </ScrollLink>
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <NavButton onClick={() => scrollToSection('home')}>
-            Home
-          </NavButton>
-          <NavButton onClick={() => scrollToSection('top-recipes')}>
-            Top Recipes
-          </NavButton>
-          <NavButton onClick={() => scrollToSection('all-recipes')}>
-            All Recipes
-          </NavButton>
+          <ScrollLink to="home" smooth={true} duration={500}>
+            <NavButton>Home</NavButton>
+          </ScrollLink>
+          <ScrollLink to="top-recipes" smooth={true} duration={500}>
+            <NavButton>Top Recipes</NavButton>
+          </ScrollLink>
+          <ScrollLink to="all-recipes" smooth={true} duration={500}>
+            <NavButton>All Recipes</NavButton>
+          </ScrollLink>
+          {isAuthenticated && (
+            <ScrollLink to="my-favourites" smooth={true} duration={500}>
+              <NavButton>My Favourites</NavButton>
+            </ScrollLink>
+          )}
+          {isAuthenticated ? (
+            <NavButton onClick={onLogout}>Logout</NavButton>
+          ) : (
+            <ScrollLink to="login" smooth={true} duration={500}>
+              <NavButton>Login</NavButton>
+            </ScrollLink>
+          )}
         </Box>
       </Toolbar>
     </NavBar>

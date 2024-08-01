@@ -1,15 +1,72 @@
-Base de Datos de Recetas: Crear una amplia base de datos de recetas que incluya diversos tipos de comidas, ingredientes, tiempos de preparación, y valores nutricionales.
+/src
+|-- /assets
+|   |-- recipe_book_icon.webp
+|   |-- fresh_ingredients_icon.webp
+|   |-- social_media_icon.webp
+|
+|-- /components
+|   |-- Navigation.js
+|   |-- RecipeCard.js
+|   |-- ShoppingCart.js
+|   |-- ChatGPTIntegration.js
+|   |-- PrivateRoute.js
+|
+|-- /pages
+|   |-- Login.js
+|   |-- Register.js
+|   |-- RecipeDetail.js
+|   |-- Profile.js
+|   |-- SignUp.js
+|
+|-- /services
+|   |-- api.js
+|
+|-- /styles
+|   |-- GlobalStyles.js
+|
+|-- App.js
+|-- index.js
 
-Integración con Supermercados: Colaborar con supermercados locales o nacionales para integrar sus catálogos de productos en la aplicación, permitiendo a los usuarios comprar los ingredientes necesarios directamente.
+/assets: Imágenes, iconos y otros archivos multimedia.
 
-Funcionalidad de Carrito de Compras: Desarrollar un sistema de carrito de compras donde los usuarios puedan agregar todos los ingredientes de una receta específica o seleccionar solo los que necesiten.
+/components: Componentes reutilizables de la aplicación.
 
-Sistema de Pago: Implementar un sistema de pago seguro para que los usuarios puedan realizar compras directamente en la aplicación.
+Navigation.js: Barra de navegación para manejar la autenticación y navegación entre páginas.
+RecipeCard.js: Componente que muestra información resumida de cada receta.
+ShoppingCart.js: Componente para gestionar la lista de ingredientes a comprar.
+ChatGPTIntegration.js: Componente para la personalización de recetas utilizando la API de ChatGPT.
+/pages: Páginas principales de la aplicación.
 
-Cuentas de Usuario y Personalización: Permitir a los usuarios crear cuentas donde puedan guardar sus recetas favoritas, recibir recomendaciones personalizadas y tener un historial de compras.
+Login.js: Página de inicio de sesión.
+Register.js: Página de registro de nuevos usuarios.
+RecipeDetail.js: Página de detalles para una receta específica.
+Profile.js: Página de perfil del usuario con sus recetas favoritas.
+/services: Servicios para manejar las solicitudes a la API.
 
-Interfaz de Usuario Amigable: Diseñar una interfaz fácil de usar que permita a los usuarios navegar entre diferentes recetas, categorías e información de productos de manera intuitiva.
+api.js: Funciones para interactuar con el backend (obtener recetas, enviar solicitudes a ChatGPT, etc.).
+/styles: Archivos CSS o Styled Components para estilos personalizados.
 
-Soporte para Reseñas y Comentarios: Incorporar una sección donde los usuarios puedan dejar comentarios sobre las recetas y calificarlas.
+App.js: Componente principal que contiene el enrutamiento de la aplicación y se listan las recetas.
 
-Optimización para Móviles: Asegurarse de que la aplicación sea completamente responsiva y optimizada para dispositivos móviles, considerando que muchos usuarios preferirán usarla en sus teléfonos mientras cocinan.
+index.js: Punto de entrada de la aplicación React.
+
+GlobalStyles.js: Estilos globales para la aplicación utilizando Styled Components.
+
+Detalles de cada carpeta:
+
+/project_name: Directorio del proyecto principal de Django.
+
+settings.py: Configuraciones del proyecto (bases de datos, aplicaciones instaladas, middleware, etc.).
+urls.py: Enrutamiento del proyecto.
+wsgi.py y asgi.py: Configuración para el servidor WSGI/ASGI.
+/app_name: Directorio de la aplicación específica dentro del proyecto.
+
+/migrations: Archivos de migración para la base de datos.
+/templates: Plantillas HTML si se usan vistas de servidor.
+/static: Archivos estáticos (CSS, JavaScript, imágenes).
+admin.py: Configuración para el panel de administración de Django.
+models.py: Definición de modelos de datos (por ejemplo, recetas, usuarios).
+views.py: Lógica de vistas de la aplicación.
+urls.py: Enrutamiento específico de la aplicación.
+serializers.py: Serializadores para convertir instancias de modelo a JSON para la API REST.
+manage.py: Herramienta de línea de comandos de Django para manejar el proyecto.

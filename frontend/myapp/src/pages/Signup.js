@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { createUser } from '../services/api';
 import recipeIcon from '../assets/recipe_icon.webp';
 
+// Colores personalizados
 const colors = {
   primary: '#8B4513',
   secondary: '#FFD700',
@@ -13,6 +14,7 @@ const colors = {
   warmBackground: '#FFF8DC',
 };
 
+// Contenedor de pantalla completa con diseño responsive
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -70,17 +72,37 @@ const Signup = ({ setIsAuthenticated }) => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Función para validar el correo electrónico
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validar el correo electrónico
+    if (!validateEmail(email)) {
+      setErrorMessage('Por favor, introduce un correo electrónico válido.');
+      return;
+    }
+
+    // Validar la longitud de la contraseña
+    if (password.length < 6) {
+      setErrorMessage('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
     try {
       const response = await createUser({ email, password });
       if (response.success) {
         setIsAuthenticated(true);
       } else {
-        setErrorMessage('Registration failed. Please check your details and try again.');
+        setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
       }
     } catch (error) {
-      setErrorMessage('Registration failed. Please check your details and try again.');
+      setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
     }
   };
 
@@ -88,7 +110,7 @@ const Signup = ({ setIsAuthenticated }) => {
     <FullScreenContainer>
       <LeftContainer>
         <Typography variant="h4" gutterBottom>
-          Bienvenido a MealMaker
+          Bienvenido a ReceTamos
         </Typography>
         <Typography variant="h6" gutterBottom>
           Regístrate para empezar a gestionar tus recetas.
@@ -102,27 +124,42 @@ const Signup = ({ setIsAuthenticated }) => {
               {errorMessage}
             </Alert>
           )}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} aria-label="Formulario de registro">
             <Box mb={2}>
               <TextField
-                label="Email"
+                label="Correo Electrónico"
                 variant="outlined"
                 fullWidth
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                aria-required="true"
+                aria-label="Correo Electrónico"
               />
             </Box>
             <Box mb={2}>
               <TextField
-                label="Password"
+                label="Contraseña"
                 variant="outlined"
                 type="password"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+                aria-required="true"
+                aria-label="Contraseña"
+                helperText="Debe tener al menos 6 caracteres"
               />
             </Box>
-            <Button variant="contained" sx={{ backgroundColor: colors.primary, color: colors.light }} type="submit" fullWidth>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: colors.primary, color: colors.light }}
+              type="submit"
+              fullWidth
+              disabled={!email || !password} // Deshabilitar botón si los campos están vacíos
+            >
               Registrarse
             </Button>
           </form>

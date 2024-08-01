@@ -1,26 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
-import { BrowserRouter as Router } from 'react-router-dom';
+import App from './App'; // Asegúrate de que App esté exportado correctamente
+import { ThemeProvider, CssBaseline } from '@mui/material'; 
+import { createTheme } from '@mui/material/styles'; 
+import { BrowserRouter as Router } from 'react-router-dom'; // Usar Router aquí es correcto
 
+// Configuración del tema personalizado
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#DAA520',
+      main: '#FFF8E1',
     },
     secondary: {
-      main: '#A67C00',
+      main: '#8B4513',
     },
     background: {
-      default: '#FFF8DC',
-      paper: '#FFFAF0',
+      default: '#D2B48C',
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#654321',
-      secondary: '#333333',
+      primary: '#8B4513',
+      secondary: '#8B4513',
     },
   },
   typography: {
@@ -37,16 +37,15 @@ const theme = createTheme({
   },
 });
 
+// Inicialización de la raíz de React
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <App />
+        <App /> {/* Asegúrate de no tener otro <Router> dentro de App.js */}
       </Router>
     </ThemeProvider>
   </React.StrictMode>
 );
-
-reportWebVitals();

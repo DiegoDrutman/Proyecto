@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, Grid, CircularProgress, Alert, TextField, Button, MenuItem, Pagination } from '@mui/material';
+import { Routes, Route, useLocation } from 'react-router-dom'; // Importa useLocation
+import {
+  Box,
+  Typography,
+  Container,
+  Grid,
+  CircularProgress,
+  Alert,
+  TextField,
+  Pagination
+} from '@mui/material';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import RecipeCard from './components/RecipeCard';
 import Navigation from './components/Navigation';
-import Login from './pages/Login';
 import { getRecipes } from './services/api';
 import { Element } from 'react-scroll';
+
+// Importar las páginas de Favoritas y Login
+import Favorites from './pages/Favorites'; 
+import Login from './pages/Login'; 
 
 // Animaciones
 const fadeIn = keyframes`
@@ -17,29 +30,35 @@ const fadeIn = keyframes`
   }
 `;
 
+// Paleta de Colores
 const colors = {
   primary: '#8B4513',
-  secondary: '#FFD700',
-  light: '#FFFACD',
-  dark: '#654321',
+  secondary: '#A0522D',
+  light: '#FFF8E1',
+  dark: '#5C4033',
   accent: '#DAA520',
   warmBackground: '#FFF8DC',
 };
 
+// Estilos Globales
 const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Roboto', 'Open Sans', sans-serif;
     background-color: ${colors.warmBackground};
     color: ${colors.dark};
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 `;
 
+// Estilos para el Contenedor de Pantalla Completa
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
@@ -48,6 +67,7 @@ const FullScreenContainer = styled(Box)`
   padding-top: 120px;
 `;
 
+// Estilos para el Contenedor de Contenido
 const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
@@ -59,14 +79,20 @@ const ContentWrapper = styled(Container)`
   animation: ${fadeIn} 0.5s ease-in-out;
 `;
 
+// Estilos para la Rejilla de Funciones
 const FeatureGrid = styled(Box)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   width: 100%;
   justify-items: center;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
+// Estilos para el Papel de Funciones
 const FeaturePaper = styled(Box)`
   background-color: ${colors.light};
   padding: 20px;
@@ -85,12 +111,14 @@ const FeaturePaper = styled(Box)`
   }
 `;
 
+// Estilos para Tipografía
 const StyledTypography = styled(Typography)`
   font-family: 'Roboto', 'Open Sans', sans-serif;
   color: ${colors.dark};
   padding-top: 20px;
 `;
 
+// Estilos para Imagen
 const Image = styled('img')`
   width: 150px;
   height: 150px;
@@ -98,6 +126,7 @@ const Image = styled('img')`
   border-radius: 10px;
 `;
 
+// Estilos para Títulos de Sección
 const SectionTitle = styled(Typography)`
   margin-top: 20px;
   margin-bottom: 20px;
@@ -106,19 +135,23 @@ const SectionTitle = styled(Typography)`
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [topRatedRecipes, setTopRatedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({ category: 'all', difficulty: 'all' });
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
   const recipesPerPage = 10;
+
+  const location = useLocation(); // Usar useLocation para obtener la ruta actual
 
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
         const response = await getRecipes();
-        setFilteredRecipes(response);
+        setRecipes(response);
+        setFilteredRecipes(response); // Inicialmente mostrar todas las recetas
         setTopRatedRecipes(response.slice(0, 5)); // Obtener las 5 recetas más valoradas
         setLoading(false);
       } catch (error) {
@@ -130,18 +163,17 @@ const App = () => {
     fetchRecipes();
   }, []);
 
-  const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilters({ ...filters, [name]: value });
-  };
-
-  const handleSearch = () => {
-    const filtered = filteredRecipes.filter(recipe => {
-      return (filters.category === 'all' || recipe.category === filters.category) &&
-             (filters.difficulty === 'all' || recipe.difficulty === filters.difficulty);
-    });
-    setFilteredRecipes(filtered);
-  };
+  // Actualizar recetas filtradas en función del término de búsqueda
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredRecipes(recipes);
+    } else {
+      const filtered = recipes.filter((recipe) =>
+        recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredRecipes(filtered);
+    }
+  }, [searchTerm, recipes]);
 
   const paginate = (event, value) => {
     setCurrentPage(value);
@@ -162,158 +194,155 @@ const App = () => {
   return (
     <>
       <GlobalStyle />
-      <Navigation isAuthenticated={isAuthenticated} onLogin={handleLogin} onLogout={handleLogout} />
-      <Element name="home">
-        <FullScreenContainer id="home">
-          <ContentWrapper>
-            <StyledTypography
-              variant="h2"
-              fontSize={80}
-              color={colors.secondary}
-              sx={{ marginBottom: 2 }}
-            >
-              Deliciosas Recetas
-            </StyledTypography>
-            <StyledTypography
-              variant="h4"
-              fontSize={24}
-              fontStyle="italic"
-              sx={{ marginBottom: 2 }}
-            >
-              Encuentra y prepara tus platos favoritos
-            </StyledTypography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, marginBottom: 3, padding: 10 }}>
-              <TextField
-                label="Search Recipes"
-                variant="outlined"
-                sx={{ marginRight: 2 }}
-              />
-              <TextField
-                select
-                label="Category"
-                name="category"
-                value={filters.category}
-                onChange={handleFilterChange}
-                sx={{ minWidth: 120 }}
-              >
-                <MenuItem value="all">All</MenuItem>
-                <MenuItem value="category1">Category 1</MenuItem>
-                <MenuItem value="category2">Category 2</MenuItem>
-              </TextField>
-              <TextField
-                select
-                label="Difficulty"
-                name="difficulty"
-                value={filters.difficulty}
-                onChange={handleFilterChange}
-                sx={{ minWidth: 120 }}
-              >
-                <MenuItem value="all">All</MenuItem>
-                <MenuItem value="easy">Easy</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="hard">Hard</MenuItem>
-              </TextField>
-              <Button variant="contained" color="primary" onClick={handleSearch}>Filter</Button>
-            </Box>
-            <FeatureGrid>
-              <FeaturePaper>
-                <Image src={require('./assets/recipe_book_icon.webp')} alt="Favorite Recipes" />
-                <StyledTypography variant="h4" gutterBottom color={colors.primary}>
-                  Recetas Populares
-                </StyledTypography>
-                <StyledTypography variant="body1">
-                  Descubre las recetas más amadas por nuestra comunidad.
-                </StyledTypography>
-              </FeaturePaper>
-
-              <FeaturePaper>
-                <Image src={require('./assets/fresh_ingredients_icon.webp')} alt="Ingredients" />
-                <StyledTypography variant="h4" gutterBottom color={colors.primary}>
-                  Ingredientes Frescos
-                </StyledTypography>
-                <StyledTypography variant="body1">
-                  Agrega ingredientes directamente a tu carrito de compras.
-                </StyledTypography>
-              </FeaturePaper>
-
-              <FeaturePaper>
-                <Image src={require('./assets/social_media_icon.webp')} alt="Social Media" />
-                <StyledTypography variant="h4" gutterBottom color={colors.primary}>
-                  Redes Sociales
-                </StyledTypography>
-                <StyledTypography variant="body1">
-                  Sigue nuestras redes sociales para más consejos y recetas.
-                </StyledTypography>
-              </FeaturePaper>
-            </FeatureGrid>
-          </ContentWrapper>
-        </FullScreenContainer>
-      </Element>
-      <Element name="top-recipes">
-        <FullScreenContainer id="top-recipes">
-          <ContentWrapper>
-            <SectionTitle variant="h3">Top 5 Recetas Más Valoradas</SectionTitle>
-            {loading ? (
-              <CircularProgress />
-            ) : error ? (
-              <Alert severity="error">{error}</Alert>
-            ) : (
-              <Grid container spacing={2} justifyContent="center">
-                {topRatedRecipes.map((recipe) => (
-                  <Grid item key={recipe.id} xs={12} sm={6} md={4}>
-                    <RecipeCard recipe={recipe} />
-                  </Grid>
-                ))}
-              </Grid>
-            )}
-          </ContentWrapper>
-        </FullScreenContainer>
-      </Element>
-      <Element name="all-recipes">
-        <FullScreenContainer id="all-recipes">
-          <ContentWrapper>
-            <SectionTitle variant="h3">Todas las Recetas</SectionTitle>
-            {loading ? (
-              <CircularProgress />
-            ) : error ? (
-              <Alert severity="error">{error}</Alert>
-            ) : (
-              <>
-                <Grid container spacing={2} justifyContent="center">
-                  {currentRecipes.map((recipe) => (
-                    <Grid item key={recipe.id} xs={12} sm={6} md={4}>
-                      <RecipeCard recipe={recipe} />
-                    </Grid>
-                  ))}
-                </Grid>
-                <Pagination
-                  count={Math.ceil(filteredRecipes.length / recipesPerPage)}
-                  page={currentPage}
-                  onChange={paginate}
-                  color="primary"
-                  sx={{ marginTop: 4 }}
-                />
-              </>
-            )}
-          </ContentWrapper>
-        </FullScreenContainer>
-      </Element>
-      {isAuthenticated && (
-        <Element name="my-favourites">
-          <FullScreenContainer id="my-favourites">
-            <ContentWrapper>
-              {/* Contenido de My Favourites */}
-            </ContentWrapper>
-          </FullScreenContainer>
-        </Element>
+      {/* Solo mostrar la navegación si no estás en la ruta de Login */}
+      {location.pathname !== '/login' && (
+        <Navigation
+          isAuthenticated={isAuthenticated}
+          onLogin={handleLogin}
+          onLogout={handleLogout}
+        />
       )}
-      <Element name="login">
-        <FullScreenContainer id="login">
-          <ContentWrapper>
-            <Login setIsAuthenticated={setIsAuthenticated} />
-          </ContentWrapper>
-        </FullScreenContainer>
-      </Element>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <>
+              <Element name="home">
+                <FullScreenContainer id="home">
+                  <ContentWrapper>
+                    <StyledTypography
+                      variant="h2"
+                      fontSize={80}
+                      color={colors.secondary}
+                      sx={{ marginBottom: 2 }}
+                    >
+                      ReceTamos Juntos!
+                    </StyledTypography>
+                    <StyledTypography
+                      variant="h4"
+                      fontSize={24}
+                      fontStyle="italic"
+                      sx={{ marginBottom: 2 }}
+                    >
+                      Encuentra y prepara tus platos favoritos
+                    </StyledTypography>
+                    <Box 
+                      sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        gap: 2, 
+                        flexWrap: 'wrap', 
+                        marginBottom: 3, 
+                        padding: 10 
+                      }}
+                    >
+                      <TextField
+                        label="Buscar Recetas"
+                        variant="outlined"
+                        fullWidth
+                        sx={{ 
+                          width: '80%',
+                          maxWidth: '1000px',
+                          fontSize: '1.2rem',
+                          input: {
+                            padding: '20px 20px'
+                          }
+                        }}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </Box>
+                    <FeatureGrid>
+                      <FeaturePaper>
+                        <Image src={require('./assets/recipe_book_icon.webp')} alt="Favorite Recipes" />
+                        <StyledTypography variant="h4" gutterBottom color={colors.primary}>
+                          Recetas Populares
+                        </StyledTypography>
+                        <StyledTypography variant="body1">
+                          Descubre las recetas más amadas por nuestra comunidad.
+                        </StyledTypography>
+                      </FeaturePaper>
+
+                      <FeaturePaper>
+                        <Image src={require('./assets/fresh_ingredients_icon.webp')} alt="Ingredients" />
+                        <StyledTypography variant="h4" gutterBottom color={colors.primary}>
+                          Ingredientes Frescos
+                        </StyledTypography>
+                        <StyledTypography variant="body1">
+                          Agrega ingredientes directamente a tu carrito de compras.
+                        </StyledTypography>
+                      </FeaturePaper>
+
+                      <FeaturePaper>
+                        <Image src={require('./assets/social_media_icon.webp')} alt="Social Media" />
+                        <StyledTypography variant="h4" gutterBottom color={colors.primary}>
+                          Redes Sociales
+                        </StyledTypography>
+                        <StyledTypography variant="body1">
+                          Sigue nuestras redes sociales para más consejos y recetas.
+                        </StyledTypography>
+                      </FeaturePaper>
+                    </FeatureGrid>
+                  </ContentWrapper>
+                </FullScreenContainer>
+              </Element>
+              <Element name="top-recipes">
+                <FullScreenContainer id="top-recipes">
+                  <ContentWrapper>
+                    <SectionTitle variant="h3">Top 5 Recetas Más Valoradas</SectionTitle>
+                    {loading ? (
+                      <CircularProgress />
+                    ) : error ? (
+                      <Alert severity="error">{error}</Alert>
+                    ) : (
+                      <Grid container spacing={2} justifyContent="center">
+                        {topRatedRecipes.map((recipe) => (
+                          <Grid item key={recipe.id} xs={12} sm={6} md={4}>
+                            <RecipeCard recipe={recipe} />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    )}
+                  </ContentWrapper>
+                </FullScreenContainer>
+              </Element>
+
+              <Element name="all-recipes">
+                <FullScreenContainer id="all-recipes">
+                  <ContentWrapper>
+                    <SectionTitle variant="h3">Todas las Recetas</SectionTitle>
+                    {loading ? (
+                      <CircularProgress />
+                    ) : error ? (
+                      <Alert severity="error">{error}</Alert>
+                    ) : (
+                      <>
+                        <Grid container spacing={2} justifyContent="center">
+                          {currentRecipes.map((recipe) => (
+                            <Grid item key={recipe.id} xs={12} sm={6} md={4}>
+                              <RecipeCard recipe={recipe} />
+                            </Grid>
+                          ))}
+                        </Grid>
+                        <Pagination
+                          count={Math.ceil(filteredRecipes.length / recipesPerPage)}
+                          page={currentPage}
+                          onChange={paginate}
+                          color="primary"
+                          sx={{ marginTop: 4 }}
+                        />
+                      </>
+                    )}
+                  </ContentWrapper>
+                </FullScreenContainer>
+              </Element>
+            </>
+          }
+        />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta hacia Login */}
+        <Route path="/favorites" element={<Favorites />} /> {/* Ruta hacia Favoritas */}
+      </Routes>
     </>
   );
 };

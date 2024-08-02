@@ -229,16 +229,9 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 onClose={handleMenuClose}
               >
                 <MenuItem onClick={handleMenuClose}>
-                  <Link to="/profile" style={{ textDecoration: 'none', color: themeColors.text }}>
-                    <Typography variant="h6" component="div">
-                      Perfil
-                    </Typography>
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
                   <Link to="/favorites" style={{ textDecoration: 'none', color: themeColors.text }}>
                     <Typography variant="h6" component="div">
-                      Favoritas
+                      Perfil
                     </Typography>
                   </Link>
                 </MenuItem>

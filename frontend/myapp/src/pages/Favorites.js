@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid, CircularProgress, Alert } from '@mui/material';
 import styled from 'styled-components';
-import RecipeCard from '../components/RecipeCard'; // Asegúrate de tener este componente
+import RecipeCard from '../components/RecipeCard';
+import UserProfile from '../components/UserProfile'; // Importar el componente UserProfile
 
 // Estilos para el contenedor de la pantalla completa
 const FullScreenContainer = styled(Box)`
@@ -31,6 +32,14 @@ const ContentWrapper = styled(Container)`
 `;
 
 const Favorites = () => {
+  const [user, setUser] = useState({
+    name: 'Juan Pérez',
+    email: 'juan.perez@example.com',
+    avatar: 'avatar.jpg', // Imagen de avatar (ruta o URL)
+    joinedDate: '2023-01-15', // Fecha de registro
+    // Otros detalles del usuario
+  });
+
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -74,6 +83,12 @@ const Favorites = () => {
   return (
     <FullScreenContainer>
       <ContentWrapper>
+        <Typography variant="h3" gutterBottom>
+          Mi Perfil
+        </Typography>
+        {/* Información del Perfil del Usuario */}
+        <UserProfile user={user} />
+
         <Typography variant="h3" gutterBottom>
           Mis Recetas Favoritas
         </Typography>

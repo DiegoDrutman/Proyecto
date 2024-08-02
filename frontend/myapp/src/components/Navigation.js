@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { AppBar, Toolbar, Box, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import styled from 'styled-components';
 import { Link, useNavigate, useLocation } from 'react-router-dom'; // Importar useLocation
-import { Link as ScrollLink, scroller } from 'react-scroll'; // Importar scroller de react-scroll
+import { scroller } from 'react-scroll'; // Importar scroller de react-scroll
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
 // Colores personalizados
 const themeColors = {
-  primary: 'rgba(255, 255, 255, 0.3)', // Fondo transparente
-  hover: '#A0522D', // Sienna (hover)
-  text: '#8B4513', // Marrón claro
+  primary: 'rgba(255, 255, 255, 0.3)', /* Fondo transparente */
+  hover: '#A0522D', /* Sienna (hover) */
+  text: '#8B4513', /* Marrón claro */
 };
 
 // Estilos para el AppBar sin sombra y con transparencia

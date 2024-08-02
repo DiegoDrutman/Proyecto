@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom'; // Importa useLocation
+import { Routes, Route, useLocation } from 'react-router-dom'; 
 import {
   Box,
   Typography,
@@ -13,7 +13,7 @@ import {
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import RecipeCard from './components/RecipeCard';
 import Navigation from './components/Navigation';
-import { getRecipes } from './services/api';
+import { getRecipes, authenticateUser } from './services/api'; // Importar authenticateUser
 import { Element } from 'react-scroll';
 
 // Importar las páginas de Favoritas y Login
@@ -135,7 +135,7 @@ const SectionTitle = styled(Typography)`
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState('Juan Pérez'); // Nombre del usuario para mostrar
+  const [userName, setUserName] = useState(''); // Nombre del usuario inicializado vacío
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [topRatedRecipes, setTopRatedRecipes] = useState([]);
@@ -150,13 +150,14 @@ const App = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
+        setLoading(true);
         const response = await getRecipes();
         setRecipes(response);
         setFilteredRecipes(response); // Inicialmente mostrar todas las recetas
         setTopRatedRecipes(response.slice(0, 5)); // Obtener las 5 recetas más valoradas
-        setLoading(false);
       } catch (error) {
-        setError('Failed to load recipes.');
+        setError('Error al cargar las recetas.');
+      } finally {
         setLoading(false);
       }
     };
@@ -170,7 +171,7 @@ const App = () => {
       setFilteredRecipes(recipes);
     } else {
       const filtered = recipes.filter((recipe) =>
-        recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
+        recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) // Asegúrate de que coincida con el campo del modelo
       );
       setFilteredRecipes(filtered);
     }
@@ -184,14 +185,20 @@ const App = () => {
   const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
   const currentRecipes = filteredRecipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
 
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    setUserName('Juan Pérez'); // Establecer el nombre del usuario al iniciar sesión
+  const handleLogin = async (credentials) => {
+    try {
+      const userData = await authenticateUser(credentials); // Autenticar usuario y obtener datos
+      setIsAuthenticated(true);
+      setUserName(userData.username); // Establecer el nombre del usuario desde los datos obtenidos
+    } catch (error) {
+      setError('Error al iniciar sesión. Verifica tus credenciales.');
+    }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserName(''); // Limpiar el nombre del usuario al cerrar sesión
+    localStorage.removeItem('token'); // Eliminar el token de autenticación
   };
 
   return (

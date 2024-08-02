@@ -48,8 +48,8 @@ const ShopButton = styled.button`
 
 // Componente principal de la receta
 const RecipeDetail = ({ recipe }) => {
-  // Eliminamos el uso de setIngredients ya que no planeamos modificar los ingredientes
-  const ingredients = recipe.ingredients || [];
+  // Parsear los ingredientes desde el string del backend
+  const ingredients = recipe.ingredients ? JSON.parse(recipe.ingredients) : []; // Asegúrate de que los ingredientes estén en el formato correcto
 
   // Función para manejar el clic en el botón de compra
   const handleShopClick = () => {
@@ -67,7 +67,7 @@ const RecipeDetail = ({ recipe }) => {
 
   return (
     <RecipeContainer>
-      <RecipeTitle>{recipe.name}</RecipeTitle>
+      <RecipeTitle>{recipe.title}</RecipeTitle> {/* Asegúrate de que coincida con el campo del modelo */}
       <IngredientsList>
         {ingredients.map((ingredient, index) => (
           <IngredientItem key={index}>

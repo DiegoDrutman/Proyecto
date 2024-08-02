@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import styled from 'styled-components';
-import { createUser } from '../services/api';
+import { createUser, authenticateUser } from '../services/api'; // Importar authenticateUser para iniciar sesión automáticamente después del registro
 import recipeIcon from '../assets/recipe_icon.webp';
 
 // Colores personalizados
@@ -68,6 +68,7 @@ const RightContainer = styled(Box)`
 `;
 
 const Signup = ({ setIsAuthenticated }) => {
+  const [username, setUsername] = useState(''); // Nuevo estado para el nombre de usuario
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -95,13 +96,29 @@ const Signup = ({ setIsAuthenticated }) => {
     }
 
     try {
-      const response = await createUser({ email, password });
-      if (response.success) {
-        setIsAuthenticated(true);
+      const response = await createUser({ username, email, password }); // Enviar nombre de usuario junto con el correo electrónico y la contraseña
+
+      if (response && response.success) {
+        // Autenticación automática después del registro
+        try {
+          const authResponse = await authenticateUser({ username, password });
+          if (authResponse.token) {
+            localStorage.setItem('token', authResponse.token); // Almacenar el token en localStorage
+            setIsAuthenticated(true);
+            // Redirigir al usuario a la página de inicio o a otra página
+            window.location.href = '/favorites'; // Redirigir a la página de favoritos o a cualquier otra página deseada
+          } else {
+            setErrorMessage('Error al iniciar sesión después del registro. Por favor, intenta iniciar sesión manualmente.');
+          }
+        } catch (authError) {
+          console.error('Error during automatic login:', authError);
+          setErrorMessage('Error al iniciar sesión después del registro. Por favor, intenta iniciar sesión manualmente.');
+        }
       } else {
         setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
       }
     } catch (error) {
+      console.error('Error during signup:', error);
       setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
     }
   };
@@ -125,6 +142,20 @@ const Signup = ({ setIsAuthenticated }) => {
             </Alert>
           )}
           <form onSubmit={handleSubmit} aria-label="Formulario de registro">
+            <Box mb={2}>
+              <TextField
+                label="Nombre de Usuario"
+                variant="outlined"
+                fullWidth
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                autoComplete="username"
+                aria-required="true"
+                aria-label="Nombre de Usuario"
+                helperText="El nombre de usuario debe ser único"
+              />
+            </Box>
             <Box mb={2}>
               <TextField
                 label="Correo Electrónico"
@@ -158,7 +189,7 @@ const Signup = ({ setIsAuthenticated }) => {
               sx={{ backgroundColor: colors.primary, color: colors.light }}
               type="submit"
               fullWidth
-              disabled={!email || !password} // Deshabilitar botón si los campos están vacíos
+              disabled={!username || !email || !password} // Deshabilitar botón si los campos están vacíos
             >
               Registrarse
             </Button>

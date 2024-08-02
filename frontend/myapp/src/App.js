@@ -19,6 +19,7 @@ import { Element } from 'react-scroll';
 // Importar las páginas de Favoritas y Login
 import Favorites from './pages/Favorites'; 
 import Login from './pages/Login'; 
+import Signup from './pages/SignUp';
 
 // Animaciones
 const fadeIn = keyframes`
@@ -352,6 +353,7 @@ const App = () => {
           }
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta hacia Login */}
+        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta hacia Login */}
         <Route path="/favorites" element={<Favorites />} /> {/* Ruta hacia Favoritas */}
       </Routes>
     </>

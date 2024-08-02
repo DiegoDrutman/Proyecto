@@ -1,5 +1,3 @@
-// src/services/api.js
-
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api/';
@@ -13,51 +11,48 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-    config => {
-        const token = localStorage.getItem('token'); // Obtiene el token de localStorage
+    (config) => {
+        const token = localStorage.getItem('token');
         if (token) {
-            config.headers.Authorization = `Token ${token}`; // Usa el prefijo 'Token' para los tokens de DRF
+            config.headers.Authorization = `Token ${token}`;
         }
         return config;
     },
-    error => Promise.reject(error)
+    (error) => Promise.reject(error)
 );
 
 const handleRequest = async (request) => {
     try {
         const response = await request();
-        console.log('API response:', response.data); // Log para verificar la respuesta de la API
+        console.log('API response:', response.data);
         return response.data;
     } catch (error) {
         console.error('API request error:', error);
         if (error.response) {
             console.error('Response data:', error.response.data);
-            console.error('Response status:', error.response.status);
-            console.error('Response headers:', error.response.headers);
             throw new Error(error.response.data.detail || 'API request failed');
         } else if (error.request) {
-            console.error('Request data:', error.request);
             throw new Error('No response received from server');
         } else {
-            console.error('Error message:', error.message);
             throw new Error('Request setup error');
         }
     }
 };
 
-// Autenticación de usuario
-export const authenticateUser = async (credentials) => {
-    const response = await handleRequest(() => axiosInstance.post('api-token-auth/', {
-        username: credentials.username, // Asegúrate de usar 'username' en lugar de 'email'
-        password: credentials.password
-    }));
-    localStorage.setItem('token', response.token); // Almacena el token en localStorage
-    return response;
+// Registro de usuario
+export const createUser = async (userData) => {
+    return handleRequest(() => axiosInstance.post('profiles/create_user_profile/', userData));
 };
 
-// Registro de usuario
-export const createUser = async (user) => {
-    const response = await handleRequest(() => axiosInstance.post('profiles/', user)); // Endpoint para crear perfil
+// Autenticación de usuario
+export const authenticateUser = async (credentials) => {
+    const response = await handleRequest(() =>
+        axiosInstance.post('api-token-auth/', {
+            username: credentials.username,
+            password: credentials.password,
+        })
+    );
+    localStorage.setItem('token', response.token);
     return response;
 };
 
@@ -93,3 +88,4 @@ export const addRating = async (recipeId, rating) => handleRequest(() => axiosIn
 
 // Marcar receta como favorita
 export const toggleFavorite = async (recipeId) => handleRequest(() => axiosInstance.post(`recipes/${recipeId}/favorite/`));
+

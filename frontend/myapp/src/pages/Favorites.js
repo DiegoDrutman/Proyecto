@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid, CircularProgress, Alert } from '@mui/material';
 import styled from 'styled-components';
 import RecipeCard from '../components/RecipeCard';
-import UserProfile from '../components/UserProfile'; // Importar el componente UserProfile
-import { getUserProfile, getFavoriteRecipes } from '../services/api'; // Importar correctamente
+import UserProfile from '../components/UserProfile'; 
+import { getUserProfile, getFavoriteRecipes } from '../services/api'; // Importar funciones de API
 
 // Estilos para el contenedor de la pantalla completa
 const FullScreenContainer = styled(Box)`
@@ -33,39 +33,48 @@ const ContentWrapper = styled(Container)`
 `;
 
 const Favorites = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // Inicializar como null
   const [favorites, setFavorites] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loadingFavorites, setLoadingFavorites] = useState(true);
+  const [errorProfile, setErrorProfile] = useState('');
+  const [errorFavorites, setErrorFavorites] = useState('');
 
+  // Obtener perfil del usuario
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        setLoading(true);
-        const profileData = await getUserProfile(); // Llama a la función API para obtener el perfil del usuario
-        setUser(profileData);
-      } catch (err) {
-        setError('Error al cargar el perfil del usuario.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchFavorites = async () => {
-      try {
-        setLoading(true);
-        const favoriteRecipes = await getFavoriteRecipes(); // Llama a la función API para obtener recetas favoritas
-        setFavorites(favoriteRecipes);
-      } catch (err) {
-        setError('Error al cargar las recetas favoritas.');
-      } finally {
-        setLoading(false);
+        setLoadingProfile(true);
+        const userData = await getUserProfile(); // Llamar a la función de la API
+        setUser(userData);
+        setLoadingProfile(false);
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        setErrorProfile('Error al cargar el perfil del usuario.');
+        setLoadingProfile(false);
       }
     };
 
     fetchUserProfile();
-    fetchFavorites();
   }, []);
+
+  // Obtener recetas favoritas
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+        try {
+            setLoadingProfile(true);
+            const userData = await getUserProfile();
+            setUser(userData);
+            setLoadingProfile(false);
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+            setErrorProfile('Error al cargar el perfil del usuario.');
+            setLoadingProfile(false);
+        }
+    };
+
+    fetchUserProfile();
+}, []);
 
   return (
     <FullScreenContainer>
@@ -73,20 +82,21 @@ const Favorites = () => {
         <Typography variant="h3" gutterBottom>
           Mi Perfil
         </Typography>
-        {/* Información del Perfil del Usuario */}
-        {user ? (
-          <UserProfile user={user} />
-        ) : (
+        {loadingProfile ? (
           <CircularProgress />
+        ) : errorProfile ? (
+          <Alert severity="error">{errorProfile}</Alert>
+        ) : (
+          user && <UserProfile user={user} />
         )}
 
         <Typography variant="h3" gutterBottom>
           Mis Recetas Favoritas
         </Typography>
-        {loading ? (
+        {loadingFavorites ? (
           <CircularProgress />
-        ) : error ? (
-          <Alert severity="error">{error}</Alert>
+        ) : errorFavorites ? (
+          <Alert severity="error">{errorFavorites}</Alert>
         ) : (
           <Grid container spacing={2} justifyContent="center">
             {favorites.map((recipe) => (

@@ -135,6 +135,7 @@ const SectionTitle = styled(Typography)`
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userName, setUserName] = useState('Juan Pérez'); // Nombre del usuario para mostrar
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [topRatedRecipes, setTopRatedRecipes] = useState([]);
@@ -185,10 +186,12 @@ const App = () => {
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+    setUserName('Juan Pérez'); // Establecer el nombre del usuario al iniciar sesión
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUserName(''); // Limpiar el nombre del usuario al cerrar sesión
   };
 
   return (
@@ -198,6 +201,7 @@ const App = () => {
       {location.pathname !== '/login' && (
         <Navigation
           isAuthenticated={isAuthenticated}
+          userName={userName} // Pasar el nombre del usuario al componente de navegación
           onLogin={handleLogin}
           onLogout={handleLogout}
         />

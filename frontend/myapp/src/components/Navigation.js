@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Box, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import styled from 'styled-components';
-import { Link as ScrollLink } from 'react-scroll';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Importar useLocation
+import { Link as ScrollLink, scroller } from 'react-scroll'; // Importar scroller de react-scroll
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 // Colores personalizados
 const themeColors = {
@@ -38,8 +39,11 @@ const NavLink = styled(Typography)`
   }
 `;
 
-const Navigation = ({ isAuthenticated, onLogin, onLogout }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
+  const navigate = useNavigate(); // Instanciar useNavigate
+  const location = useLocation(); // Instanciar useLocation
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,6 +51,35 @@ const Navigation = ({ isAuthenticated, onLogin, onLogout }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileAnchorEl(null);
+  };
+
+  // Función para manejar el logout y redirigir al login
+  const handleLogout = () => {
+    onLogout(); // Llama la función de logout que actualiza el estado de autenticación
+    handleMenuClose(); // Cierra el menú desplegable
+    navigate('/login'); // Redirige a la página de login
+  };
+
+  // Función para navegar y desplazar
+  const navigateAndScroll = (target) => {
+    // Verificar si ya estamos en la página principal
+    if (location.pathname !== '/') {
+      navigate('/'); // Navegar a la página principal
+    }
+    // Usar el scroller de react-scroll para desplazar a la sección deseada
+    scroller.scrollTo(target, {
+      duration: 800,
+      delay: 0,
+      smooth: 'easeInOutQuart'
+    });
   };
 
   return (
@@ -67,7 +100,7 @@ const Navigation = ({ isAuthenticated, onLogin, onLogout }) => {
             </Typography>
           </Link>
         </Box>
-        
+
         {/* Menu responsive para pantallas pequeñas */}
         <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
           <IconButton
@@ -76,13 +109,13 @@ const Navigation = ({ isAuthenticated, onLogin, onLogout }) => {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            onClick={handleMenuOpen}
+            onClick={handleMobileMenuOpen}
           >
             <MenuIcon />
           </IconButton>
           <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
+            id="mobile-menu-appbar"
+            anchorEl={mobileAnchorEl}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'right',
@@ -92,78 +125,137 @@ const Navigation = ({ isAuthenticated, onLogin, onLogout }) => {
               vertical: 'top',
               horizontal: 'right',
             }}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            open={Boolean(mobileAnchorEl)}
+            onClose={handleMobileMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>
-              <ScrollLink to="home" smooth={true} duration={500} style={{ textDecoration: 'none', color: themeColors.text }}>
-                <Typography variant="h6" component="div">
-                  Inicio
-                </Typography>
-              </ScrollLink>
+            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('home'); }}>
+              <Typography variant="h6" component="div" style={{ color: themeColors.text }}>
+                Inicio
+              </Typography>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <ScrollLink to="top-recipes" smooth={true} duration={500} style={{ textDecoration: 'none', color: themeColors.text }}>
-                <Typography variant="h6" component="div">
-                  Populares
-                </Typography>
-              </ScrollLink>
+            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('top-recipes'); }}>
+              <Typography variant="h6" component="div" style={{ color: themeColors.text }}>
+                Populares
+              </Typography>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              <ScrollLink to="all-recipes" smooth={true} duration={500} style={{ textDecoration: 'none', color: themeColors.text }}>
-                <Typography variant="h6" component="div">
-                  Recetas
-                </Typography>
-              </ScrollLink>
+            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('all-recipes'); }}>
+              <Typography variant="h6" component="div" style={{ color: themeColors.text }}>
+                Recetas
+              </Typography>
             </MenuItem>
-            {/* Link to Login */}
-            <MenuItem onClick={handleMenuClose}>
-              <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
-                <Typography variant="h6" component="div">
-                  Favoritas
-                </Typography>
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
-              {/* Link to Login */}
-              <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
-                <Typography variant="h6" component="div">
-                  Iniciar Sesión
-                </Typography>
-              </Link>
-            </MenuItem>
+            {/* Mostrar "Perfil" solo si el usuario está autenticado */}
+            {isAuthenticated ? (
+              <>
+                <MenuItem onClick={handleMobileMenuClose}>
+                  <Link to="/profile" style={{ textDecoration: 'none', color: themeColors.text }}>
+                    <Typography variant="h6" component="div">
+                      Perfil
+                    </Typography>
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleMobileMenuClose}>
+                  <Link to="/favorites" style={{ textDecoration: 'none', color: themeColors.text }}>
+                    <Typography variant="h6" component="div">
+                      Favoritas
+                    </Typography>
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <Typography variant="h6" component="div">
+                    Logout
+                  </Typography>
+                </MenuItem>
+              </>
+            ) : (
+              <MenuItem onClick={handleMobileMenuClose}>
+                <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
+                  <Typography variant="h6" component="div">
+                    Ingresar
+                  </Typography>
+                </Link>
+              </MenuItem>
+            )}
           </Menu>
         </Box>
 
         {/* Navegación completa para pantallas más grandes */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3 }}>
-          <ScrollLink to="home" smooth={true} duration={500} style={{ cursor: 'pointer' }}>
-            <NavLink variant="h6" component="div">
-              Inicio
-            </NavLink>
-          </ScrollLink>
-          <ScrollLink to="top-recipes" smooth={true} duration={500} style={{ cursor: 'pointer' }}>
-            <NavLink variant="h6" component="div">
-              Populares
-            </NavLink>
-          </ScrollLink>
-          <ScrollLink to="all-recipes" smooth={true} duration={500} style={{ cursor: 'pointer' }}>
-            <NavLink variant="h6" component="div">
-              Recetas
-            </NavLink>
-          </ScrollLink>
-          {/* Link to Login */}
-          <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
-            <NavLink variant="h6" component="div">
-              Favoritas
-            </NavLink>
-          </Link>
-          {/* Link to Login */}
-          <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
-            <NavLink variant="h6" component="div">
-              Iniciar Sesión
-            </NavLink>
-          </Link>
+          <NavLink
+            variant="h6"
+            component="div"
+            onClick={() => navigateAndScroll('home')}
+          >
+            Inicio
+          </NavLink>
+          <NavLink
+            variant="h6"
+            component="div"
+            onClick={() => navigateAndScroll('top-recipes')}
+          >
+            Populares
+          </NavLink>
+          <NavLink
+            variant="h6"
+            component="div"
+            onClick={() => navigateAndScroll('all-recipes')}
+          >
+            Recetas
+          </NavLink>
+          {isAuthenticated ? (
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleMenuClose}>
+                  <Link to="/profile" style={{ textDecoration: 'none', color: themeColors.text }}>
+                    <Typography variant="h6" component="div">
+                      Perfil
+                    </Typography>
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleMenuClose}>
+                  <Link to="/favorites" style={{ textDecoration: 'none', color: themeColors.text }}>
+                    <Typography variant="h6" component="div">
+                      Favoritas
+                    </Typography>
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  <Typography variant="h6" component="div">
+                    Logout
+                  </Typography>
+                </MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
+              <NavLink variant="h6" component="div">
+                Ingresar
+              </NavLink>
+            </Link>
+          )}
         </Box>
       </Toolbar>
     </NavBar>

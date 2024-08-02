@@ -35,23 +35,33 @@ const Favorites = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Simulación de obtener recetas favoritas (puedes reemplazar esto con una API real)
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        // Simula una llamada a una API
-        const response = await new Promise((resolve) =>
-          setTimeout(() => {
-            resolve([
-              { id: 1, name: 'Tacos al Pastor', image: 'tacos.jpg', rating: 4.5 },
-              { id: 2, name: 'Paella Valenciana', image: 'paella.jpg', rating: 4.7 },
-              { id: 3, name: 'Sushi', image: 'sushi.jpg', rating: 4.8 },
-            ]);
-          }, 1000)
-        );
+        setLoading(true);
+        setError('');
 
-        setFavorites(response);
-        setLoading(false);
+        // Realiza una llamada a la API aquí
+        // Ejemplo: const response = await fetch('URL_DE_TU_API');
+        // const data = await response.json();
+
+        // Temporizador para simular la carga (solo para fines de demostración)
+        setTimeout(() => {
+          // Simular respuesta de API (elimina esto cuando tengas la API real)
+          const data = [
+            { id: 1, name: 'Tacos al Pastor', image: 'tacos.jpg', rating: 4.5 },
+            { id: 2, name: 'Paella Valenciana', image: 'paella.jpg', rating: 4.7 },
+            { id: 3, name: 'Sushi', image: 'sushi.jpg', rating: 4.8 },
+          ];
+
+          setFavorites(data);
+          setLoading(false);
+        }, 1000);
+
+        // Cuando tengas la API real, elimina el código de simulación y usa lo siguiente:
+        // setFavorites(data);
+        // setLoading(false);
+
       } catch (err) {
         setError('Error al cargar las recetas favoritas.');
         setLoading(false);

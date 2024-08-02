@@ -1,12 +1,14 @@
-// src/pages/Login.js
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Container, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import { authenticateUser } from '../services/api';
 
 const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -15,6 +17,7 @@ const Login = ({ setIsAuthenticated }) => {
       if (response.token) {
         sessionStorage.setItem('token', response.token);
         setIsAuthenticated(true);
+        navigate('/favorites'); // Redirect to the Favourites page
       } else {
         setError('Authentication failed. Please try again.');
       }
@@ -39,7 +42,7 @@ const Login = ({ setIsAuthenticated }) => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Login
+          Iniciar sesión
         </Typography>
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>

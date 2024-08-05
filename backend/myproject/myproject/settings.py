@@ -61,7 +61,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-
 ROOT_URLCONF = 'myproject.urls'
 
 TEMPLATES = [

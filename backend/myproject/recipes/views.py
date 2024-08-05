@@ -1,40 +1,18 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Recipe, UserProfile, Comment, Rating
-from .serializers import RecipeSerializer, UserProfileSerializer, CommentSerializer, RatingSerializer
-from django.db import IntegrityError
+from .models import UserProfile, Recipe
+from .serializers import UserProfileSerializer, RecipeSerializer
+from django.db.models import Q
 from django.contrib.auth.models import User
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
-class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all().order_by('-created_at')
-    serializer_class = RecipeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    @action(detail=True, methods=['post'], authentication_classes=[SessionAuthentication, BasicAuthentication])
-    def favorite(self, request, pk=None):
-        recipe = self.get_object()
-        if recipe.is_favorited.filter(id=request.user.id).exists():
-            recipe.is_favorited.remove(request.user)
-            return Response({'status': 'unfavorited'}, status=status.HTTP_200_OK)
-        else:
-            recipe.is_favorited.add(request.user)
-            return Response({'status': 'favorited'}, status=status.HTTP_200_OK)
-    @action(detail=True, methods=['post'], authentication_classes=[SessionAuthentication, BasicAuthentication])
-    def rate(self, request, pk=None):
-        recipe = self.get_object()
-        rating_value = request.data.get('rating')
-        if rating_value and 1 <= rating_value <= 5:
-            rating, created = Rating.objects.get_or_create(user=request.user, recipe=recipe)
-            rating.rating = rating_value
-            rating.save()
-            return Response({'status': 'rated'}, status=status.HTTP_200_OK)
-        return Response({'status': 'bad request'}, status=status.HTTP_400_BAD_REQUEST)
+from django.db import IntegrityError
+from .permissions import IsSuperuser
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
+
     @action(detail=False, methods=['get'], url_path='me', url_name='me')
     def get_me(self, request):
         try:
@@ -63,16 +41,32 @@ class UserProfileViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response({'detail': 'User profile already exists.'}, status=status.HTTP_400_BAD_REQUEST)
-
         except IntegrityError as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-class RatingViewSet(viewsets.ModelViewSet):
-    queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all().order_by('-created_at')
+    serializer_class = RecipeSerializer
+
+    def get_permissions(self):
+        # Solo permitir que el superadministrador pueda crear, actualizar o eliminar recetas
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            permission_classes = [permissions.IsAuthenticated, IsSuperuser]
+        else:
+            # Permitir que todos los usuarios puedan ver las recetas
+            permission_classes = [permissions.AllowAny]
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = queryset.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term)
+            )
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save()

@@ -3,6 +3,6 @@ from .models import Recipe
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'created_at')
-    search_fields = ('title', 'description')
-    list_filter = ('created_at', 'user')
+    list_display = ('name', 'preparation_time')  # Muestra estos campos en la lista de recetas
+    search_fields = ('name',)  # Agrega un campo de búsqueda para el nombre
+    list_filter = ('preparation_time',)  # Agrega filtros por tiempo de preparación

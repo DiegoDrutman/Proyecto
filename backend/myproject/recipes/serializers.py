@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Recipe, UserProfile, Comment, Rating
+from .models import UserProfile
 from django.contrib.auth.models import User
+from .models import Recipe, UserProfile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,25 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password')
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email')
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -59,19 +41,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return instance
     
 class RecipeSerializer(serializers.ModelSerializer):
-    comments = serializers.StringRelatedField(many=True, read_only=True)
-    ratings = serializers.StringRelatedField(many=True, read_only=True)
-    is_favorited = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     class Meta:
         model = Recipe
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'ingredients', 'preparation_time', 'image', 'created_at']
 
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'
-
-class RatingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rating
-        fields = '__all__'
+        

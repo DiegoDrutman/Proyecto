@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom'; 
-import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  CircularProgress,
-  Alert,
-  TextField,
-  Pagination
-} from '@mui/material';
-import styled, { keyframes, createGlobalStyle } from 'styled-components';
-import RecipeCard from './components/RecipeCard';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Box, Typography, TextField, Autocomplete } from '@mui/material';
+import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import Navigation from './components/Navigation';
-import { getRecipes, authenticateUser } from './services/api';
-import { Element } from 'react-scroll';
+import { authenticateUser, getRecipes } from './services/api';
 
-import Favorites from './pages/Favorites'; 
-import Login from './pages/Login'; 
+import Favorites from './pages/Favorites';
+import Login from './pages/Login';
 import Signup from './pages/SignUp';
+import RecipeDetails from './components/RecipeDetails';
+import RecipeList from './components/RecipeList'; // Importa la página de detalles de recetas
 
 const fadeIn = keyframes`
   from {
@@ -63,7 +54,7 @@ const FullScreenContainer = styled(Box)`
   padding-top: 120px;
 `;
 
-const ContentWrapper = styled(Container)`
+const ContentWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -126,53 +117,28 @@ const SectionTitle = styled(Typography)`
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState('');
-  const [recipes, setRecipes] = useState([]);
-  const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const [topRatedRecipes, setTopRatedRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const recipesPerPage = 10;
+  const [suggestions, setSuggestions] = useState([]);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchRecipes = async () => {
+    const fetchSuggestions = async () => {
       try {
-        setLoading(true);
-        const response = await getRecipes();
-        setRecipes(response);
-        setFilteredRecipes(response);
-        setTopRatedRecipes(response.slice(0, 5));
+        if (searchTerm) {
+          const response = await getRecipes(searchTerm);
+          setSuggestions(response.map(recipe => ({ id: recipe.id, name: recipe.name })));
+        } else {
+          setSuggestions([]);
+        }
       } catch (error) {
-        setError('Error al cargar las recetas.');
-      } finally {
-        setLoading(false);
+        console.error('Error fetching recipe suggestions:', error);
       }
     };
 
-    fetchRecipes();
-  }, []);
-
-  useEffect(() => {
-    if (searchTerm === '') {
-      setFilteredRecipes(recipes);
-    } else {
-      const filtered = recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredRecipes(filtered);
-    }
-  }, [searchTerm, recipes]);
-
-  const paginate = (event, value) => {
-    setCurrentPage(value);
-  };
-
-  const indexOfLastRecipe = currentPage * recipesPerPage;
-  const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
-  const currentRecipes = filteredRecipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
+    fetchSuggestions();
+  }, [searchTerm]);
 
   const handleLogin = async (credentials) => {
     try {
@@ -180,7 +146,7 @@ const App = () => {
       setIsAuthenticated(true);
       setUserName(userData.username);
     } catch (error) {
-      setError('Error al iniciar sesión. Verifica tus credenciales.');
+      console.error('Error logging in:', error);
     }
   };
 
@@ -188,6 +154,12 @@ const App = () => {
     setIsAuthenticated(false);
     setUserName('');
     localStorage.removeItem('token');
+  };
+
+  const handleSelectRecipe = (event, value) => {
+    if (value) {
+      navigate(`/recipe/${value.id}`);
+    }
   };
 
   return (
@@ -202,143 +174,116 @@ const App = () => {
         />
       )}
       <Routes>
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <>
-              <Element name="home">
-                <FullScreenContainer id="home">
-                  <ContentWrapper>
-                    <StyledTypography
-                      variant="h2"
-                      fontSize={80}
-                      color={colors.secondary}
-                      sx={{ marginBottom: 2 }}
-                    >
-                      ReceTamos Juntos!
-                    </StyledTypography>
-                    <StyledTypography
-                      variant="h4"
-                      fontSize={24}
-                      fontStyle="italic"
-                      sx={{ marginBottom: 2 }}
-                    >
-                      Encuentra y prepara tus platos favoritos
-                    </StyledTypography>
-                    <Box 
-                      sx={{ 
-                        display: 'flex', 
-                        justifyContent: 'center', 
-                        alignItems: 'center', 
-                        gap: 2, 
-                        flexWrap: 'wrap', 
-                        marginBottom: 3, 
-                        padding: 10 
+              <FullScreenContainer id="home">
+                <ContentWrapper>
+                  <StyledTypography
+                    variant="h2"
+                    fontSize={80}
+                    color={colors.secondary}
+                    sx={{ marginBottom: 2 }}
+                  >
+                    ReceTamos Juntos!
+                  </StyledTypography>
+                  <StyledTypography
+                    variant="h4"
+                    fontSize={24}
+                    fontStyle="italic"
+                    sx={{ marginBottom: 2 }}
+                  >
+                    Encuentra y prepara tus platos favoritos
+                  </StyledTypography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'left',
+                      alignItems: 'center',
+                      width: '100%', // Asegura que el contenedor sea ancho completo
+                      gap: 2,
+                      flexWrap: 'wrap',
+                      marginBottom: 3,
+                      padding: 10,
+                    }}
+                  >
+                    <Autocomplete
+                      freeSolo
+                      options={suggestions}
+                      getOptionLabel={(option) => option.name}
+                      onInputChange={(event, newInputValue) => {
+                        setSearchTerm(newInputValue);
                       }}
-                    >
-                      <TextField
-                        label="Buscar Recetas"
-                        variant="outlined"
-                        fullWidth
-                        sx={{ 
-                          width: '80%',
-                          maxWidth: '1000px',
-                          fontSize: '1.2rem',
-                          input: {
-                            padding: '20px 20px'
-                          }
-                        }}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </Box>
-                    <FeatureGrid>
-                      <FeaturePaper>
-                        <Image src={require('./assets/recipe_book_icon.webp')} alt="Favorite Recipes" />
-                        <StyledTypography variant="h4" gutterBottom color={colors.primary}>
-                          Recetas Populares
-                        </StyledTypography>
-                        <StyledTypography variant="body1">
-                          Descubre las recetas más amadas por nuestra comunidad.
-                        </StyledTypography>
-                      </FeaturePaper>
-                      <FeaturePaper>
-                        <Image src={require('./assets/fresh_ingredients_icon.webp')} alt="Ingredients" />
-                        <StyledTypography variant="h4" gutterBottom color={colors.primary}>
-                          Ingredientes Frescos
-                        </StyledTypography>
-                        <StyledTypography variant="body1">
-                          Agrega ingredientes directamente a tu carrito de compras.
-                        </StyledTypography>
-                      </FeaturePaper>
-                      <FeaturePaper>
-                        <Image src={require('./assets/social_media_icon.webp')} alt="Social Media" />
-                        <StyledTypography variant="h4" gutterBottom color={colors.primary}>
-                          Redes Sociales
-                        </StyledTypography>
-                        <StyledTypography variant="body1">
-                          Sigue nuestras redes sociales para más consejos y recetas.
-                        </StyledTypography>
-                      </FeaturePaper>
-                    </FeatureGrid>
-                  </ContentWrapper>
-                </FullScreenContainer>
-              </Element>
-              <Element name="top-recipes">
-                <FullScreenContainer id="top-recipes">
-                  <ContentWrapper>
-                    <SectionTitle variant="h3">Top 5 Recetas Más Valoradas</SectionTitle>
-                    {loading ? (
-                      <CircularProgress />
-                    ) : error ? (
-                      <Alert severity="error">{error}</Alert>
-                    ) : (
-                      <Grid container spacing={2} justifyContent="center">
-                        {topRatedRecipes.map((recipe) => (
-                          <Grid item key={recipe.id} xs={12} sm={6} md={4}>
-                            <RecipeCard recipe={recipe} />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    )}
-                  </ContentWrapper>
-                </FullScreenContainer>
-              </Element>
-              <Element name="all-recipes">
-                <FullScreenContainer id="all-recipes">
-                  <ContentWrapper>
-                    <SectionTitle variant="h3">Todas las Recetas</SectionTitle>
-                    {loading ? (
-                      <CircularProgress />
-                    ) : error ? (
-                      <Alert severity="error">{error}</Alert>
-                    ) : (
-                      <>
-                        <Grid container spacing={2} justifyContent="center">
-                          {currentRecipes.map((recipe) => (
-                            <Grid item key={recipe.id} xs={12} sm={6} md={4}>
-                              <RecipeCard recipe={recipe} />
-                            </Grid>
-                          ))}
-                        </Grid>
-                        <Pagination
-                          count={Math.ceil(filteredRecipes.length / recipesPerPage)}
-                          page={currentPage}
-                          onChange={paginate}
-                          color="primary"
-                          sx={{ marginTop: 4 }}
+                      onChange={handleSelectRecipe}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Buscar Recetas"
+                          variant="outlined"
+                          fullWidth
+                          sx={{
+                            width: '2000%', // Asegura que el TextField ocupe todo el ancho del contenedor
+                            maxWidth: '1000px', // Limita el ancho máximo si es necesario
+                            input: {
+                              padding: '20px 20px', // Ajuste de padding interno
+                            },
+                          }}
                         />
-                      </>
-                    )}
-                  </ContentWrapper>
-                </FullScreenContainer>
-              </Element>
+                      )}
+                    />
+                  </Box>
+                  <FeatureGrid>
+                    <FeaturePaper>
+                      <Image src={require('./assets/recipe_book_icon.webp')} alt="Favorite Recipes" />
+                      <StyledTypography variant="h4" gutterBottom color={colors.primary}>
+                        Recetas Populares
+                      </StyledTypography>
+                      <StyledTypography variant="body1">
+                        Descubre las recetas más amadas por nuestra comunidad.
+                      </StyledTypography>
+                    </FeaturePaper>
+                    <FeaturePaper>
+                      <Image src={require('./assets/fresh_ingredients_icon.webp')} alt="Ingredients" />
+                      <StyledTypography variant="h4" gutterBottom color={colors.primary}>
+                        Ingredientes Frescos
+                      </StyledTypography>
+                      <StyledTypography variant="body1">
+                        Agrega ingredientes directamente a tu carrito de compras.
+                      </StyledTypography>
+                    </FeaturePaper>
+                    <FeaturePaper>
+                      <Image src={require('./assets/social_media_icon.webp')} alt="Social Media" />
+                      <StyledTypography variant="h4" gutterBottom color={colors.primary}>
+                        Redes Sociales
+                      </StyledTypography>
+                      <StyledTypography variant="body1">
+                        Sigue nuestras redes sociales para más consejos y recetas.
+                      </StyledTypography>
+                    </FeaturePaper>
+                  </FeatureGrid>
+                </ContentWrapper>
+              </FullScreenContainer>
+
+              <FullScreenContainer id="top-recipes">
+                <ContentWrapper>
+                  <SectionTitle variant="h3">Top 5 Recetas Más Valoradas</SectionTitle>
+                </ContentWrapper>
+              </FullScreenContainer>
+
+              <FullScreenContainer id="all-recipes">
+              <ContentWrapper>
+                  <SectionTitle variant="h3">Todas las Recetas</SectionTitle>
+                  <RecipeList searchTerm={searchTerm} />
+                </ContentWrapper>
+              </FullScreenContainer>
             </>
           }
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/recipe/:id" element={<RecipeDetails />} /> {/* Añadir ruta de detalles */}
       </Routes>
     </>
   );

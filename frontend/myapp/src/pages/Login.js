@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, Alert, Link } from '@mui/material'; // Importa Link de Material-UI
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate de react-router-dom
-import { authenticateUser } from '../services/api'; // Importa la función de autenticación
+import { Box, Button, TextField, Typography, Container, Alert, Link } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { authenticateUser } from '../services/api';
 
 const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await authenticateUser({ username, password });
       if (response.token) {
-        localStorage.setItem('token', response.token); // Almacena el token en localStorage
+        localStorage.setItem('token', response.token);
         setIsAuthenticated(true);
-        navigate('/favorites'); // Redirige a la página de Favoritos
+        navigate('/favorites');
       } else {
         setError('Authentication failed. Please try again.');
       }
@@ -55,7 +55,7 @@ const Login = ({ setIsAuthenticated }) => {
             required
             fullWidth
             id="username"
-            label="Nombre de usuario" // Cambiado a español
+            label="Nombre de usuario"
             name="username"
             autoComplete="username"
             autoFocus
@@ -69,7 +69,7 @@ const Login = ({ setIsAuthenticated }) => {
             required
             fullWidth
             name="password"
-            label="Contraseña" // Cambiado a español
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -89,7 +89,6 @@ const Login = ({ setIsAuthenticated }) => {
             Ingresar
           </Button>
         </Box>
-        {/* Enlace al formulario de registro */}
         <Typography variant="body2" sx={{ mt: 2 }}>
           ¿No tienes una cuenta?{' '}
           <Link

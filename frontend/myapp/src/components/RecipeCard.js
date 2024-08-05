@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import styled from 'styled-components';
 
-// Estilos personalizados para el contenedor de la tarjeta
 const RecipeCardContainer = styled(Card)`
   display: flex;
   flex-direction: column;
@@ -17,27 +16,23 @@ const RecipeCardContainer = styled(Card)`
   }
 `;
 
-// Estilos personalizados para el contenido de la tarjeta
 const StyledCardContent = styled(CardContent)`
   padding: 16px; /* Espaciado uniforme dentro de la tarjeta */
   text-align: left; /* Alineación del texto a la izquierda */
   flex-grow: 1; /* Permitir que el contenido se expanda */
 `;
 
-// Componente RecipeCard
 const RecipeCard = ({ recipe }) => {
-  if (!recipe) return null; // Manejo básico si no se pasa ninguna receta
-
-  // Usa una imagen predeterminada si no hay imagen proporcionada
-  const defaultImage = 'default-image.png'; // Ruta a la imagen predeterminada
+  if (!recipe) return null;
+  const defaultImage = 'default-image.png';
 
   return (
     <RecipeCardContainer>
       <CardMedia
         component="img"
-        height="180" // Altura ajustada para mejor presentación
-        image={recipe.image ? recipe.image : defaultImage} // Imágen predeterminada si no hay imagen
-        alt={recipe.name || 'Imagen de receta'} // Texto alternativo
+        height="180"
+        image={recipe.image ? recipe.image : defaultImage}
+        alt={recipe.name || 'Imagen de receta'}
       />
       <StyledCardContent>
         <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
@@ -46,7 +41,6 @@ const RecipeCard = ({ recipe }) => {
         <Typography variant="body2" color="text.secondary" sx={{ marginTop: '8px' }}>
           {recipe.description ? `${recipe.description.substring(0, 100)}...` : 'No hay descripción disponible'} {/* Limitando la descripción a 100 caracteres */}
         </Typography>
-        {/* Puedes añadir más detalles aquí si es necesario */}
         {recipe.preparationTime && (
           <Typography variant="body2" color="text.secondary" sx={{ marginTop: '8px' }}>
             Tiempo de preparación: {recipe.preparationTime} minutos
@@ -54,7 +48,7 @@ const RecipeCard = ({ recipe }) => {
         )}
         {recipe.ingredients && (
           <Typography variant="body2" color="text.secondary" sx={{ marginTop: '8px' }}>
-            Ingredientes: {recipe.ingredients.join(', ')} {/* Supongo que ingredients es un array */}
+            Ingredientes: {recipe.ingredients.join(', ')}
           </Typography>
         )}
       </StyledCardContent>

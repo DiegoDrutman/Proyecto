@@ -38,9 +38,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.AllowAny]  # Permitir el acceso a la creación de perfiles
+    permission_classes = [permissions.IsAuthenticated]  # Requiere autenticación para obtener el perfil
 
-    @action(detail=False, methods=['post'])
+    # Acción personalizada para obtener el perfil del usuario autenticado
+    @action(detail=False, methods=['get'], url_path='me', url_name='me')
+    def get_me(self, request):
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            return Response({'detail': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def create_user_profile(self, request):
         username = request.data.get('username')
         email = request.data.get('email')

@@ -13,15 +13,13 @@ import {
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import RecipeCard from './components/RecipeCard';
 import Navigation from './components/Navigation';
-import { getRecipes, authenticateUser } from './services/api'; // Importar authenticateUser
+import { getRecipes, authenticateUser } from './services/api';
 import { Element } from 'react-scroll';
 
-// Importar las páginas de Favoritas y Login
 import Favorites from './pages/Favorites'; 
 import Login from './pages/Login'; 
 import Signup from './pages/SignUp';
 
-// Animaciones
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -31,7 +29,6 @@ const fadeIn = keyframes`
   }
 `;
 
-// Paleta de Colores
 const colors = {
   primary: '#8B4513',
   secondary: '#A0522D',
@@ -41,7 +38,6 @@ const colors = {
   warmBackground: '#FFF8DC',
 };
 
-// Estilos Globales
 const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Roboto', 'Open Sans', sans-serif;
@@ -53,7 +49,6 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-// Estilos para el Contenedor de Pantalla Completa
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -68,7 +63,6 @@ const FullScreenContainer = styled(Box)`
   padding-top: 120px;
 `;
 
-// Estilos para el Contenedor de Contenido
 const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
@@ -80,7 +74,6 @@ const ContentWrapper = styled(Container)`
   animation: ${fadeIn} 0.5s ease-in-out;
 `;
 
-// Estilos para la Rejilla de Funciones
 const FeatureGrid = styled(Box)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -93,7 +86,6 @@ const FeatureGrid = styled(Box)`
   }
 `;
 
-// Estilos para el Papel de Funciones
 const FeaturePaper = styled(Box)`
   background-color: ${colors.light};
   padding: 20px;
@@ -112,14 +104,12 @@ const FeaturePaper = styled(Box)`
   }
 `;
 
-// Estilos para Tipografía
 const StyledTypography = styled(Typography)`
   font-family: 'Roboto', 'Open Sans', sans-serif;
   color: ${colors.dark};
   padding-top: 20px;
 `;
 
-// Estilos para Imagen
 const Image = styled('img')`
   width: 150px;
   height: 150px;
@@ -127,7 +117,6 @@ const Image = styled('img')`
   border-radius: 10px;
 `;
 
-// Estilos para Títulos de Sección
 const SectionTitle = styled(Typography)`
   margin-top: 20px;
   margin-bottom: 20px;
@@ -136,17 +125,17 @@ const SectionTitle = styled(Typography)`
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState(''); // Nombre del usuario inicializado vacío
+  const [userName, setUserName] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [topRatedRecipes, setTopRatedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
   const recipesPerPage = 10;
 
-  const location = useLocation(); // Usar useLocation para obtener la ruta actual
+  const location = useLocation();
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -154,8 +143,8 @@ const App = () => {
         setLoading(true);
         const response = await getRecipes();
         setRecipes(response);
-        setFilteredRecipes(response); // Inicialmente mostrar todas las recetas
-        setTopRatedRecipes(response.slice(0, 5)); // Obtener las 5 recetas más valoradas
+        setFilteredRecipes(response);
+        setTopRatedRecipes(response.slice(0, 5));
       } catch (error) {
         setError('Error al cargar las recetas.');
       } finally {
@@ -166,13 +155,12 @@ const App = () => {
     fetchRecipes();
   }, []);
 
-  // Actualizar recetas filtradas en función del término de búsqueda
   useEffect(() => {
     if (searchTerm === '') {
       setFilteredRecipes(recipes);
     } else {
       const filtered = recipes.filter((recipe) =>
-        recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) // Asegúrate de que coincida con el campo del modelo
+        recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredRecipes(filtered);
     }
@@ -188,9 +176,9 @@ const App = () => {
 
   const handleLogin = async (credentials) => {
     try {
-      const userData = await authenticateUser(credentials); // Autenticar usuario y obtener datos
+      const userData = await authenticateUser(credentials);
       setIsAuthenticated(true);
-      setUserName(userData.username); // Establecer el nombre del usuario desde los datos obtenidos
+      setUserName(userData.username);
     } catch (error) {
       setError('Error al iniciar sesión. Verifica tus credenciales.');
     }
@@ -198,18 +186,17 @@ const App = () => {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setUserName(''); // Limpiar el nombre del usuario al cerrar sesión
-    localStorage.removeItem('token'); // Eliminar el token de autenticación
+    setUserName('');
+    localStorage.removeItem('token');
   };
 
   return (
     <>
       <GlobalStyle />
-      {/* Solo mostrar la navegación si no estás en la ruta de Login */}
       {location.pathname !== '/login' && (
         <Navigation
           isAuthenticated={isAuthenticated}
-          userName={userName} // Pasar el nombre del usuario al componente de navegación
+          userName={userName}
           onLogin={handleLogin}
           onLogout={handleLogout}
         />
@@ -275,7 +262,6 @@ const App = () => {
                           Descubre las recetas más amadas por nuestra comunidad.
                         </StyledTypography>
                       </FeaturePaper>
-
                       <FeaturePaper>
                         <Image src={require('./assets/fresh_ingredients_icon.webp')} alt="Ingredients" />
                         <StyledTypography variant="h4" gutterBottom color={colors.primary}>
@@ -285,7 +271,6 @@ const App = () => {
                           Agrega ingredientes directamente a tu carrito de compras.
                         </StyledTypography>
                       </FeaturePaper>
-
                       <FeaturePaper>
                         <Image src={require('./assets/social_media_icon.webp')} alt="Social Media" />
                         <StyledTypography variant="h4" gutterBottom color={colors.primary}>
@@ -319,7 +304,6 @@ const App = () => {
                   </ContentWrapper>
                 </FullScreenContainer>
               </Element>
-
               <Element name="all-recipes">
                 <FullScreenContainer id="all-recipes">
                   <ContentWrapper>
@@ -352,9 +336,9 @@ const App = () => {
             </>
           }
         />
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta hacia Login */}
-        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta hacia Login */}
-        <Route path="/favorites" element={<Favorites />} /> {/* Ruta hacia Favoritas */}
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/favorites" element={<Favorites />} />
       </Routes>
     </>
   );

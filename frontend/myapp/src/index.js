@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App'; // Asegúrate de que App esté exportado correctamente
+import App from './App';
 import { ThemeProvider, CssBaseline } from '@mui/material'; 
 import { createTheme } from '@mui/material/styles'; 
-import { BrowserRouter as Router } from 'react-router-dom'; // Usar Router aquí es correcto
+import { BrowserRouter as Router } from 'react-router-dom';
 
-// Configuración del tema personalizado
 const theme = createTheme({
   palette: {
     primary: {
@@ -37,14 +36,13 @@ const theme = createTheme({
   },
 });
 
-// Inicialización de la raíz de React
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <App /> {/* Asegúrate de no tener otro <Router> dentro de App.js */}
+        <App />
       </Router>
     </ThemeProvider>
   </React.StrictMode>

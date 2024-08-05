@@ -1,12 +1,10 @@
-// src/pages/Favorites.js
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid, CircularProgress, Alert } from '@mui/material';
 import styled from 'styled-components';
 import RecipeCard from '../components/RecipeCard';
 import UserProfile from '../components/UserProfile'; 
-import { getUserProfile, getFavoriteRecipes } from '../services/api'; // Importar funciones de API
+import { getUserProfile, getFavoriteRecipes } from '../services/api';
 
-// Estilos para el contenedor de la pantalla completa
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -21,7 +19,6 @@ const FullScreenContainer = styled(Box)`
   padding-top: 120px;
 `;
 
-// Estilos para el contenedor del contenido
 const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
@@ -33,32 +30,30 @@ const ContentWrapper = styled(Container)`
 `;
 
 const Favorites = () => {
-  const [user, setUser] = useState(null); // Inicializar como null
+  const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadingFavorites, setLoadingFavorites] = useState(true);
   const [errorProfile, setErrorProfile] = useState('');
   const [errorFavorites, setErrorFavorites] = useState('');
 
-  // Obtener perfil del usuario
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchFavoriteRecipes = async () => {
       try {
-        setLoadingProfile(true);
-        const userData = await getUserProfile(); // Llamar a la función de la API
-        setUser(userData);
-        setLoadingProfile(false);
+        setLoadingFavorites(true);
+        const favoriteRecipes = await getFavoriteRecipes();
+        setFavorites(favoriteRecipes);
+        setLoadingFavorites(false);
       } catch (error) {
-        console.error('Error fetching user profile:', error);
-        setErrorProfile('Error al cargar el perfil del usuario.');
-        setLoadingProfile(false);
+        console.error('Error fetching favorite recipes:', error);
+        setErrorFavorites('Error al cargar las recetas favoritas.');
+        setLoadingFavorites(false);
       }
     };
-
-    fetchUserProfile();
+  
+    fetchFavoriteRecipes();
   }, []);
 
-  // Obtener recetas favoritas
   useEffect(() => {
     const fetchUserProfile = async () => {
         try {

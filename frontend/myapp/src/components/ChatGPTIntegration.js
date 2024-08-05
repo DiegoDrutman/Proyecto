@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-// Styled-components for styling
 const ChatContainer = styled.div`
   max-width: 600px;
   margin: 0 auto;
@@ -67,20 +66,17 @@ const SendButton = styled.button`
 const RecipeChatIntegration = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false); // Estado para mostrar el estado de carga
-  const [error, setError] = useState(''); // Estado para mostrar errores
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSendMessage = async () => {
     if (!input) return;
-
-    // Add user message to state
     setMessages([...messages, { text: input, isUser: true }]);
     setInput('');
     setLoading(true);
-    setError(''); // Resetear errores anteriores
+    setError('');
 
     try {
-      // Example API call setup for GPT-3/4 or another chat API
       const response = await axios.post(
         'https://api.openai.com/v1/engines/davinci-codex/completions',
         {
@@ -92,7 +88,7 @@ const RecipeChatIntegration = () => {
         },
         {
           headers: {
-            Authorization: `Bearer YOUR_API_KEY`, // Replace with your actual API key
+            Authorization: `Bearer YOUR_API_KEY`,
             'Content-Type': 'application/json',
           },
         }
@@ -111,7 +107,7 @@ const RecipeChatIntegration = () => {
         { text: 'Error: Unable to fetch response', isUser: false },
       ]);
     } finally {
-      setLoading(false); // Terminar el estado de carga
+      setLoading(false);
     }
   };
 
@@ -132,7 +128,7 @@ const RecipeChatIntegration = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask a question about recipes..."
-          disabled={loading} // Deshabilitar mientras se carga
+          disabled={loading}
         />
         <SendButton onClick={handleSendMessage} disabled={loading}>
           {loading ? 'Sending...' : 'Send'}

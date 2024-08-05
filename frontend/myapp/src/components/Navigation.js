@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Box, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import styled from 'styled-components';
-import { Link, useNavigate, useLocation } from 'react-router-dom'; // Importar useLocation
-import { scroller } from 'react-scroll'; // Importar scroller de react-scroll
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
-// Colores personalizados
 const themeColors = {
-  primary: 'rgba(255, 255, 255, 0.3)', /* Fondo transparente */
-  hover: '#A0522D', /* Sienna (hover) */
-  text: '#8B4513', /* Marrón claro */
+  primary: 'rgba(255, 255, 255, 0.3)',
+  hover: '#A0522D',
+  text: '#8B4513',
 };
 
-// Estilos para el AppBar sin sombra y con transparencia
 const NavBar = styled(AppBar)`
   background-color: ${themeColors.primary};
   box-shadow: none;
@@ -27,7 +25,6 @@ const NavBar = styled(AppBar)`
   z-index: 1100;
 `;
 
-// Enlaces estilizados para la barra de navegación
 const NavLink = styled(Typography)`
   text-decoration: none;
   color: ${themeColors.text};
@@ -42,8 +39,8 @@ const NavLink = styled(Typography)`
 const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
-  const navigate = useNavigate(); // Instanciar useNavigate
-  const location = useLocation(); // Instanciar useLocation
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -61,20 +58,16 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
     setMobileAnchorEl(null);
   };
 
-  // Función para manejar el logout y redirigir al login
   const handleLogout = () => {
-    onLogout(); // Llama la función de logout que actualiza el estado de autenticación
-    handleMenuClose(); // Cierra el menú desplegable
-    navigate('/login'); // Redirige a la página de login
+    onLogout();
+    handleMenuClose();
+    navigate('/login');
   };
 
-  // Función para navegar y desplazar
   const navigateAndScroll = (target) => {
-    // Verificar si ya estamos en la página principal
     if (location.pathname !== '/') {
-      navigate('/'); // Navegar a la página principal
+      navigate('/');
     }
-    // Usar el scroller de react-scroll para desplazar a la sección deseada
     scroller.scrollTo(target, {
       duration: 800,
       delay: 0,
@@ -100,8 +93,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
             </Typography>
           </Link>
         </Box>
-
-        {/* Menu responsive para pantallas pequeñas */}
         <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
           <IconButton
             size="large"
@@ -143,7 +134,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 Recetas
               </Typography>
             </MenuItem>
-            {/* Mostrar "Perfil" solo si el usuario está autenticado */}
             {isAuthenticated ? (
               <>
                 <MenuItem onClick={handleMobileMenuClose}>
@@ -177,8 +167,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
             )}
           </Menu>
         </Box>
-
-        {/* Navegación completa para pantallas más grandes */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3 }}>
           <NavLink
             variant="h6"

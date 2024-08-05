@@ -4,14 +4,21 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class UserProfile(models.Model):
+    # Relación uno a uno con el modelo de usuario predeterminado de Django
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    
+    # Campo opcional para almacenar un avatar de usuario
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    
+    # Campo opcional para una breve biografía del usuario
     bio = models.TextField(blank=True, null=True)
+    
+    # Fecha de creación del perfil, se establece automáticamente al crear una instancia
     joined_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'
-
+    
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()

@@ -39,12 +39,10 @@ const handleRequest = async (request) => {
     }
 };
 
-// Registro de usuario
 export const createUser = async (userData) => {
     return handleRequest(() => axiosInstance.post('profiles/create_user_profile/', userData));
 };
 
-// Autenticación de usuario
 export const authenticateUser = async (credentials) => {
     const response = await handleRequest(() =>
         axiosInstance.post('api-token-auth/', {
@@ -56,36 +54,25 @@ export const authenticateUser = async (credentials) => {
     return response;
 };
 
-// Obtener recetas
-export const getRecipes = async () => handleRequest(() => axiosInstance.get('recipes/'));
-
-// Obtener recetas favoritas
-export const getFavoriteRecipes = async () => handleRequest(() => axiosInstance.get('recipes/?is_favorited=true'));
-
-// Subir receta
-export const uploadRecipe = async (recipe) => handleRequest(() => axiosInstance.post('recipes/', recipe));
-
-// Actualizar receta
-export const updateRecipe = async (recipe) => handleRequest(() => axiosInstance.put(`recipes/${recipe.id}/`, recipe));
-
-// Borrar receta
-export const deleteRecipe = async (recipeId) => handleRequest(() => axiosInstance.delete(`recipes/${recipeId}/`));
-
-// Obtener perfil de usuario
 export const getUserProfile = async () => handleRequest(() => axiosInstance.get('profiles/me/'));
 
-// Actualizar perfil de usuario
 export const updateUserProfile = async (userId, profileData) => handleRequest(() => axiosInstance.put(`profiles/${userId}/`, profileData));
 
-// Añadir comentario a receta
+export const getRecipes = async () => handleRequest(() => axiosInstance.get('recipes/'));
+
+export const getFavoriteRecipes = async () => handleRequest(() => axiosInstance.get('recipes/?is_favorited=true'));
+
+export const uploadRecipe = async (recipe) => handleRequest(() => axiosInstance.post('recipes/', recipe));
+
+export const updateRecipe = async (recipe) => handleRequest(() => axiosInstance.put(`recipes/${recipe.id}/`, recipe));
+
+export const deleteRecipe = async (recipeId) => handleRequest(() => axiosInstance.delete(`recipes/${recipeId}/`));
+
 export const addComment = async (recipeId, comment) => handleRequest(() => axiosInstance.post(`comments/`, { recipe: recipeId, ...comment }));
 
-// Obtener comentarios de una receta
 export const getComments = async (recipeId) => handleRequest(() => axiosInstance.get(`comments/?recipe=${recipeId}`));
 
-// Añadir calificación a receta
 export const addRating = async (recipeId, rating) => handleRequest(() => axiosInstance.post(`ratings/`, { recipe: recipeId, rating }));
 
-// Marcar receta como favorita
 export const toggleFavorite = async (recipeId) => handleRequest(() => axiosInstance.post(`recipes/${recipeId}/favorite/`));
 

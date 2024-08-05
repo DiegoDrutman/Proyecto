@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// Estilos personalizados usando styled-components
 const ShoppingCartContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
@@ -52,7 +51,6 @@ const RemoveButton = styled.button`
   }
 `;
 
-// Componente RecipeShoppingCart
 const RecipeShoppingCart = ({ cartItems, onRemove }) => {
   return (
     <ShoppingCartContainer>
@@ -64,9 +62,9 @@ const RecipeShoppingCart = ({ cartItems, onRemove }) => {
           {cartItems.map((item, index) => (
             <ShoppingCartItem key={index}>
               <div>
-                <strong>{item.name}</strong> {/* Asumiendo que 'item' tiene un campo 'name' */}
-                <div>Cantidad: {item.quantity}</div> {/* Asumiendo que 'item' tiene un campo 'quantity' */}
-                <div>Precio: ${item.price}</div> {/* Asumiendo que 'item' tiene un campo 'price' */}
+                <strong>{item.name}</strong>
+                <div>Cantidad: {item.quantity}</div>
+                <div>Precio: ${item.price}</div>
               </div>
               <RemoveButton onClick={() => onRemove(item.id)}>Eliminar</RemoveButton>
             </ShoppingCartItem>

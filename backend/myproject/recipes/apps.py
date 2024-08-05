@@ -1,5 +1,3 @@
-# recipes/apps.py
-
 from django.apps import AppConfig
 
 class RecipesConfig(AppConfig):

@@ -7,6 +7,12 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .permissions import IsSuperuser
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
+
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({'csrfToken': csrf_token})
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()

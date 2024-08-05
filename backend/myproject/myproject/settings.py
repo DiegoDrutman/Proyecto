@@ -40,6 +40,9 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = False  # Asegúrate de esto para que JS pueda acceder al token
+CSRF_COOKIE_SECURE = False  # Cambia a True en producción si usas HTTPS
+SESSION_COOKIE_SECURE = False
 
 CORS_ALLOW_HEADERS = [
     'content-type',

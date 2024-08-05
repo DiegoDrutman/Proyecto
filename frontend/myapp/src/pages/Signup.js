@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 import { createUser, authenticateUser } from '../services/api';
+import axios from 'axios';
 
+// Colores para el estilo
 const colors = {
     primary: '#8B4513',
     secondary: '#FFD700',
@@ -12,6 +15,7 @@ const colors = {
     warmBackground: '#FFF8DC',
 };
 
+// Contenedor de pantalla completa
 const FullScreenContainer = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -24,6 +28,7 @@ const FullScreenContainer = styled(Box)`
     }
 `;
 
+// Contenedor izquierdo
 const LeftContainer = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -39,6 +44,7 @@ const LeftContainer = styled(Box)`
     }
 `;
 
+// Contenedor estilizado
 const StyledContainer = styled(Box)`
     width: 100%;
     max-width: 500px;
@@ -53,6 +59,7 @@ const StyledContainer = styled(Box)`
     }
 `;
 
+// Contenedor derecho
 const RightContainer = styled(Box)`
     display: none;
     @media (min-width: 768px) {
@@ -63,17 +70,35 @@ const RightContainer = styled(Box)`
     }
 `;
 
-const Signup = ({ setIsAuthenticated }) => {
+// Componente SignUp
+const SignUp = ({ setIsAuthenticated }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    // Función para obtener el token CSRF al cargar el componente
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/api/get_csrf_token/');
+                const csrfToken = response.data.csrfToken;
+                Cookies.set('csrftoken', csrfToken);  // Guarda el token en las cookies
+            } catch (error) {
+                console.error('Error fetching CSRF token:', error);
+            }
+        };
+
+        fetchCsrfToken();  // Llama a esta función cuando el componente cargue
+    }, []);  // Solo una vez al montar el componente
+
+    // Validación de email
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
+    // Manejo de envío de formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -191,4 +216,4 @@ const Signup = ({ setIsAuthenticated }) => {
     );
 };
 
-export default Signup;
+export default SignUp;

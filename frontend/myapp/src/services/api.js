@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 // Base URL para la API
 const API_URL = 'http://localhost:8000/api/';
@@ -16,8 +17,12 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
+        const csrftoken = Cookies.get('csrftoken'); // Obtener el token CSRF de las cookies
         if (token) {
             config.headers.Authorization = `Token ${token}`;
+        }
+        if (csrftoken) {
+            config.headers['X-CSRFToken'] = csrftoken; // Incluir el token CSRF en las solicitudes
         }
         return config;
     },
@@ -77,4 +82,4 @@ export const getRecipes = async (searchTerm = '') => {
 
 export const getRecipeById = async (id) => {
     return handleRequest(() => axiosInstance.get(`recipes/${id}/`));
-  };
+};

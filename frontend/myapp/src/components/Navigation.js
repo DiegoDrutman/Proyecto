@@ -5,6 +5,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import Logo from '../assets/logo.webp';
 
 const themeColors = {
   primary: 'rgba(255, 255, 255, 0.3)',
@@ -31,8 +32,11 @@ const NavLink = styled(Typography)`
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
+  transition: color 0.3s ease;
+
   &:hover {
     color: ${themeColors.hover};
+    transform: scale(1.05);
   }
 `;
 
@@ -71,22 +75,23 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
     scroller.scrollTo(target, {
       duration: 800,
       delay: 0,
-      smooth: 'easeInOutQuart'
+      smooth: 'easeInOutQuart',
     });
   };
 
   return (
     <NavBar>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit' }}>
+            <img src={Logo} alt="ReceTamos Logo" style={{ width: '40px', height: '40px', marginRight: '10px' }} />
             <Typography
               variant="h5"
               component="div"
               sx={{
-                marginRight: '20px',
                 color: themeColors.text,
                 fontWeight: 'bold',
+                fontSize: '1.5rem',
               }}
             >
               ReceTamos!
@@ -167,7 +172,7 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
             )}
           </Menu>
         </Box>
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3 }}>
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, alignItems: 'center' }}>
           <NavLink
             variant="h6"
             component="div"

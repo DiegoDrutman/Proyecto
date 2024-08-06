@@ -21,12 +21,12 @@ const fadeIn = keyframes`
 `;
 
 const colors = {
-  primary: '#8B4513',
-  secondary: '#A0522D',
-  light: '#FFF8E1',
-  dark: '#5C4033',
-  accent: '#DAA520',
-  warmBackground: '#FFF8DC',
+  primary: '#8B4513', // Marrón oscuro para el texto principal
+  secondary: '#A0522D', // Marrón rojizo
+  light: '#FFF8E1', // Amarillo claro
+  dark: '#5C4033', // Marrón oscuro
+  accent: '#DAA520', // Dorado para acentos
+  warmBackground: '#FFF8DC', // Beige cálido para el fondo
 };
 
 const GlobalStyle = createGlobalStyle`
@@ -52,6 +52,7 @@ const FullScreenContainer = styled(Box)`
   text-align: center;
   padding: 20px;
   padding-top: 120px;
+  background: linear-gradient(to bottom, ${colors.light}, ${colors.warmBackground});
 `;
 
 const ContentWrapper = styled(Box)`
@@ -95,23 +96,27 @@ const FeaturePaper = styled(Box)`
   }
 `;
 
+const Image = styled('img')`
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  object-fit: cover;
+`;
+
 const StyledTypography = styled(Typography)`
   font-family: 'Roboto', 'Open Sans', sans-serif;
   color: ${colors.dark};
   padding-top: 20px;
 `;
 
-const Image = styled('img')`
-  width: 150px;
-  height: 150px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-`;
-
 const SectionTitle = styled(Typography)`
   margin-top: 20px;
   margin-bottom: 20px;
   color: ${colors.primary};
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
 `;
 
 const App = () => {
@@ -211,13 +216,15 @@ const App = () => {
                   <Box
                     sx={{
                       display: 'flex',
-                      justifyContent: 'left',
+                      justifyContent: 'left', // Centrando la búsqueda
                       alignItems: 'center',
-                      width: '100%', // Asegura que el contenedor sea ancho completo
-                      gap: 2,
-                      flexWrap: 'wrap',
+                      width: '100%', 
+                      maxWidth: '600px', // Ajuste de ancho máximo más realista
                       marginBottom: 3,
-                      padding: 10,
+                      padding: 2, // Reduciendo el padding para mayor limpieza
+                      boxShadow: '0px 4px 8px rgba(0,0,0,0.1)', // Agregando sombra para efecto 3D
+                      borderRadius: '8px', // Redondeo de bordes
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', // Ligero fondo blanco para contraste
                     }}
                   >
                     <Autocomplete
@@ -235,8 +242,8 @@ const App = () => {
                           variant="outlined"
                           fullWidth
                           sx={{
-                            width: '2000%', // Asegura que el TextField ocupe todo el ancho del contenedor
-                            maxWidth: '1000px', // Limita el ancho máximo si es necesario
+                            width: '1000%', // Asegura que el TextField ocupe todo el ancho del contenedor
+                            maxWidth: '580px', // Limita el ancho máximo si es necesario
                             input: {
                               padding: '20px 20px', // Ajuste de padding interno
                             },

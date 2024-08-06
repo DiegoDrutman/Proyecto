@@ -83,14 +83,15 @@ const SignUp = ({ setIsAuthenticated }) => {
             try {
                 const response = await axios.get('http://localhost:8000/api/get_csrf_token/');
                 const csrfToken = response.data.csrfToken;
+                console.log('CSRF Token:', csrfToken); // Verificar el token obtenido
                 Cookies.set('csrftoken', csrfToken);  // Guarda el token en las cookies
             } catch (error) {
                 console.error('Error fetching CSRF token:', error);
             }
         };
 
-        fetchCsrfToken();  // Llama a esta función cuando el componente cargue
-    }, []);  // Solo una vez al montar el componente
+        fetchCsrfToken();
+    }, []);
 
     // Validación de email
     const validateEmail = (email) => {
@@ -121,7 +122,7 @@ const SignUp = ({ setIsAuthenticated }) => {
                     if (authResponse.token) {
                         localStorage.setItem('token', authResponse.token);
                         setIsAuthenticated(true);
-                        window.location.href = '/favorites';
+                        window.location.href = '/login';
                     } else {
                         setErrorMessage('Error al iniciar sesión después del registro. Por favor, intenta iniciar sesión manualmente.');
                     }

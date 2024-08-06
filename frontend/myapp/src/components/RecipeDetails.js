@@ -18,10 +18,12 @@ const DetailsContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 150px;
+  padding: 20px;
   background-color: ${colors.light};
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 150px auto;
 `;
 
 const RecipeDetails = () => {
@@ -57,13 +59,20 @@ const RecipeDetails = () => {
       <Typography variant="h5" color={colors.secondary} gutterBottom>
         {recipe.description}
       </Typography>
-      <Box component="img" src={recipe.image} alt={recipe.name} sx={{ width: '100%', maxWidth: '600px', borderRadius: '10px', marginBottom: '20px' }} />
+      <Box
+        component="img"
+        src={recipe.image}
+        alt={recipe.name}
+        sx={{ width: '100%', maxWidth: '600px', borderRadius: '10px', marginBottom: '20px' }}
+      />
       <Typography variant="body1" color={colors.dark} gutterBottom>
         <strong>Ingredientes:</strong>
       </Typography>
       <ul>
-        {recipe.ingredients.map((ingredient, index) => (
-          <li key={index}>{ingredient}</li>
+        {Object.entries(recipe.ingredients).map(([key, value], index) => (
+          <li key={index}>
+            <strong>{key}:</strong> {value}
+          </li>
         ))}
       </ul>
       <Typography variant="body1" color={colors.dark} gutterBottom>

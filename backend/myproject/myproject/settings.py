@@ -22,17 +22,6 @@ INSTALLED_APPS = [
     'recipes', 
 ]
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
@@ -40,9 +29,21 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_HTTPONLY = False  # Asegúrate de esto para que JS pueda acceder al token
-CSRF_COOKIE_SECURE = False  # Cambia a True en producción si usas HTTPS
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False  # Esto debe ser False para acceso desde JS
+CSRF_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
+SESSION_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
+
+# Middleware
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Añade CORS headers
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 CORS_ALLOW_HEADERS = [
     'content-type',

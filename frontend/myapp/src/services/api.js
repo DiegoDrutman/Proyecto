@@ -16,13 +16,13 @@ const axiosInstance = axios.create({
 // Interceptor para añadir el token de autenticación a cada solicitud
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
-        const csrftoken = Cookies.get('csrftoken'); // Obtener el token CSRF de las cookies
+        const token = localStorage.getItem('token');  // Obtén el token de localStorage
+        const csrftoken = Cookies.get('csrftoken');   // Obtén el token CSRF de las cookies
         if (token) {
-            config.headers.Authorization = `Token ${token}`;
+            config.headers.Authorization = `Token ${token}`;  // Añadir el token de autenticación
         }
         if (csrftoken) {
-            config.headers['X-CSRFToken'] = csrftoken; // Incluir el token CSRF en las solicitudes
+            config.headers['X-CSRFToken'] = csrftoken;  // Añadir el token CSRF
         }
         return config;
     },
@@ -73,13 +73,12 @@ export const updateUserProfile = async (userId, profileData) => handleRequest(()
 
 // Función para obtener recetas, permite la búsqueda por término
 export const getRecipes = async (searchTerm = '') => {
-    // Construir el endpoint con el término de búsqueda si se proporciona
     const url = searchTerm ? `recipes/?search=${encodeURIComponent(searchTerm)}` : 'recipes/';
-    
-    // Llamar al backend con el término de búsqueda como query parameter
     return handleRequest(() => axiosInstance.get(url));
 };
 
 export const getRecipeById = async (id) => {
     return handleRequest(() => axiosInstance.get(`recipes/${id}/`));
 };
+
+export default axiosInstance;

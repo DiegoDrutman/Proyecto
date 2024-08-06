@@ -17,28 +17,22 @@ def get_csrf_token(request):
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    @action(detail=False, methods=['get'], url_path='me', url_name='me')
-    def get_me(self, request):
-        try:
-            profile = UserProfile.objects.get(user=request.user)
-            serializer = self.get_serializer(profile)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except UserProfile.DoesNotExist:
-            return Response({'detail': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+    permission_classes = [permissions.IsAuthenticated]  # Predeterminadamente autenticado
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def create_user_profile(self, request):
         username = request.data.get('username')
         email = request.data.get('email')
         password = request.data.get('password')
+
         if not username or not email or not password:
             return Response({'detail': 'Por favor, provee todos los campos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
+
         if User.objects.filter(username=username).exists():
             return Response({'detail': 'El nombre de usuario ya existe.'}, status=status.HTTP_400_BAD_REQUEST)
         if User.objects.filter(email=email).exists():
             return Response({'detail': 'El correo electrónico ya existe.'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             user = User.objects.create_user(username=username, email=email, password=password)
             profile, created = UserProfile.objects.get_or_create(user=user)
@@ -50,6 +44,14 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         except IntegrityError as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated], url_path='me', url_name='me')
+    def get_me(self, request):
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            serializer = self.get_serializer(profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            return Response({'detail': 'User profile not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('-created_at')

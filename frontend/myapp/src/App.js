@@ -123,6 +123,15 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Al inicializar la aplicación, verifica el token de autenticación
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Opcional: podrías verificar el token con el servidor para asegurar que sea válido
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   useEffect(() => {
     const fetchSuggestions = async () => {
       try {
@@ -143,8 +152,10 @@ const App = () => {
   const handleLogin = async (credentials) => {
     try {
       const userData = await authenticateUser(credentials);
+      localStorage.setItem('token', userData.token); // Guarda el token al iniciar sesión
       setIsAuthenticated(true);
       setUserName(userData.username);
+      navigate('/'); // Redirigir al usuario a la página principal después del login
     } catch (error) {
       console.error('Error logging in:', error);
     }
@@ -154,6 +165,7 @@ const App = () => {
     setIsAuthenticated(false);
     setUserName('');
     localStorage.removeItem('token');
+    navigate('/login'); // Redirigir al usuario a la página de login después del logout
   };
 
   const handleSelectRecipe = (event, value) => {
@@ -282,7 +294,7 @@ const App = () => {
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/favorites" element={isAuthenticated ? <Favorites /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/recipe/:id" element={<RecipeDetails />} /> {/* Añadir ruta de detalles */}
       </Routes>
     </>

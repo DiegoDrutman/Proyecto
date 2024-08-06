@@ -1,10 +1,10 @@
 // src/pages/RecipeList.js
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, Alert, Grid } from '@mui/material';
-import { getRecipes } from '../services/api';  // Importa correctamente desde api.js
+import { CircularProgress, Alert, Grid, Typography } from '@mui/material';
+import { getRecipes } from '../services/api'; // Importa correctamente desde api.js
 import RecipeCard from '../components/RecipeCard';
 
-const RecipeList = ({ searchTerm }) => { // Recibe searchTerm como prop
+const RecipeList = ({ searchTerm }) => {
   const [recipes, setRecipes] = useState([]); // Estado para recetas
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -28,12 +28,18 @@ const RecipeList = ({ searchTerm }) => { // Recibe searchTerm como prop
   if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <Grid container spacing={2} justifyContent="center">
-      {recipes.map((recipe) => (
-        <Grid item key={recipe.id} xs={12} sm={6} md={4}>
-          <RecipeCard recipe={recipe} />
-        </Grid>
-      ))}
+    <Grid container spacing={2} justifyContent="center" sx={{ padding: 4 }}>
+      {recipes.length > 0 ? (
+        recipes.map((recipe) => (
+          <Grid item key={recipe.id} xs={12} sm={6} md={4}>
+            <RecipeCard recipe={recipe} />
+          </Grid>
+        ))
+      ) : (
+        <Typography variant="h6" color="text.secondary">
+          No se encontraron recetas.
+        </Typography>
+      )}
     </Grid>
   );
 };

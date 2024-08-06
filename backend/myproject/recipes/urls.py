@@ -8,6 +8,6 @@ router.register(r'profiles', UserProfileViewSet, basename='profile')
 router.register(r'recipes', RecipeViewSet, basename='recipe')  # Registra el RecipeViewSet
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api/get_csrf_token/', get_csrf_token, name='get_csrf_token'),
+    path('', include(router.urls)),  # Incluye todas las rutas del router
+    path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),
 ]

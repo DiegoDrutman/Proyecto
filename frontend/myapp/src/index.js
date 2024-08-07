@@ -1,49 +1,63 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { ThemeProvider, CssBaseline } from '@mui/material'; 
+import { ThemeProvider as MUIThemeProvider, CssBaseline } from '@mui/material'; 
+import { ThemeProvider as StyledThemeProvider } from 'styled-components'; // Styled-components theme provider
 import { createTheme } from '@mui/material/styles'; 
+import GlobalStyle from './styles/GlobalStyle'; // Import global styles
+import { colors, fontSizes } from './styles/Variables'; // Import variables
 import { BrowserRouter as Router } from 'react-router-dom';
 
-const theme = createTheme({
+// Define el tema de Material-UI
+const muiTheme = createTheme({
   palette: {
     primary: {
-      main: '#FFF8E1',
+      main: colors.light, // Usando variable de color
     },
     secondary: {
-      main: '#8B4513',
+      main: colors.primary,
     },
     background: {
-      default: '#D2B48C',
+      default: colors.warmBackground,
       paper: '#FFFFFF',
     },
     text: {
-      primary: '#8B4513',
-      secondary: '#8B4513',
+      primary: colors.dark,
+      secondary: colors.secondary,
     },
   },
   typography: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
     h1: {
-      fontSize: '2.4rem',
+      fontSize: fontSizes.large, // Usando variable de tamaño de fuente
     },
     h4: {
-      fontSize: '1.6rem',
+      fontSize: fontSizes.medium,
     },
     body1: {
-      fontSize: '1.1rem',
+      fontSize: fontSizes.small,
     },
   },
 });
 
+// Define un tema de styled-components que pueda compartir variables
+const styledTheme = {
+  colors,
+  fontSizes,
+};
+
+// Renderiza la aplicación
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <App />
-      </Router>
-    </ThemeProvider>
+    <StyledThemeProvider theme={styledTheme}>
+      <MUIThemeProvider theme={muiTheme}>
+        <CssBaseline />
+        <GlobalStyle /> {/* Aplica los estilos globales aquí */}
+        <Router>
+          <App />
+        </Router>
+      </MUIThemeProvider>
+    </StyledThemeProvider>
   </React.StrictMode>
 );

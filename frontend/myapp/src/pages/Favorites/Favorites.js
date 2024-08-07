@@ -1,32 +1,12 @@
+// src/pages/Favorites/Favorites.js
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, CircularProgress, Alert } from '@mui/material';
-import styled from 'styled-components';
-import UserProfile from '../components/UserProfile'; 
-import { getUserProfile } from '../services/api';
-
-const FullScreenContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  text-align: center;
-  padding: 20px;
-  padding-top: 120px;
-`;
-
-const ContentWrapper = styled(Container)`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-  max-width: 1200px;
-  width: 100%;
-  padding: 20px;
-`;
+import { Typography, CircularProgress, Alert } from '@mui/material';
+import UserProfile from '../../components/UserProfile/UserProfile'; 
+import { getUserProfile } from '../../services/api';
+import {
+  FullScreenContainer,
+  ContentWrapper,
+} from './Favorites.styles'; // Importar los estilos desde el archivo de estilos
 
 const Favorites = () => {
   const [user, setUser] = useState(null);
@@ -63,7 +43,6 @@ const Favorites = () => {
         ) : (
           user && <UserProfile user={user} />
         )}
-
       </ContentWrapper>
     </FullScreenContainer>
   );

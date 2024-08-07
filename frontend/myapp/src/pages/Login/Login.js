@@ -1,7 +1,16 @@
+// src/pages/Login/Login.js
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, Alert, Link } from '@mui/material';
+import { TextField, Typography, Link } from '@mui/material'; // Añade Link a las importaciones
 import { useNavigate } from 'react-router-dom';
-import { authenticateUser } from '../services/api';
+import { authenticateUser } from '../../services/api';
+import {
+  MainContainer,
+  FormContainer,
+  Form,
+  SubmitButton,
+  ErrorAlert,
+  SignupLink,
+} from './Login.styles'; // Importación de estilos
 
 const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
@@ -28,28 +37,17 @@ const Login = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: 3,
-          marginTop: 40,
-          borderRadius: 2,
-          boxShadow: 3,
-          backgroundColor: '#fff',
-        }}
-      >
+    <MainContainer component="main">
+      <FormContainer>
         <Typography component="h1" variant="h5">
           Iniciar sesión
         </Typography>
         {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
+          <ErrorAlert severity="error">
             {error}
-          </Alert>
+          </ErrorAlert>
         )}
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Form component="form" onSubmit={handleSubmit} noValidate>
           <TextField
             margin="normal"
             required
@@ -78,30 +76,20 @@ const Login = ({ setIsAuthenticated }) => {
             aria-label="Introduce tu contraseña"
             helperText={error ? 'Por favor verifica tu contraseña.' : ''}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={!username || !password}
-          >
+          <SubmitButton type="submit" fullWidth variant="contained" disabled={!username || !password}>
             Ingresar
-          </Button>
-        </Box>
-        <Typography variant="body2" sx={{ mt: 2 }}>
-          ¿No tienes una cuenta?{' '}
-          <Link
-            component="button"
-            variant="body2"
-            onClick={() => navigate('/signup')}
-            sx={{ textDecoration: 'underline' }}
-          >
-            Regístrate aquí
-          </Link>
-        </Typography>
-      </Box>
-    </Container>
+          </SubmitButton>
+        </Form>
+        <SignupLink>
+          <Typography variant="body2">
+            ¿No tienes una cuenta?{' '}
+            <Link component="button" variant="body2" onClick={() => navigate('/signup')}>
+              Regístrate aquí
+            </Link>
+          </Typography>
+        </SignupLink>
+      </FormContainer>
+    </MainContainer>
   );
 };
 

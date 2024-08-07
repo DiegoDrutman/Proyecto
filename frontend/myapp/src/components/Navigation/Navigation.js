@@ -1,44 +1,13 @@
+// src/components/Navigation/Navigation.js
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Box, Typography, IconButton, Menu, MenuItem } from '@mui/material';
-import styled from 'styled-components';
+import { Toolbar, Box, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import Logo from '../assets/logo.webp';
-
-const themeColors = {
-  primary: 'rgba(255, 255, 255, 0.3)',
-  hover: '#A0522D',
-  text: '#8B4513',
-};
-
-const NavBar = styled(AppBar)`
-  background-color: ${themeColors.primary};
-  box-shadow: none;
-  backdrop-filter: blur(5px);
-  color: ${themeColors.text};
-  padding: 5px 0;
-  transition: background-color 0.3s ease;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1100;
-`;
-
-const NavLink = styled(Typography)`
-  text-decoration: none;
-  color: ${themeColors.text};
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: ${themeColors.hover};
-    transform: scale(1.05);
-  }
-`;
+import Logo from '../../assets/logo.webp';
+import { NavBar, NavLink } from './Navigation.styles'; // Importar estilos
+import { colors } from '../../styles/Variables'; // Importar variables de color desde Variables.js
 
 const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -89,7 +58,7 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
               variant="h5"
               component="div"
               sx={{
-                color: themeColors.text,
+                color: colors.dark, // Usar el color de texto desde Variables.js
                 fontWeight: 'bold',
                 fontSize: '1.5rem',
               }}
@@ -125,45 +94,45 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
             onClose={handleMobileMenuClose}
           >
             <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('home'); }}>
-              <Typography variant="h6" component="div" style={{ color: themeColors.text }}>
+              <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
                 Inicio
               </Typography>
             </MenuItem>
             <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('top-recipes'); }}>
-              <Typography variant="h6" component="div" style={{ color: themeColors.text }}>
+              <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
                 Populares
               </Typography>
             </MenuItem>
             <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('all-recipes'); }}>
-              <Typography variant="h6" component="div" style={{ color: themeColors.text }}>
+              <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
                 Recetas
               </Typography>
             </MenuItem>
             {isAuthenticated ? (
               <>
                 <MenuItem onClick={handleMobileMenuClose}>
-                  <Link to="/profile" style={{ textDecoration: 'none', color: themeColors.text }}>
+                  <Link to="/profile" style={{ textDecoration: 'none', color: colors.dark }}>
                     <Typography variant="h6" component="div">
                       Perfil
                     </Typography>
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleMobileMenuClose}>
-                  <Link to="/favorites" style={{ textDecoration: 'none', color: themeColors.text }}>
+                  <Link to="/favorites" style={{ textDecoration: 'none', color: colors.dark }}>
                     <Typography variant="h6" component="div">
                       Favoritas
                     </Typography>
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
-                  <Typography variant="h6" component="div">
+                  <Typography variant="h6" component="div" style={{ color: colors.dark }}>
                     Logout
                   </Typography>
                 </MenuItem>
               </>
             ) : (
               <MenuItem onClick={handleMobileMenuClose}>
-                <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
+                <Link to="/login" style={{ textDecoration: 'none', color: colors.dark }}>
                   <Typography variant="h6" component="div">
                     Ingresar
                   </Typography>
@@ -222,21 +191,21 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 onClose={handleMenuClose}
               >
                 <MenuItem onClick={handleMenuClose}>
-                  <Link to="/favorites" style={{ textDecoration: 'none', color: themeColors.text }}>
+                  <Link to="/favorites" style={{ textDecoration: 'none', color: colors.dark }}>
                     <Typography variant="h6" component="div">
                       Perfil
                     </Typography>
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
-                  <Typography variant="h6" component="div">
+                  <Typography variant="h6" component="div" style={{ color: colors.dark }}>
                     Logout
                   </Typography>
                 </MenuItem>
               </Menu>
             </div>
           ) : (
-            <Link to="/login" style={{ textDecoration: 'none', color: themeColors.text }}>
+            <Link to="/login" style={{ textDecoration: 'none', color: colors.dark }}>
               <NavLink variant="h6" component="div">
                 Ingresar
               </NavLink>

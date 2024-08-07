@@ -1,76 +1,17 @@
+// src/pages/SignUp/SignUp.js
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Box, Alert } from '@mui/material';
-import styled from 'styled-components';
+import { TextField, Button, Typography, Alert } from '@mui/material';
 import Cookies from 'js-cookie';
-import { createUser, authenticateUser } from '../services/api';
+import { createUser, authenticateUser } from '../../services/api';
 import axios from 'axios';
+import {
+    FullScreenContainer,
+    LeftContainer,
+    StyledContainer,
+    RightContainer,
+} from './SignUp.styles'; // Importación de estilos
+import { colors } from '../../styles/Variables'; // Asegúrate de usar la "V" mayúscula para Variables.js
 
-// Colores para el estilo
-const colors = {
-    primary: '#8B4513',
-    secondary: '#FFD700',
-    light: '#FFFACD',
-    dark: '#654321',
-    accent: '#DAA520',
-    warmBackground: '#FFF8DC',
-};
-
-// Contenedor de pantalla completa
-const FullScreenContainer = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    width: 100vw;
-    height: 100vh;
-    background-color: ${colors.warmBackground};
-    color: ${colors.dark};
-    @media (min-width: 768px) {
-        flex-direction: row;
-    }
-`;
-
-// Contenedor izquierdo
-const LeftContainer = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 20px;
-    margin-top: 150px;
-    @media (min-width: 768px) {
-        width: 65%;
-        padding: 40px;
-        margin-top: 0;
-    }
-`;
-
-// Contenedor estilizado
-const StyledContainer = styled(Box)`
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    padding: 40px 20px;
-    background-color: ${colors.light};
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    @media (min-width: 768px) {
-        padding: 90px;
-        border-radius: 70px;
-    }
-`;
-
-// Contenedor derecho
-const RightContainer = styled(Box)`
-    display: none;
-    @media (min-width: 768px) {
-        display: block;
-        width: 35%;
-        background-size: cover;
-        background-position: center;
-    }
-`;
-
-// Componente SignUp
 const SignUp = ({ setIsAuthenticated }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -158,51 +99,55 @@ const SignUp = ({ setIsAuthenticated }) => {
                         </Alert>
                     )}
                     <form onSubmit={handleSubmit} aria-label="Formulario de registro">
-                        <Box mb={2}>
-                            <TextField
-                                label="Nombre de Usuario"
-                                variant="outlined"
-                                fullWidth
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                                autoComplete="username"
-                                aria-required="true"
-                                aria-label="Nombre de Usuario"
-                                helperText="El nombre de usuario debe ser único"
-                            />
-                        </Box>
-                        <Box mb={2}>
-                            <TextField
-                                label="Correo Electrónico"
-                                variant="outlined"
-                                fullWidth
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                autoComplete="email"
-                                aria-required="true"
-                                aria-label="Correo Electrónico"
-                            />
-                        </Box>
-                        <Box mb={2}>
-                            <TextField
-                                label="Contraseña"
-                                variant="outlined"
-                                type="password"
-                                fullWidth
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                autoComplete="new-password"
-                                aria-required="true"
-                                aria-label="Contraseña"
-                                helperText="Debe tener al menos 6 caracteres"
-                            />
-                        </Box>
+                        <TextField
+                            label="Nombre de Usuario"
+                            variant="outlined"
+                            fullWidth
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            autoComplete="username"
+                            aria-required="true"
+                            aria-label="Nombre de Usuario"
+                            helperText="El nombre de usuario debe ser único"
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Correo Electrónico"
+                            variant="outlined"
+                            fullWidth
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                            aria-required="true"
+                            aria-label="Correo Electrónico"
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Contraseña"
+                            variant="outlined"
+                            type="password"
+                            fullWidth
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            autoComplete="new-password"
+                            aria-required="true"
+                            aria-label="Contraseña"
+                            helperText="Debe tener al menos 6 caracteres"
+                            margin="normal"
+                        />
                         <Button
                             variant="contained"
-                            sx={{ backgroundColor: colors.primary, color: colors.light }}
+                            sx={{
+                                backgroundColor: colors.primary,
+                                color: colors.light,
+                                mt: 2,
+                                '&:hover': {
+                                    backgroundColor: colors.secondary,
+                                },
+                            }}
                             type="submit"
                             fullWidth
                             disabled={!username || !email || !password}

@@ -1,17 +1,7 @@
+// src/components/UserProfile/UserProfile.js
 import React from 'react';
-import { Box, Typography, Avatar } from '@mui/material';
-import styled from 'styled-components';
-
-const ProfileContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
-`;
+import { Typography, Avatar } from '@mui/material';
+import { ProfileContainer } from './UserProfile.styles'; // Importar el contenedor de estilos
 
 const UserProfile = ({ user }) => {
   if (!user) {

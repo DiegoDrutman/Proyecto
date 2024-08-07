@@ -1,29 +1,8 @@
-// src/components/RecipeCard.js
+// src/components/RecipeCard/RecipeCard.js
 import React from 'react';
-import { Card, CardContent, CardMedia, Typography, CardActionArea } from '@mui/material';
-import styled from 'styled-components';
+import { CardContent, Typography, CardActionArea } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-const RecipeCardContainer = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f5dc; /* Color de fondo beige claro */
-  color: #654321; /* Texto marrón oscuro */
-  border-radius: 10px; /* Bordes redondeados para un look moderno */
-  overflow: hidden; /* Para que la imagen se ajuste correctamente */
-  transition: transform 0.3s, box-shadow 0.3s; /* Transiciones suaves para hover */
-  width: 300px; /* Ancho fijo para las tarjetas */
-  height: 350px; /* Altura fija para las tarjetas */
-  &:hover {
-    transform: scale(1.05); /* Efecto de aumento en hover */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra en hover */
-  }
-`;
-
-const StyledCardMedia = styled(CardMedia)`
-  height: 180px; /* Altura fija para la imagen */
-  object-fit: cover; /* Ajusta la imagen para que ocupe todo el espacio sin distorsión */
-`;
+import { RecipeCardContainer, StyledCardMedia } from './RecipeCard.styles'; // Importar los estilos desde el archivo de estilos
 
 const RecipeCard = ({ recipe }) => {
   const navigate = useNavigate();

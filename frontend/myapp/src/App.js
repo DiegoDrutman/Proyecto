@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Autocomplete, Container } from '@mui/material';
@@ -9,7 +10,7 @@ import { authenticateUser, getRecipes } from './services/api';
 import Favorites from './pages/Favorites/Favorites';
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
-import RecipeDetails from './components/RecipeDetails/RecipeDetails';
+import RecipeDetails from './pages/RecipeDetails/RecipeDetails';
 import RecipeList from './components/RecipeList/RecipeList';
 
 // Importación de estilos y variables globales
@@ -36,8 +37,8 @@ const FullScreenContainer = styled(Box)`
   width: 100%;
   min-height: 100vh;
   text-align: center;
-  padding: 20px;
-  padding-top: 60px;
+  padding: 200px;
+  padding-top: 0px;
   background: url(${backgroundImage}) no-repeat center center; /* Usar el archivo importado */
   color: ${colors.light};
   background-size: cover; /* Asegura que la imagen cubra todo el fondo */
@@ -50,14 +51,14 @@ const FullScreenContainer = styled(Box)`
 const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
   max-width: 1000px;
   width: 100%;
   padding: 40px;
   animation: ${fadeIn} 0.5s ease-in-out;
   background-color: rgba(0, 0, 0, 0.6); /* Cambia el color del overlay a un negro translúcido */
-  border-radius: 12px;
+  border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
@@ -188,7 +189,7 @@ const App = () => {
                   </StyledTypography>
                   <StyledTypography
                     variant="h4"
-                    fontSize={24}
+                    fontSize={40}
                     fontStyle="italic"
                     sx={{ marginBottom: 4 }}
                   >

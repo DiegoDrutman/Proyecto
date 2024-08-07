@@ -1,12 +1,12 @@
 // src/components/Navigation/Navigation.js
 import React, { useState } from 'react';
-import { Toolbar, Box, Typography, IconButton, Menu, MenuItem } from '@mui/material';
+import { Toolbar, Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import Logo from '../../assets/logo.webp';
-import { NavBar, NavLink } from './Navigation.styles'; // Importar estilos
+import Logo from '../../assets/logo.png';
+import { NavBar, NavLink, IngresarLink } from './Navigation.styles'; // Importar estilos
 import { colors } from '../../styles/Variables'; // Importar variables de color desde Variables.js
 
 const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
@@ -49,18 +49,18 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
   };
 
   return (
-    <NavBar>
+    <NavBar position="fixed">
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit' }}>
-            <img src={Logo} alt="ReceTamos Logo" style={{ width: '40px', height: '40px', marginRight: '10px' }} />
+            <img src={Logo} alt="ReceTamos Logo" style={{ width: '80px', height: '80px', marginRight: '10px' }} />
             <Typography
               variant="h5"
               component="div"
               sx={{
                 color: colors.dark, // Usar el color de texto desde Variables.js
                 fontWeight: 'bold',
-                fontSize: '1.5rem',
+                fontSize: '1.8rem',
               }}
             >
               ReceTamos!
@@ -206,9 +206,9 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
             </div>
           ) : (
             <Link to="/login" style={{ textDecoration: 'none', color: colors.dark }}>
-              <NavLink variant="h6" component="div">
+              <IngresarLink variant="h6" component="div"> {/* Usar IngresarLink */}
                 Ingresar
-              </NavLink>
+              </IngresarLink>
             </Link>
           )}
         </Box>

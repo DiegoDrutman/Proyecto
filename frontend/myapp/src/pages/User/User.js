@@ -6,7 +6,7 @@ import { getUserProfile } from '../../services/api';
 import {
   FullScreenContainer,
   ContentWrapper,
-} from './Favorites.styles'; // Importar los estilos desde el archivo de estilos
+} from './User.styles'; // Importar los estilos desde el archivo de estilos
 
 const Favorites = () => {
   const [user, setUser] = useState(null);

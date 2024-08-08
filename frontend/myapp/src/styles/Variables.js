@@ -1,12 +1,10 @@
-// src/styles/Variables.js
-
 export const colors = {
   primary: '#A0522D',        // Sienna
   secondary: '#D2B48C',      // Tan
   light: '#FFEFD5',          // Pale Peach Puff
   dark: '#8B4513',           // SaddleBrown
   accent: '#C19A6B',         // Antique Brass
-  warmBackground: '#FFF8DC', // Cornsilk
+  warmBackground: 'transparent', // Cornsilk
   background: '#FFFFFF',     // White
 };
 

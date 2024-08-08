@@ -12,7 +12,8 @@ export const RecipeCardContainer = styled(Card)`
   border-radius: 10px; /* Bordes redondeados para un look moderno */
   overflow: hidden; /* Para que la imagen se ajuste correctamente */
   transition: transform 0.3s, box-shadow 0.3s; /* Transiciones suaves para hover */
-  width: 300px; /* Ancho fijo para las tarjetas */
+  width: 100%; /* Usar el 100% del espacio disponible */
+  max-width: 100%; /* Ancho máximo para las tarjetas */
   height: 350px; /* Altura fija para las tarjetas */
 
   &:hover {

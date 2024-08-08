@@ -1,24 +1,19 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Autocomplete, Container } from '@mui/material';
+import { Box, TextField, Autocomplete, Container } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import Navigation from './components/Navigation/Navigation';
 import { authenticateUser, getRecipes } from './services/api';
-
-// Importación de páginas y componentes
-import Favorites from './pages/Favorites/Favorites';
+import Favorites from './pages/User/User';
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
 import RecipeDetails from './pages/RecipeDetails/RecipeDetails';
 import RecipeList from './components/RecipeList/RecipeList';
-
-// Importación de estilos y variables globales
 import GlobalStyle from './styles/GlobalStyle';
 import { colors, fontSizes } from './styles/Variables';
 import backgroundImage from './assets/wooden-table.webp';
 
-// Animación de entrada
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -28,7 +23,6 @@ const fadeIn = keyframes`
   }
 `;
 
-// Estilos de contenedores y elementos
 const FullScreenContainer = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -37,35 +31,34 @@ const FullScreenContainer = styled(Box)`
   width: 100%;
   min-height: 100vh;
   text-align: center;
-  padding: 200px;
-  padding-top: 0px;
-  background: url(${backgroundImage}) no-repeat center center; /* Usar el archivo importado */
+  background: url(${backgroundImage}) no-repeat center center;
   color: ${colors.light};
-  background-size: cover; /* Asegura que la imagen cubra todo el fondo */
-  background-attachment: fixed; /* Esto ayuda a mantener la imagen fija mientras se desplaza */
+  background-size: cover;
+  background-attachment: fixed;
   @media (max-width: 600px) {
-    background-attachment: scroll; /* Ajuste para dispositivos móviles */
+    background-attachment: scroll;
   }
 `;
 
 const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
-  gap: 10px;
   align-items: center;
-  max-width: 1000px;
+  max-width: 800px;
   width: 100%;
-  padding: 40px;
+  padding: 20px;
   animation: ${fadeIn} 0.5s ease-in-out;
-  background-color: rgba(0, 0, 0, 0.6); /* Cambia el color del overlay a un negro translúcido */
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: -300px;
+  margin-bottom: 0;
 `;
 
 const StyledAutocomplete = styled(Autocomplete)`
   width: 100%;
   max-width: 600px;
-  margin: 0 auto; /* Asegura que el buscador esté centrado */
+  margin: 0 auto;
   .MuiOutlinedInput-root {
     background-color: ${colors.light};
     border-radius: 5px;
@@ -80,22 +73,44 @@ const StyledAutocomplete = styled(Autocomplete)`
   }
 `;
 
-const StyledTypography = styled(Typography)`
-  font-family: 'Poppins', sans-serif;
+const HeaderTypography = styled.h1`
+  font-family: 'Lobster', cursive;
   color: ${colors.light};
   padding-top: 20px;
+  font-size: 80px;
   @media (max-width: 600px) {
-    font-size: ${fontSizes.medium}; /* Ajusta el tamaño de fuente para móviles */
+    font-size: ${fontSizes.medium};
   }
 `;
 
-const SectionTitle = styled(Typography)`
-  margin-top: 20px;
+const SubHeaderTypography = styled.h2`
+  font-family: 'Open Sans', sans-serif;
+  font-size: 40px;
+  font-style: italic;
+  color: ${colors.light};
   margin-bottom: 20px;
-  color: ${colors.primary};
-  font-size: ${fontSizes.large};
-  font-weight: bold;
-  text-transform: uppercase;
+  @media (max-width: 600px) {
+    font-size: ${fontSizes.medium};
+  }
+`;
+
+const RecipesContainer = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: -250px;
+  padding: 20px 0;
+  background-color: rgba(0, 0, 0, 0.6);
+`;
+
+const RecipeGrid = styled(Box)`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 0;
 `;
 
 const App = () => {
@@ -107,7 +122,6 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Verificación del token de autenticación al iniciar la aplicación
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -115,7 +129,6 @@ const App = () => {
     }
   }, []);
 
-  // Función para buscar sugerencias de recetas
   useEffect(() => {
     const fetchSuggestions = async () => {
       try {
@@ -133,7 +146,6 @@ const App = () => {
     fetchSuggestions();
   }, [searchTerm]);
 
-  // Manejo de inicio de sesión
   const handleLogin = async (credentials) => {
     try {
       const userData = await authenticateUser(credentials);
@@ -146,7 +158,6 @@ const App = () => {
     }
   };
 
-  // Manejo de cierre de sesión
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserName('');
@@ -154,7 +165,6 @@ const App = () => {
     navigate('/login'); // Redirigir a la página de login después del logout
   };
 
-  // Selección de receta
   const handleSelectRecipe = (event, value) => {
     if (value) {
       navigate(`/recipe/${value.id}`);
@@ -179,22 +189,12 @@ const App = () => {
             <>
               <FullScreenContainer id="home">
                 <ContentWrapper>
-                  <StyledTypography
-                    variant="h2"
-                    fontSize={80}
-                    color={colors.light}
-                    sx={{ marginBottom: 2 }}
-                  >
+                  <HeaderTypography>
                     ReceTamos Juntos!
-                  </StyledTypography>
-                  <StyledTypography
-                    variant="h4"
-                    fontSize={40}
-                    fontStyle="italic"
-                    sx={{ marginBottom: 4 }}
-                  >
+                  </HeaderTypography>
+                  <SubHeaderTypography>
                     Encuentra y prepara tus platos favoritos
-                  </StyledTypography>
+                  </SubHeaderTypography>
                   <StyledAutocomplete
                     freeSolo
                     options={suggestions}
@@ -218,18 +218,11 @@ const App = () => {
                 </ContentWrapper>
               </FullScreenContainer>
 
-              <FullScreenContainer id="top-recipes">
-                <ContentWrapper>
-                  <SectionTitle variant="h3">Top 5 Recetas Más Valoradas</SectionTitle>
-                </ContentWrapper>
-              </FullScreenContainer>
-
-              <FullScreenContainer id="all-recipes">
-                <ContentWrapper>
-                  <SectionTitle variant="h3">Todas las Recetas</SectionTitle>
+              <RecipesContainer id="all-recipes">
+                <RecipeGrid>
                   <RecipeList searchTerm={searchTerm} />
-                </ContentWrapper>
-              </FullScreenContainer>
+                </RecipeGrid>
+              </RecipesContainer>
             </>
           }
         />

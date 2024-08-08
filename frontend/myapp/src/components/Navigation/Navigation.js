@@ -1,4 +1,3 @@
-// src/components/Navigation/Navigation.js
 import React, { useState } from 'react';
 import { Toolbar, Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -53,14 +52,21 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit' }}>
-            <img src={Logo} alt="ReceTamos Logo" style={{ width: '80px', height: '80px', marginRight: '10px' }} />
+            <img src={Logo} alt="ReceTamos Logo" style={{ width: '100px', height: '100px', marginRight: '10px', marginTop:'40px' }} />
             <Typography
               variant="h5"
               component="div"
               sx={{
                 color: colors.dark, // Usar el color de texto desde Variables.js
                 fontWeight: 'bold',
-                fontSize: '1.8rem',
+                fontSize: '3rem',
+                marginTop: '40px',
+                fontFamily: 'Dancing Script, cursive', // Aplicar la fuente cursiva
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', // Efecto visual
+                transition: 'transform 0.3s ease', // Efecto de transición
+                '&:hover': {
+                  transform: 'scale(1.1)', // Efecto al pasar el ratón
+                },
               }}
             >
               ReceTamos!
@@ -98,11 +104,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 Inicio
               </Typography>
             </MenuItem>
-            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('top-recipes'); }}>
-              <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
-                Populares
-              </Typography>
-            </MenuItem>
             <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('all-recipes'); }}>
               <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
                 Recetas
@@ -118,7 +119,7 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleMobileMenuClose}>
-                  <Link to="/favorites" style={{ textDecoration: 'none', color: colors.dark }}>
+                  <Link to="/user" style={{ textDecoration: 'none', color: colors.dark }}>
                     <Typography variant="h6" component="div">
                       Favoritas
                     </Typography>
@@ -148,13 +149,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
             onClick={() => navigateAndScroll('home')}
           >
             Inicio
-          </NavLink>
-          <NavLink
-            variant="h6"
-            component="div"
-            onClick={() => navigateAndScroll('top-recipes')}
-          >
-            Populares
           </NavLink>
           <NavLink
             variant="h6"
@@ -191,7 +185,7 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 onClose={handleMenuClose}
               >
                 <MenuItem onClick={handleMenuClose}>
-                  <Link to="/favorites" style={{ textDecoration: 'none', color: colors.dark }}>
+                  <Link to="/user" style={{ textDecoration: 'none', color: colors.dark }}>
                     <Typography variant="h6" component="div">
                       Perfil
                     </Typography>

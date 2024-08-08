@@ -26,7 +26,7 @@ const Login = ({ setIsAuthenticated }) => {
       if (response.token) {
         localStorage.setItem('token', response.token);
         setIsAuthenticated(true);
-        navigate('/favorites');
+        navigate('/user');
       } else {
         setError('Authentication failed. Please try again.');
       }

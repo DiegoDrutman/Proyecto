@@ -1,12 +1,10 @@
-// src/components/Navigation/Navigation.styles.js
-
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import { colors } from '../../styles/Variables';
 
 export const NavBar = styled.div`
-  background-color: ${colors.warmBackground};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: transparent !important; /* Fondo transparente */
+  box-shadow: none !important; /* Sin sombra */
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -14,13 +12,16 @@ export const NavBar = styled.div`
 `;
 
 export const NavLink = styled(Typography)`
-  color: ${colors.dark};
+  color: ${colors.dark}; /* Color del texto */
+  font-family: 'Lato', sans-serif; /* Nueva fuente */
   font-weight: bold;
+  font-size: 1rem; /* Tamaño de la fuente reducido */
   cursor: pointer;
   position: relative;
   transition: color 0.3s ease, transform 0.3s ease;
   padding-bottom: 5px;
   text-transform: uppercase;
+  margin: 0 15px; /* Espacio entre las opciones */
 
   &:after {
     content: '';
@@ -51,10 +52,10 @@ export const IngresarLink = styled(NavLink)`
   border: 1px solid ${colors.dark};
   border-radius: 5px;
   padding: 10px 20px;
-  margin-left: 10px; // Margen para separarlo de los otros enlaces
+  margin-left: 10px; /* Margen para separarlo de los otros enlaces */
 
   &:after {
-    // Remover la línea inferior
+    /* Remover la línea inferior */
     display: none;
   }
 

@@ -1,12 +1,9 @@
 // src/pages/RecipeList/RecipeList.js
 import React, { useState, useEffect } from 'react';
-import { CircularProgress, Alert, Grid } from '@mui/material';
+import { CircularProgress, Alert } from '@mui/material';
 import { getRecipes } from '../../services/api'; // Importa correctamente desde api.js
-import RecipeCard from '../RecipeCard/RecipeCard';
-import {
-  RecipeGridContainer,
-  NoRecipesMessage
-} from './RecipeList.styles'; // Importar los estilos desde el archivo de estilos
+import RecipeCard from '../../components/RecipeCard/RecipeCard'; // Asegúrate de importar el componente correctamente
+import { RecipeGridContainer, NoRecipesMessage } from './RecipeList.styles'; // Importar los estilos desde el archivo de estilos
 
 const RecipeList = ({ searchTerm }) => {
   const [recipes, setRecipes] = useState([]); // Estado para recetas
@@ -32,12 +29,10 @@ const RecipeList = ({ searchTerm }) => {
   if (error) return <Alert severity="error">{error}</Alert>;
 
   return (
-    <RecipeGridContainer container spacing={2}>
+    <RecipeGridContainer>
       {recipes.length > 0 ? (
         recipes.map((recipe) => (
-          <Grid item key={recipe.id} xs={12} sm={6} md={4}>
-            <RecipeCard recipe={recipe} />
-          </Grid>
+          <RecipeCard key={recipe.id} recipe={recipe} />
         ))
       ) : (
         <NoRecipesMessage variant="h6">

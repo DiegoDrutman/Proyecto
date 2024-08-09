@@ -3,22 +3,22 @@ import backgroundImage from '../assets/wooden-table.webp'; // Asegúrate de que 
 import { colors } from './Variables';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
-
   body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif; /* Fuente base para todo el cuerpo */
     background: url(${backgroundImage}) no-repeat center center fixed;
     background-size: cover;
     color: ${colors.dark};
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Playfair Display', serif; /* Elegante para todos los encabezados */
+  }
+
+  h1 {
+    font-family: 'Dancing Script', cursive; /* Mantén un estilo especial para el h1 */
   }
 
   a {

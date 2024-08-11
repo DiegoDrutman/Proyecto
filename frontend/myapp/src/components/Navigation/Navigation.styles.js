@@ -3,12 +3,14 @@ import { Typography } from '@mui/material';
 import { colors } from '../../styles/Variables';
 
 export const NavBar = styled.div`
-  background-color: transparent !important; /* Fondo transparente */
-  box-shadow: none !important; /* Sin sombra */
+  background-color: ${({ scrolled }) => (scrolled ? 'rgba(245, 245, 220, 0.9)' : 'transparent')} !important; /* Color beige */
+  backdrop-filter: ${({ scrolled }) => (scrolled ? 'blur(10px)' : 'none')};
+  box-shadow: ${({ scrolled }) => (scrolled ? '0 2px 10px rgba(0, 0, 0, 0.1)' : 'none')} !important;
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
 `;
 
 export const NavLink = styled(Typography)`
@@ -47,7 +49,6 @@ export const NavLink = styled(Typography)`
   }
 `;
 
-// Componente específico para el botón "Ingresar"
 export const IngresarLink = styled(NavLink)`
   border: 1px solid ${colors.dark};
   border-radius: 5px;

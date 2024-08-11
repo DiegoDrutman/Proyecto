@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Toolbar, Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
@@ -11,8 +11,24 @@ import { colors } from '../../styles/Variables'; // Importar variables de color 
 const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -48,19 +64,18 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
   };
 
   return (
-    <NavBar position="fixed">
+    <NavBar scrolled={scrolled}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit' }}>
-            <img src={Logo} alt="ReceTamos Logo" style={{ width: '100px', height: '100px', marginRight: '10px', marginTop:'40px' }} />
+            <img src={Logo} alt="ReceTamos Logo" style={{ width: '80px', height: '80px', marginRight: '10px' }} />
             <Typography
               variant="h5"
               component="div"
               sx={{
                 color: colors.dark, // Usar el color de texto desde Variables.js
                 fontWeight: 'bold',
-                fontSize: '3rem',
-                marginTop: '40px',
+                fontSize: '2.5rem',
                 fontFamily: 'Dancing Script, cursive', // Aplicar la fuente cursiva
                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', // Efecto visual
                 transition: 'transform 0.3s ease', // Efecto de transición

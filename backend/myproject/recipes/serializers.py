@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from .models import UserProfile
+from .models import UserProfile, Recipe
 from django.contrib.auth.models import User
-from .models import Recipe, UserProfile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,6 +18,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['id', 'user', 'avatar', 'bio', 'joined_date']
+    
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         if User.objects.filter(username=user_data['username']).exists():
@@ -28,6 +28,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**user_data)
         profile = UserProfile.objects.create(user=user, **validated_data)
         return profile
+    
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
         if user_data:
@@ -43,6 +44,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ['id', 'name', 'description', 'ingredients', 'preparation_time', 'image', 'created_at']
-
-        
+        fields = ['id', 'name', 'description', 'ingredients', 'steps', 'preparation_time', 'image', 'created_at']

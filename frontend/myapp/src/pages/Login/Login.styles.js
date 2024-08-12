@@ -1,4 +1,3 @@
-// src/pages/Login/Login.styles.js
 import styled from 'styled-components';
 import { Box, Container, Button, Alert } from '@mui/material'; // Añade Button y Alert a las importaciones
 import { colors, spacing } from '../../styles/Variables'; // Importa las variables
@@ -11,6 +10,11 @@ export const MainContainer = styled(Container)`
   background-color: ${colors.light};
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 480px) {
+    padding: ${spacing.small}; /* Reducir padding en móviles */
+    margin-top: ${spacing.medium}; /* Reducir el margen superior en móviles */
+  }
 `;
 
 // Estilo para el contenedor del formulario
@@ -27,7 +31,7 @@ export const Form = styled(Box)`
 `;
 
 // Estilo para el botón de envío
-export const SubmitButton = styled(Button)` // Cambiado Box por Button
+export const SubmitButton = styled(Button)`
   margin-top: ${spacing.medium};
   margin-bottom: ${spacing.small};
   background-color: ${colors.primary};
@@ -41,11 +45,20 @@ export const SubmitButton = styled(Button)` // Cambiado Box por Button
     background-color: ${colors.accent};
     color: ${colors.dark};
   }
+
+  @media (max-width: 480px) {
+    padding: ${spacing.xsmall}; /* Ajustar padding en móviles */
+    font-size: 0.875rem; /* Reducir el tamaño de la fuente en móviles */
+  }
 `;
 
 // Estilo para la alerta de error
-export const ErrorAlert = styled(Alert)` // Cambiado Box por Alert
+export const ErrorAlert = styled(Alert)`
   margin-top: ${spacing.small};
+
+  @media (max-width: 480px) {
+    font-size: 0.875rem; /* Reducir el tamaño de la fuente en móviles */
+  }
 `;
 
 // Estilo para el enlace de registro
@@ -62,5 +75,9 @@ export const SignupLink = styled(Box)`
     &:hover {
       color: ${colors.secondary};
     }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem; /* Reducir el tamaño de la fuente en móviles */
   }
 `;

@@ -1,4 +1,3 @@
-// src/pages/RecipeList/RecipeList.styles.js
 import styled from 'styled-components';
 import { Box, Typography } from '@mui/material';
 import { colors, spacing } from '../../styles/Variables';
@@ -9,10 +8,17 @@ export const RecipeGridContainer = styled(Box)`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajuste el tamaño mínimo de las columnas */
   gap: ${spacing.medium};
   padding: ${spacing.large} 0; /* Padding superior e inferior */
-  width: 90vw; /* Asegura que ocupe todo el ancho de la ventana */
-  margin-left: -325px; /* Centra el contenedor */
-  overflow: hidden; /* Elimina el scroll horizontal */
+  width: 100%; /* Asegura que ocupe todo el ancho de la ventana */
+  margin: 0 auto; /* Centra el contenedor horizontalmente */
   box-sizing: border-box; /* Asegura que el padding esté incluido en el ancho total */
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ajusta el tamaño mínimo en pantallas medianas */
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajusta el tamaño mínimo en móviles */
+  }
 `;
 
 // Mensaje cuando no se encuentran recetas

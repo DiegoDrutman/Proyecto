@@ -51,9 +51,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <StyledThemeProvider theme={styledTheme}>
+      <GlobalStyle /> {/* Aplica los estilos globales aquí */}
       <MUIThemeProvider theme={muiTheme}>
         <CssBaseline />
-        <GlobalStyle /> {/* Aplica los estilos globales aquí */}
         <Router>
           <App />
         </Router>

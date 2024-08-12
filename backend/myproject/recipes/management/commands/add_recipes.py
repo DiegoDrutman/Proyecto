@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from recipes.models import Recipe  # Ajusta el import si tu app se llama diferente
+from recipes.models import Recipe  # Asegúrate de que este import esté correcto
 import os
 
 class Command(BaseCommand):
@@ -24,6 +24,13 @@ class Command(BaseCommand):
                     "Condimentos": "Sal y pimienta al gusto",
                     "Perejil": "Perejil fresco picado para decorar"
                 },
+                "steps": [
+                    "Cocina la pasta en una olla con agua hirviendo con sal hasta que esté al dente.",
+                    "Mientras tanto, fríe la panceta en una sartén hasta que esté dorada y crujiente.",
+                    "En un bol, bate los huevos y mezcla con el queso parmesano.",
+                    "Cuando la pasta esté lista, escúrrela y mézclala rápidamente con la panceta y los huevos.",
+                    "Decora con perejil fresco y sirve inmediatamente."
+                ],
                 "preparation_time": 30,  # Tiempo de preparación en minutos
                 "image": "recipes/pasta_carbonara.webp"  # Nombre de archivo de imagen
             },
@@ -38,113 +45,14 @@ class Command(BaseCommand):
                     "Condimentos": "1 cucharadita de comino, 1 cucharadita de pimentón, 1 cucharadita de ajo en polvo, sal y pimienta al gusto",
                     "Extras": "Tortillas de maíz o harina, cilantro fresco y lima para servir"
                 },
+                "steps": [
+                    "Corta el pollo en tiras y sazónalo con sal, pimienta, comino y pimentón.",
+                    "En una sartén grande, calienta el aceite de oliva y cocina el pollo hasta que esté dorado.",
+                    "Agrega la cebolla y los pimientos a la sartén y cocina hasta que estén tiernos.",
+                    "Sirve el pollo y los vegetales en tortillas calientes, adornando con cilantro fresco y un toque de lima."
+                ],
                 "preparation_time": 25,
                 "image": "recipes/tacos_de_pollo.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Ensalada César",
-                "description": "Una ensalada clásica y fresca con lechuga crujiente, crutones y un delicioso aderezo César.",
-                "ingredients": {
-                    "Lechuga": "1 lechuga romana, cortada en trozos",
-                    "Parmesano": "50 g de queso parmesano rallado",
-                    "Crutones": "100 g de crutones",
-                    "Pollo": "2 pechugas de pollo, a la parrilla y cortadas en tiras",
-                    "Ajo": "1 diente de ajo picado",
-                    "Aderezo": "4 filetes de anchoa (opcional), 3 cucharadas de aceite de oliva, 1 cucharadita de mostaza de Dijon, 1 cucharada de jugo de limón, sal y pimienta al gusto"
-                },
-                "preparation_time": 20,
-                "image": "recipes/ensalada_cesar.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Pizza Margherita",
-                "description": "Pizza clásica italiana con tomate, mozzarella y albahaca fresca.",
-                "ingredients": {
-                    "Masa": "1 base de pizza",
-                    "Tomate": "200 g de salsa de tomate",
-                    "Mozzarella": "150 g de mozzarella fresca",
-                    "Albahaca": "Hojas de albahaca fresca",
-                    "Aceite de Oliva": "1 cucharada de aceite de oliva",
-                    "Condimentos": "Sal y pimienta al gusto"
-                },
-                "preparation_time": 15,
-                "image": "recipes/pizza_margherita.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Sushi Rolls",
-                "description": "Rollos de sushi frescos y deliciosos con pescado y vegetales.",
-                "ingredients": {
-                    "Arroz": "2 tazas de arroz para sushi",
-                    "Alga": "8 hojas de alga nori",
-                    "Pescado": "200 g de salmón o atún fresco",
-                    "Pepino": "1 pepino, cortado en tiras",
-                    "Aguacate": "1 aguacate, cortado en tiras",
-                    "Vinagre": "2 cucharadas de vinagre de arroz",
-                    "Condimentos": "Salsa de soja, wasabi y jengibre en conserva"
-                },
-                "preparation_time": 40,
-                "image": "recipes/sushi_rolls.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Chili con Carne",
-                "description": "Un guiso de carne picante y sabroso, perfecto para días fríos.",
-                "ingredients": {
-                    "Carne": "500 g de carne molida",
-                    "Frijoles": "400 g de frijoles rojos",
-                    "Tomate": "400 g de tomates triturados",
-                    "Cebolla": "1 cebolla grande, picada",
-                    "Ajo": "2 dientes de ajo, picados",
-                    "Pimientos": "1 pimiento rojo, picado",
-                    "Condimentos": "2 cucharaditas de comino, 1 cucharadita de pimentón, 1 cucharadita de chile en polvo, sal y pimienta al gusto"
-                },
-                "preparation_time": 60,
-                "image": "recipes/chili_con_carne.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Paella",
-                "description": "Un plato español clásico con arroz, mariscos y vegetales.",
-                "ingredients": {
-                    "Arroz": "2 tazas de arroz para paella",
-                    "Mariscos": "300 g de mezcla de mariscos",
-                    "Caldo": "4 tazas de caldo de pescado",
-                    "Tomate": "200 g de tomates triturados",
-                    "Pimientos": "1 pimiento rojo, cortado en tiras",
-                    "Guisantes": "100 g de guisantes",
-                    "Ajo": "2 dientes de ajo, picados",
-                    "Condimentos": "1 cucharadita de azafrán, sal y pimienta al gusto"
-                },
-                "preparation_time": 50,
-                "image": "recipes/paella.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Curry de Garbanzos",
-                "description": "Un curry vegetariano lleno de sabor y especias.",
-                "ingredients": {
-                    "Garbanzos": "400 g de garbanzos cocidos",
-                    "Cebolla": "1 cebolla grande, picada",
-                    "Ajo": "2 dientes de ajo, picados",
-                    "Jengibre": "1 trozo de jengibre fresco, rallado",
-                    "Tomate": "400 g de tomates triturados",
-                    "Leche de Coco": "400 ml de leche de coco",
-                    "Espinacas": "200 g de espinacas frescas",
-                    "Condimentos": "2 cucharaditas de curry en polvo, 1 cucharadita de cúrcuma, 1 cucharadita de comino, sal y pimienta al gusto"
-                },
-                "preparation_time": 35,
-                "image": "recipes/curry_de_garbanzos.webp"  # Nombre de archivo de imagen
-            },
-            {
-                "name": "Brownies",
-                "description": "Deliciosos brownies de chocolate, perfectos para los amantes del dulce.",
-                "ingredients": {
-                    "Chocolate": "200 g de chocolate negro",
-                    "Mantequilla": "100 g de mantequilla",
-                    "Azúcar": "200 g de azúcar",
-                    "Huevos": "3 huevos",
-                    "Harina": "100 g de harina",
-                    "Nueces": "100 g de nueces (opcional)",
-                    "Vainilla": "1 cucharadita de extracto de vainilla"
-                },
-                "preparation_time": 45,
-                "image": "recipes/brownies.webp"  # Nombre de archivo de imagen
             },
             {
                 "name": "Hamburguesa Clásica",
@@ -158,6 +66,13 @@ class Command(BaseCommand):
                     "Cebolla": "1 cebolla, en rodajas",
                     "Condimentos": "Sal y pimienta al gusto, ketchup, mostaza y mayonesa"
                 },
+                "steps": [
+                    "Forma 4 hamburguesas con la carne molida y sazónalas con sal y pimienta.",
+                    "Cocina las hamburguesas en una parrilla o sartén hasta que estén a tu gusto.",
+                    "Coloca una rebanada de queso sobre cada hamburguesa y deja que se derrita.",
+                    "Arma las hamburguesas colocando la carne con queso en los panes, y añade lechuga, tomate y cebolla.",
+                    "Adereza con ketchup, mostaza y mayonesa al gusto."
+                ],
                 "preparation_time": 20,
                 "image": "recipes/hamburguesa_clasica.webp"  # Nombre de archivo de imagen
             }
@@ -173,6 +88,7 @@ class Command(BaseCommand):
                 name=recipe_data["name"],
                 description=recipe_data["description"],
                 ingredients=recipe_data["ingredients"],
+                steps=recipe_data["steps"],  # Agrega los pasos
                 preparation_time=recipe_data["preparation_time"],
                 image=recipe_data["image"] if os.path.exists(image_path) else None  # Verifica que la imagen exista
             )

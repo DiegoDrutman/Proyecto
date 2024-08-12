@@ -1,4 +1,3 @@
-// src/components/RecipeShoppingCart/RecipeShoppingCart.styles.js
 import styled from 'styled-components';
 import { colors, spacing, breakpoints } from '../../styles/Variables'; // Asegúrate de usar "V" mayúscula para Variables.js
 
@@ -11,8 +10,12 @@ export const ShoppingCartContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
+  @media (max-width: ${breakpoints.tablet}) {
+    max-width: 100%; /* Asegura que ocupe todo el ancho disponible en tablets y móviles */
+  }
+
   @media (max-width: ${breakpoints.mobile}) {
-    padding: ${spacing.small};
+    padding: ${spacing.small}; /* Reducir padding en móviles */
   }
 `;
 
@@ -21,6 +24,10 @@ export const ShoppingCartTitle = styled.h2`
   color: ${colors.primary}; /* Marrón oscuro */
   text-align: center;
   margin-bottom: ${spacing.medium};
+
+  @media (max-width: ${breakpoints.mobile}) {
+    font-size: 1.5rem; /* Reducir el tamaño de la fuente en móviles */
+  }
 `;
 
 // Lista de elementos en el carrito de compras
@@ -41,7 +48,7 @@ export const ShoppingCartItem = styled.li`
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  @media (max-width: ${breakpoints.mobile}) {
+  @media (max-width: ${breakpoints.tablet}) {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -59,5 +66,10 @@ export const RemoveButton = styled.button`
 
   &:hover {
     background-color: ${colors.primary}; /* Cambiar a un marrón oscuro en hover */
+  }
+
+  @media (max-width: ${breakpoints.mobile}) {
+    padding: ${spacing.xsmall} ${spacing.small}; /* Ajustar el padding en móviles */
+    font-size: 0.9rem; /* Reducir el tamaño de la fuente en móviles */
   }
 `;

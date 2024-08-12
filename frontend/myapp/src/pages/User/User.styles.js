@@ -1,4 +1,3 @@
-// src/pages/Favorites/Favorites.styles.js
 import styled from 'styled-components';
 import { Box, Container } from '@mui/material';
 import { colors, spacing } from '../../styles/Variables'; // Asegúrate de usar "V" mayúscula para Variables.js
@@ -17,6 +16,15 @@ export const FullScreenContainer = styled(Box)`
   padding: ${spacing.medium};
   padding-top: 120px;
   background: linear-gradient(to bottom, ${colors.light}, ${colors.warmBackground});
+
+  @media (max-width: 768px) {
+    padding: ${spacing.small}; /* Reducir padding en pantallas medianas y móviles */
+    padding-top: 100px; /* Ajustar padding superior en pantallas más pequeñas */
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 80px; /* Reducir padding superior en móviles */
+  }
 `;
 
 // Contenedor del contenido
@@ -31,4 +39,13 @@ export const ContentWrapper = styled(Container)`
   background-color: ${colors.background};
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: ${spacing.small}; /* Reducir padding en pantallas medianas y móviles */
+  }
+
+  @media (max-width: 480px) {
+    padding: ${spacing.xsmall}; /* Ajustar padding en móviles */
+    border-radius: 5px; /* Reducir el radio de las esquinas en móviles */
+  }
 `;

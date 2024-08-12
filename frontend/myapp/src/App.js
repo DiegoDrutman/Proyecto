@@ -120,7 +120,7 @@ const HeaderTypography = styled.h1`
 
 const SubHeaderTypography = styled.h2`
   font-family: 'Playfair Display', serif;
-  font-size: 40px;
+  font-size: 20px;
   font-style: normal;
   color: ${colors.light};
   margin-bottom: 30px;

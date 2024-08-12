@@ -1,4 +1,3 @@
-// src/pages/SignUp/SignUp.styles.js
 import styled from 'styled-components';
 import { Box } from '@mui/material';
 import { colors } from '../../styles/Variables'; // Importa las variables de estilo
@@ -32,6 +31,11 @@ export const LeftContainer = styled(Box)`
         padding: 40px;
         margin-top: 0;
     }
+
+    @media (max-width: 480px) {
+        margin-top: 100px; /* Reducir el margen superior en móviles */
+        padding: 10px; /* Reducir el padding en móviles */
+    }
 `;
 
 // Contenedor estilizado
@@ -47,6 +51,11 @@ export const StyledContainer = styled(Box)`
     @media (min-width: 768px) {
         padding: 90px;
         border-radius: 70px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 20px; /* Reducir padding en móviles */
+        border-radius: 15px; /* Ajustar el radio en móviles */
     }
 `;
 

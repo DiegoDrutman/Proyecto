@@ -1,4 +1,3 @@
-// src/components/RecipeCard/RecipeCard.styles.js
 import styled from 'styled-components';
 import { Card, CardMedia } from '@mui/material';
 import { colors } from '../../styles/Variables';
@@ -20,10 +19,26 @@ export const RecipeCardContainer = styled(Card)`
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
+
+  @media (max-width: 768px) {
+    height: 350px; /* Ajustar la altura en pantallas medianas */
+  }
+
+  @media (max-width: 480px) {
+    height: 300px; /* Ajustar la altura en móviles */
+  }
 `;
 
 // Estilo de la imagen en la tarjeta de receta
 export const StyledCardMedia = styled(CardMedia)`
   height: 220px;
   object-fit: cover;
+
+  @media (max-width: 768px) {
+    height: 180px; /* Reducir altura de la imagen en pantallas medianas */
+  }
+
+  @media (max-width: 480px) {
+    height: 150px; /* Reducir altura de la imagen en móviles */
+  }
 `;

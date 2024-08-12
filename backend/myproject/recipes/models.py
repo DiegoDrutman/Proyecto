@@ -14,7 +14,8 @@ class Recipe(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     ingredients = models.JSONField()  # Usando JSONField para ingredientes
-    preparation_time = models.IntegerField() 
+    steps = models.JSONField(null=True, blank=True)  # Campo para los pasos de preparación
+    preparation_time = models.IntegerField()
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)  # Campo para la fecha de creación
 

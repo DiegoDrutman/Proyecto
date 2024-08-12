@@ -4,7 +4,7 @@ export const colors = {
   light: '#FFEFD5',          // Pale Peach Puff
   dark: '#8B4513',           // SaddleBrown
   accent: '#C19A6B',         // Antique Brass
-  warmBackground: 'transparent', // Cornsilk
+  warmBackground: '#FFF8DC', // Cornsilk
   background: '#FFFFFF',     // White
 };
 

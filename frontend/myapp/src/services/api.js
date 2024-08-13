@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
     },
 });
 
-// Interceptor para añadir el token de autenticación a cada solicitud
+// Interceptor para añadir el token de autenticación y el token CSRF a cada solicitud
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');  // Obtén el token de localStorage
@@ -71,14 +71,38 @@ export const getUserProfile = async () => handleRequest(() => axiosInstance.get(
 // Función para actualizar el perfil del usuario
 export const updateUserProfile = async (userId, profileData) => handleRequest(() => axiosInstance.put(`profiles/${userId}/`, profileData));
 
-// Función para obtener recetas, permite la búsqueda por término
-export const getRecipes = async (searchTerm = '') => {
-    const url = searchTerm ? `recipes/?search=${encodeURIComponent(searchTerm)}` : 'recipes/';
+// Función para crear un negocio
+export const createBusiness = async (businessData) => {
+    const formData = new FormData();
+    for (const key in businessData) {
+        formData.append(key, businessData[key]);
+    }
+    return handleRequest(() => axiosInstance.post('businesses/', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }));
+};
+
+// Función para obtener negocios, permite la búsqueda por término
+export const getBusinesses = async (searchTerm = '') => {
+    const url = searchTerm ? `businesses/?search=${encodeURIComponent(searchTerm)}` : 'businesses/';
     return handleRequest(() => axiosInstance.get(url));
 };
 
-export const getRecipeById = async (id) => {
-    return handleRequest(() => axiosInstance.get(`recipes/${id}/`));
+// Función para obtener un negocio por su ID
+export const getBusinessById = async (id) => {
+    return handleRequest(() => axiosInstance.get(`businesses/${id}/`));
+};
+
+// Función para obtener negocios pendientes de aprobación
+export const getPendingBusinesses = async () => {
+    return handleRequest(() => axiosInstance.get('businesses/?approved=false'));
+};
+
+// Función para aprobar un negocio
+export const approveBusiness = async (id) => {
+    return handleRequest(() => axiosInstance.post(`businesses/${id}/approve/`));
 };
 
 export default axiosInstance;

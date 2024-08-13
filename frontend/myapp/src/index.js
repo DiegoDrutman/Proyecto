@@ -18,7 +18,7 @@ const muiTheme = createTheme({
       main: colors.primary,
     },
     background: {
-      default: colors.warmBackground,
+      default: colors.warmBackground, // Fondo adaptado a un tema cálido para BizWave
       paper: '#FFFFFF',
     },
     text: {

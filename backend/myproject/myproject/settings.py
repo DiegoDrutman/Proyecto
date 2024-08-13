@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'recipes', 
+    'business', 
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -32,6 +32,17 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = False  # Esto debe ser False para acceso desde JS
 CSRF_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
 SESSION_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'diego.drutman@gmail.com'
+EMAIL_HOST_PASSWORD = 'mc1rapp9'
+
+DEFAULT_FROM_EMAIL = 'diego.drutman@gmail.com'
+DEFAULT_ADMIN_EMAIL = 'diego.drutman@gmail.com'
+
 
 # Middleware
 MIDDLEWARE = [

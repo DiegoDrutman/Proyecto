@@ -4,7 +4,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import Logo from '../../assets/logo.png';
 import { NavBar, NavLink, IngresarLink } from './Navigation.styles'; // Importar estilos
 import { colors } from '../../styles/Variables'; // Importar variables de color desde Variables.js
 
@@ -68,7 +67,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit' }}>
-            <img src={Logo} alt="ReceTamos Logo" style={{ width: '80px', height: '80px', marginRight: '10px' }} />
             <Typography
               variant="h5"
               component="div"
@@ -84,7 +82,7 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 },
               }}
             >
-              ReceTamos!
+              BizWave
             </Typography>
           </Link>
         </Box>
@@ -119,9 +117,9 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 Inicio
               </Typography>
             </MenuItem>
-            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('all-recipes'); }}>
+            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('all-businesses'); }}>
               <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
-                Recetas
+                Negocios
               </Typography>
             </MenuItem>
             {isAuthenticated ? (
@@ -136,7 +134,7 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
                 <MenuItem onClick={handleMobileMenuClose}>
                   <Link to="/user" style={{ textDecoration: 'none', color: colors.dark }}>
                     <Typography variant="h6" component="div">
-                      Favoritas
+                      Favoritos
                     </Typography>
                   </Link>
                 </MenuItem>
@@ -148,9 +146,9 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
               </>
             ) : (
               <MenuItem onClick={handleMobileMenuClose}>
-                <Link to="/login" style={{ textDecoration: 'none', color: colors.dark }}>
+                <Link to="/signup" style={{ textDecoration: 'none', color: colors.dark }}>
                   <Typography variant="h6" component="div">
-                    Ingresar
+                    Tengo un negocio
                   </Typography>
                 </Link>
               </MenuItem>
@@ -168,9 +166,9 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
           <NavLink
             variant="h6"
             component="div"
-            onClick={() => navigateAndScroll('all-recipes')}
+            onClick={() => navigateAndScroll('all-businesses')}
           >
-            Recetas
+            Negocios
           </NavLink>
           {isAuthenticated ? (
             <div>
@@ -214,9 +212,9 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
               </Menu>
             </div>
           ) : (
-            <Link to="/login" style={{ textDecoration: 'none', color: colors.dark }}>
+            <Link to="/signup" style={{ textDecoration: 'none', color: colors.dark }}>
               <IngresarLink variant="h6" component="div"> {/* Usar IngresarLink */}
-                Ingresar
+                Tengo un negocio
               </IngresarLink>
             </Link>
           )}

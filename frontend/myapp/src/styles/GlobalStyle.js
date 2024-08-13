@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import backgroundImage from '../assets/wooden-table.webp'; // Asegúrate de que la ruta sea correcta
+import backgroundImage from '../assets/background.jpg'; // Asegúrate de que la ruta sea correcta
 import { colors, fontSizes } from './Variables';
 
 const GlobalStyle = createGlobalStyle`

@@ -3,15 +3,15 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Box, TextField, Autocomplete, Container } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import Navigation from './components/Navigation/Navigation';
-import { authenticateUser, getRecipes } from './services/api';
+import { authenticateUser, getBusinesses } from './services/api';
 import Favorites from './pages/User/User';
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
-import RecipeDetails from './pages/RecipeDetails/RecipeDetails';
-import RecipeList from './components/RecipeList/RecipeList';
+import BusinessDetails from './pages/BusinessDetails/BusinessDetails';
+import BusinessList from './components/BusinessList/BusinessList';
 import GlobalStyle from './styles/GlobalStyle';
 import { colors, fontSizes } from './styles/Variables';
-import backgroundImage from './assets/wooden-table.webp';
+import backgroundImage from './assets/background.jpg';
 import { createFilterOptions } from '@mui/material/Autocomplete';
 
 const fadeIn = keyframes`
@@ -50,7 +50,7 @@ const ContentWrapper = styled(Container)`
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 50px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 300px;
+  margin-top: 150px; /* Reducir la distancia al top para que quede más abajo */
   margin-bottom: 50px;
   margin-right: 600px !important;
   position: relative;
@@ -129,23 +129,22 @@ const SubHeaderTypography = styled.h2`
   }
 `;
 
-const RecipesContainer = styled(Box)`
+const BusinessesContainer = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 0px;
   padding: 20px 0;
+  margin-top: 50px; /* Ajuste para bajar la posición del contenedor */
   background-color: rgba(0, 0, 0, 0.6);
 `;
 
-const RecipeGrid = styled(Box)`
+const BusinessGrid = styled(Box)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   width: 100%;
   max-width: 1200px;
-  margin-top: 0;
 `;
 
 const App = () => {
@@ -168,13 +167,13 @@ const App = () => {
     const fetchSuggestions = async () => {
       try {
         if (searchTerm) {
-          const response = await getRecipes(searchTerm);
-          setSuggestions(response.map((recipe) => ({ id: recipe.id, name: recipe.name })));
+          const response = await getBusinesses(searchTerm);
+          setSuggestions(response.map((business) => ({ id: business.id, name: business.name })));
         } else {
           setSuggestions([]);
         }
       } catch (error) {
-        console.error('Error fetching recipe suggestions:', error);
+        console.error('Error fetching business suggestions:', error);
       }
     };
 
@@ -197,12 +196,12 @@ const App = () => {
     setIsAuthenticated(false);
     setUserName('');
     localStorage.removeItem('token');
-    navigate('/login'); // Redirigir a la página de login después del logout
+    navigate('/login');
   };
 
-  const handleSelectRecipe = (event, value) => {
+  const handleSelectBusiness = (event, value) => {
     if (value) {
-      navigate(`/recipe/${value.id}`);
+      navigate(`/business/${value.id}`);
     }
   };
 
@@ -225,24 +224,24 @@ const App = () => {
               <FullScreenContainer id="home">
                 <ContentWrapper>
                   <HeaderTypography>
-                    Manos a la Obra!
+                    Bienvenido a BizWave!
                   </HeaderTypography>
                   <SubHeaderTypography>
-                    Indicanos, ¿como se llama el plato?
+                    ¿Qué negocio estás buscando?
                   </SubHeaderTypography>
                   <StyledAutocomplete
                     freeSolo
                     options={suggestions}
                     getOptionLabel={(option) => option.name}
-                    filterOptions={filterOptions} // Limitar el número de resultados
+                    filterOptions={filterOptions}
                     onInputChange={(event, newInputValue) => {
                       setSearchTerm(newInputValue);
                     }}
-                    onChange={handleSelectRecipe}
+                    onChange={handleSelectBusiness}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Buscar Recetas"
+                        label="Buscar Negocios"
                         variant="outlined"
                         fullWidth
                         InputLabelProps={{
@@ -254,18 +253,18 @@ const App = () => {
                 </ContentWrapper>
               </FullScreenContainer>
 
-              <RecipesContainer id="all-recipes">
-                <RecipeGrid>
-                  <RecipeList searchTerm={searchTerm} />
-                </RecipeGrid>
-              </RecipesContainer>
+              <BusinessesContainer id="all-businesses">
+                <BusinessGrid>
+                  <BusinessList searchTerm={searchTerm} />
+                </BusinessGrid>
+              </BusinessesContainer>
             </>
           }
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/favorites" element={isAuthenticated ? <Favorites /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/recipe/:id" element={<RecipeDetails />} />
+        <Route path="/business/:id" element={<BusinessDetails />} />
       </Routes>
     </>
   );

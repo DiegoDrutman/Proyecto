@@ -1,13 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserProfileViewSet, BusinessViewSet, ProductViewSet, get_csrf_token  # Asegúrate de importar ProductViewSet
+from .views import BusinessViewSet, ProductViewSet, get_csrf_token
 
+# Configuración del enrutador para registrar los viewsets
 router = DefaultRouter()
-router.register(r'profiles', UserProfileViewSet, basename='profile')
 router.register(r'businesses', BusinessViewSet, basename='business')
-router.register(r'products', ProductViewSet, basename='product')  # Registra el ProductViewSet
+router.register(r'products', ProductViewSet, basename='product')
 
 urlpatterns = [
-    path('', include(router.urls)),  # Incluye todas las rutas del router
-    path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),
+    path('', include(router.urls)),  # Incluye todas las URL generadas por el enrutador
+    path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),  # Ruta para obtener el token CSRF
 ]

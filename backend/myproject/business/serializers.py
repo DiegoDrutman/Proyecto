@@ -1,47 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, Business, Product
-from django.contrib.auth.models import User
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password')
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = UserProfile
-        fields = ['id', 'user', 'avatar', 'bio', 'joined_date']
-
-    def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        if User.objects.filter(username=user_data['username']).exists():
-            raise serializers.ValidationError({"username": "Este nombre de usuario ya está en uso."})
-        if User.objects.filter(email=user_data['email']).exists():
-            raise serializers.ValidationError({"email": "Este correo electrónico ya está en uso."})
-        user = User.objects.create_user(**user_data)
-        profile = UserProfile.objects.create(user=user, **validated_data)
-        return profile
-
-    def update(self, instance, validated_data):
-        user_data = validated_data.pop('user', None)
-        if user_data:
-            user = instance.user
-            user.username = user_data.get('username', user.username)
-            user.email = user_data.get('email', user.email)
-            user.save()
-        instance.avatar = validated_data.get('avatar', instance.avatar)
-        instance.bio = validated_data.get('bio', instance.bio)
-        instance.save()
-        return instance
+from .models import Business, Product
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,14 +7,20 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'price', 'offer_price', 'image', 'created_at']
 
 class BusinessSerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True, read_only=True)
-    approved = serializers.BooleanField(read_only=True)  # Campo de solo lectura para evitar que el negocio se apruebe directamente desde el API
-
     class Meta:
         model = Business
-        fields = ['id', 'name', 'description', 'category', 'address', 'operating_hours', 'image', 'created_at', 'approved', 'products']
+        fields = ['id', 'username', 'password', 'name', 'description', 'category', 'address', 'operating_hours', 'image', 'created_at', 'approved']
 
     def create(self, validated_data):
-        # Cuando se crea un negocio, automáticamente no está aprobado
-        validated_data['approved'] = False
-        return super().create(validated_data)
+        business = Business(
+            username=validated_data['username'],
+            name=validated_data['name'],
+            description=validated_data['description'],
+            category=validated_data['category'],
+            address=validated_data['address'],
+            operating_hours=validated_data['operating_hours'],
+            approved=False
+        )
+        business.set_password(validated_data['password'])
+        business.save()
+        return business

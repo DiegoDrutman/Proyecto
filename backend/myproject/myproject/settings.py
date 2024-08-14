@@ -37,12 +37,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'diego.drutman@gmail.com'
-EMAIL_HOST_PASSWORD = 'mc1rapp9'
-
-DEFAULT_FROM_EMAIL = 'diego.drutman@gmail.com'
-DEFAULT_ADMIN_EMAIL = 'diego.drutman@gmail.com'
-
+EMAIL_HOST_USER = 'diego.drutman@gmail.com'  # Cambia esto a tu correo
+EMAIL_HOST_PASSWORD = 'eyxw ukjd ymck tggk'  # Cambia esto a tu contraseña
+DEFAULT_FROM_EMAIL = 'BizWave <diego.drutman@gmail.com>'  # Configura el remitente
+ADMIN_EMAIL = 'diego.drutman@gmail.com'
 
 # Middleware
 MIDDLEWARE = [
@@ -54,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'business.middleware.BusinessMiddleware',
 ]
 
 CORS_ALLOW_HEADERS = [

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Business, Product
+from django.contrib.auth import authenticate
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,3 +25,21 @@ class BusinessSerializer(serializers.ModelSerializer):
         business.set_password(validated_data['password'])
         business.save()
         return business
+    
+class BusinessAuthTokenSerializer(serializers.Serializer):
+    username = serializers.CharField(label="Username")
+    password = serializers.CharField(label="Password", style={'input_type': 'password'}, trim_whitespace=False)
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            business = authenticate(username=username, password=password)
+            if business is None:
+                raise serializers.ValidationError('Unable to log in with provided credentials.', code='authorization')
+        else:
+            raise serializers.ValidationError('Must include "username" and "password".', code='authorization')
+
+        attrs['business'] = business
+        return attrs

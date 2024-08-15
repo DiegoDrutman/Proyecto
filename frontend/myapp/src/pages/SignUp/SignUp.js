@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Alert, Link } from '@mui/material';
 import Cookies from 'js-cookie';
-import { createUser, authenticateUser } from '../../services/api';
+import { createBusiness } from '../../services/api';
 import axios from 'axios';
 import {
     FullScreenContainer,
@@ -13,7 +13,11 @@ import {
 import { colors } from '../../styles/Variables';
 
 const SignUp = ({ setIsAuthenticated }) => {
-    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
+    const [address, setAddress] = useState('');
+    const [operatingHours, setOperatingHours] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -39,34 +43,34 @@ const SignUp = ({ setIsAuthenticated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!validateEmail(email)) {
             setErrorMessage('Por favor, introduce un correo electrónico válido.');
             return;
         }
-
+    
         if (password.length < 6) {
             setErrorMessage('La contraseña debe tener al menos 6 caracteres.');
             return;
         }
-
+    
         try {
-            const response = await createUser({ username, email, password });
-
+            const businessData = {
+                username: name,
+                name,
+                description,
+                category,
+                address,
+                operating_hours: operatingHours,
+                email,
+                password
+            };
+    
+            const response = await createBusiness(businessData);
+    
             if (response) {
-                try {
-                    const authResponse = await authenticateUser({ username, password });
-                    if (authResponse.token) {
-                        localStorage.setItem('token', authResponse.token);
-                        setIsAuthenticated(true);
-                        window.location.href = '/login';
-                    } else {
-                        setErrorMessage('Error al iniciar sesión después del registro. Por favor, intenta iniciar sesión manualmente.');
-                    }
-                } catch (authError) {
-                    console.error('Error during automatic login:', authError);
-                    setErrorMessage('Error al iniciar sesión después del registro. Por favor, intenta iniciar sesión manualmente.');
-                }
+                setIsAuthenticated(true);
+                window.location.href = '/login';
             } else {
                 setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
             }
@@ -84,11 +88,11 @@ const SignUp = ({ setIsAuthenticated }) => {
                         Bienvenido a BizWave
                     </Typography>
                     <Typography variant="h6" gutterBottom>
-                        Regístrate para empezar a gestionar tu negocio.
+                        Registra tu empresa para empezar a gestionar tu negocio.
                     </Typography>
                     <StyledContainer>
                         <Typography variant="h4" gutterBottom>
-                            Registrarse
+                            Registrar Empresa
                         </Typography>
                         {errorMessage && (
                             <Alert severity="error" onClose={() => setErrorMessage('')} sx={{ mb: 2 }}>
@@ -97,16 +101,64 @@ const SignUp = ({ setIsAuthenticated }) => {
                         )}
                         <form onSubmit={handleSubmit} aria-label="Formulario de registro">
                             <TextField
-                                label="Nombre de Usuario"
+                                label="Nombre de la Empresa"
                                 variant="outlined"
                                 fullWidth
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                                 required
-                                autoComplete="username"
+                                autoComplete="organization"
                                 aria-required="true"
-                                aria-label="Nombre de Usuario"
-                                helperText="El nombre de usuario debe ser único"
+                                aria-label="Nombre de la Empresa"
+                                helperText="El nombre de la empresa debe ser único"
+                                margin="normal"
+                            />
+                            <TextField
+                                label="Descripción"
+                                variant="outlined"
+                                fullWidth
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                required
+                                autoComplete="description"
+                                aria-required="true"
+                                aria-label="Descripción"
+                                margin="normal"
+                            />
+                            <TextField
+                                label="Categoría"
+                                variant="outlined"
+                                fullWidth
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                required
+                                autoComplete="category"
+                                aria-required="true"
+                                aria-label="Categoría"
+                                margin="normal"
+                            />
+                            <TextField
+                                label="Dirección"
+                                variant="outlined"
+                                fullWidth
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                                autoComplete="address"
+                                aria-required="true"
+                                aria-label="Dirección"
+                                margin="normal"
+                            />
+                            <TextField
+                                label="Horarios de Operación"
+                                variant="outlined"
+                                fullWidth
+                                value={operatingHours}
+                                onChange={(e) => setOperatingHours(e.target.value)}
+                                required
+                                autoComplete="operating-hours"
+                                aria-required="true"
+                                aria-label="Horarios de Operación"
                                 margin="normal"
                             />
                             <TextField
@@ -147,9 +199,9 @@ const SignUp = ({ setIsAuthenticated }) => {
                                 }}
                                 type="submit"
                                 fullWidth
-                                disabled={!username || !email || !password}
+                                disabled={!name || !email || !password}
                             >
-                                Registrarse
+                                Registrar Empresa
                             </Button>
                             <Typography variant="body2" sx={{ mt: 2 }}>
                                 ¿Ya tienes una cuenta?{' '}

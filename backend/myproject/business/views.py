@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Business, Product
-from .serializers import BusinessSerializer, ProductSerializer
+from .serializers import BusinessSerializer, ProductSerializer, BusinessAuthTokenSerializer
 from django.db.models import Q
 from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
@@ -77,10 +77,12 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 class CustomAuthToken(ObtainAuthToken):
+    serializer_class = BusinessAuthTokenSerializer
+
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         if serializer.is_valid():
-            business = serializer.validated_data['user']
+            business = serializer.validated_data['business']
             if not business.approved:
                 return Response({"detail": "El negocio aún no ha sido aprobado."}, status=status.HTTP_400_BAD_REQUEST)
             token, created = Token.objects.get_or_create(user=business)
@@ -90,5 +92,4 @@ class CustomAuthToken(ObtainAuthToken):
                 'name': business.name
             })
         else:
-            print(serializer.errors)  # Añadir este log para ver qué errores está produciendo
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -3,17 +3,17 @@ import { Typography } from '@mui/material';
 import { colors } from '../../styles/Variables';
 
 export const NavBar = styled.div`
-  background-color: ${({ scrolled }) => (scrolled ? `${colors.light}` : 'transparent')} !important; /* Color igual al fondo del buscador */
+  background-color: ${({ scrolled }) => (scrolled ? `${colors.light}` : 'transparent')} !important;
   backdrop-filter: ${({ scrolled }) => (scrolled ? 'blur(10px)' : 'none')};
   box-shadow: ${({ scrolled }) => (scrolled ? '0 2px 10px rgba(0, 0, 0, 0.1)' : 'none')} !important;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1000; /* Asegúrate de que este valor sea alto */
   width: 100%;
   transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
 
   @media (max-width: 768px) {
-    padding: 10px 15px; /* Añadir padding en pantallas pequeñas */
+    padding: 10px 15px;
   }
 `;
 
@@ -64,29 +64,30 @@ export const NavLink = styled(Typography)`
 `;
 
 export const IngresarLink = styled(NavLink)`
-  border: 1px solid ${colors.dark};
-  border-radius: 5px;
-  padding: 10px 20px;
-  margin-left: 10px; /* Margen para separarlo de los otros enlaces */
+  border: 1px solid ${colors.dark} !important;
+  border-radius: 5px !important;
+  padding: 10px 20px !important;
+  margin-left: 10px !important;
+  position: relative !important;
+  z-index: 9999 !important; /* Forzar que esté al frente */
 
   &:after {
-    /* Remover la línea inferior */
-    display: none;
+    display: none !important;
   }
 
   &:hover {
-    background-color: ${colors.accent};
-    color: ${colors.light};
-    transform: scale(1.05);
+    background-color: ${colors.accent} !important;
+    color: ${colors.light} !important;
+    transform: scale(1.05) !important;
   }
 
   @media (max-width: 768px) {
-    padding: 8px 15px; /* Ajustar padding en pantallas más pequeñas */
-    font-size: 0.9rem; /* Reducir el tamaño de fuente */
+    padding: 8px 15px !important;
+    font-size: 0.9rem !important;
   }
 
   @media (max-width: 480px) {
-    padding: 7px 12px; /* Reducir padding en móviles */
-    font-size: 0.8rem; /* Reducir más el tamaño de fuente en móviles */
+    padding: 7px 12px !important;
+    font-size: 0.8rem !important;
   }
 `;

@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'business', 
+    'business',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -37,22 +37,21 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'diego.drutman@gmail.com'  # Cambia esto a tu correo
-EMAIL_HOST_PASSWORD = 'eyxw ukjd ymck tggk'  # Cambia esto a tu contraseña
-DEFAULT_FROM_EMAIL = 'BizWave <diego.drutman@gmail.com>'  # Configura el remitente
+EMAIL_HOST_USER = 'diego.drutman@gmail.com'
+EMAIL_HOST_PASSWORD = 'eyxw ukjd ymck tggk'
+DEFAULT_FROM_EMAIL = 'BizWave <diego.drutman@gmail.com>'
 ADMIN_EMAIL = 'diego.drutman@gmail.com'
 
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Añade CORS headers
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'business.middleware.BusinessMiddleware',
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -133,3 +132,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Usar el modelo Business como modelo de usuario
+AUTH_USER_MODEL = 'business.Business'
+
+# Agregar backend de autenticación personalizado
+AUTHENTICATION_BACKENDS = [
+    'business.backends.BusinessBackend',  # Reemplaza 'yourapp' con el nombre de tu aplicación
+    'django.contrib.auth.backends.ModelBackend',
+]

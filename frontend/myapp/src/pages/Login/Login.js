@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Typography, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { authenticateUser } from '../../services/api';
+import { authenticateBusiness } from '../../services/api';
 import {
   BackgroundWrapper,
   LeftContainer,
@@ -10,7 +10,7 @@ import {
   SubmitButton,
   ErrorAlert,
   SignupLink,
-} from './Login.styles'; // Importación de estilos
+} from './Login.styles';
 
 const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
@@ -18,26 +18,28 @@ const Login = ({ setIsAuthenticated }) => {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log('Enviando credenciales:', { username, password }); // <-- Agrega este log
     try {
-      const response = await authenticateUser({ username, password });
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        setIsAuthenticated(true);
-        navigate('/user');
-      } else {
-        setError('Authentication failed. Please try again.');
-      }
+        const response = await authenticateBusiness({ username, password });
+        if (response.token) {
+            localStorage.setItem('token', response.token);
+            setIsAuthenticated(true);
+            navigate('/user');
+        } else {
+            setError('La autenticación falló. Por favor, inténtalo de nuevo.');
+        }
     } catch (err) {
-      if (err.response && err.response.status === 403) {
-        setError('Tu cuenta o negocio aún no ha sido aprobada.');
-      } else {
-        setError('Invalid username or password. Please check your credentials.');
-      }
+        if (err.response && err.response.status === 403) {
+            setError('Tu cuenta o negocio aún no ha sido aprobada.');
+        } else {
+            setError('Nombre de usuario o contraseña inválidos. Por favor, verifica tus credenciales.');
+        }
     }
-  };
+};
+
 
   return (
     <BackgroundWrapper>

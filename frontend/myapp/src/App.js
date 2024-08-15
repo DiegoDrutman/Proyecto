@@ -3,8 +3,8 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Box, TextField, Autocomplete, Container } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import Navigation from './components/Navigation/Navigation';
-import { authenticateUser, getBusinesses } from './services/api';
-import Favorites from './pages/User/User';
+import { authenticateBusiness, getBusinesses } from './services/api';
+import BusinessProfilePage from './pages/BusinessProfile/BusinessProfile'; // Cambié el nombre de Favorites a BusinessProfile
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
 import BusinessDetails from './pages/BusinessDetails/BusinessDetails';
@@ -149,7 +149,7 @@ const BusinessGrid = styled(Box)`
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [businessName, setBusinessName] = useState(''); // Cambié userName a businessName
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -182,10 +182,10 @@ const App = () => {
 
   const handleLogin = async (credentials) => {
     try {
-      const userData = await authenticateUser(credentials);
-      localStorage.setItem('token', userData.token);
+      const businessData = await authenticateBusiness(credentials); // Cambié authenticateUser a authenticateBusiness
+      localStorage.setItem('token', businessData.token);
       setIsAuthenticated(true);
-      setUserName(userData.username);
+      setBusinessName(businessData.name); // Cambié userName a businessName
       navigate('/'); // Redirigir a la página principal después del login
     } catch (error) {
       console.error('Error logging in:', error);
@@ -194,7 +194,7 @@ const App = () => {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setUserName('');
+    setBusinessName(''); // Cambié userName a businessName
     localStorage.removeItem('token');
     navigate('/login');
   };
@@ -211,7 +211,7 @@ const App = () => {
       {location.pathname && (
         <Navigation
           isAuthenticated={isAuthenticated}
-          userName={userName}
+          businessName={businessName} // Cambié userName a businessName
           onLogin={handleLogin}
           onLogout={handleLogout}
         />
@@ -263,7 +263,7 @@ const App = () => {
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/favorites" element={isAuthenticated ? <Favorites /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/profile" element={isAuthenticated ? <BusinessProfilePage /> : <Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Cambié de /favorites a /profile */}
         <Route path="/business/:id" element={<BusinessDetails />} />
       </Routes>
     </>

@@ -134,7 +134,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Usar el modelo Business como modelo de usuario
-AUTH_USER_MODEL = 'business.Business'
+AUTH_USER_MODEL = 'business.CustomerUser'
 
 # Agregar backend de autenticación personalizado
 AUTHENTICATION_BACKENDS = [

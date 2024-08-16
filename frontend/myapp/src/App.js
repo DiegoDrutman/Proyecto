@@ -30,10 +30,15 @@ const FullScreenContainer = styled(Box)`
   width: 100%;
   min-height: 100vh;
   text-align: center;
-  background: url(${backgroundImage}) no-repeat center center;
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5)
+    ),
+    url(${backgroundImage}) no-repeat center center;  // Imagen de fondo
   color: ${colors.light};
   background-size: cover;
   background-attachment: fixed;
+
   @media (max-width: 600px) {
     background-attachment: scroll;
   }

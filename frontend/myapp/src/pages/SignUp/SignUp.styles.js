@@ -17,7 +17,7 @@ export const FullScreenContainer = styled(Box)`
     flex-direction: column;
     width: 100vw;
     height: 100vh;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.5);  // Fondo semitransparente negro
     color: ${colors.dark};
 
     @media (min-width: 768px) {
@@ -77,8 +77,10 @@ export const RightContainer = styled(Box)`
         width: 35%;
         background-size: cover;
         background-position: center;
+        filter: brightness(50%);  // Reduce el brillo del fondo para destacar más el contenido
     }
 `;
+
 
 // Estilo para el enlace de registro
 export const SignupLink = styled(Box)`

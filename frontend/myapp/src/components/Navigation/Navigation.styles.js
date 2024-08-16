@@ -3,12 +3,12 @@ import { Typography } from '@mui/material';
 import { colors } from '../../styles/Variables';
 
 export const NavBar = styled.div`
-  background-color: ${({ scrolled }) => (scrolled ? `${colors.light}` : 'transparent')} !important;
-  backdrop-filter: ${({ scrolled }) => (scrolled ? 'blur(10px)' : 'none')};
-  box-shadow: ${({ scrolled }) => (scrolled ? '0 2px 10px rgba(0, 0, 0, 0.1)' : 'none')} !important;
-  position: sticky;
+  background-color: ${colors.light};  // Siempre color light
+  backdrop-filter: blur(10px);  // Mantén el efecto de desenfoque si lo deseas
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);  // Mantén la sombra
+  position: fixed;
   top: 0;
-  z-index: 1000; /* Asegúrate de que este valor sea alto */
+  z-index: 1000;
   width: 100%;
   transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
 

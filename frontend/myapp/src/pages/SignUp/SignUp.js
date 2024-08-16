@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Alert, Link } from '@mui/material';
-import Cookies from 'js-cookie';
+import React, { useState } from 'react';
+import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Link } from '@mui/material';
 import { createBusiness } from '../../services/api';
-import axios from 'axios';
 import {
     FullScreenContainer,
     LeftContainer,
@@ -12,7 +10,10 @@ import {
 } from './SignUp.styles';
 import { colors } from '../../styles/Variables';
 
+const steps = ['Información Básica', 'Detalles de la Empresa', 'Información de Contacto y Seguridad'];
+
 const SignUp = ({ setIsAuthenticated }) => {
+    const [activeStep, setActiveStep] = useState(0);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
@@ -22,38 +23,24 @@ const SignUp = ({ setIsAuthenticated }) => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        const fetchCsrfToken = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/api/get_csrf_token/');
-                const csrfToken = response.data.csrfToken;
-                Cookies.set('csrftoken', csrfToken);
-            } catch (error) {
-                console.error('Error fetching CSRF token:', error);
-            }
-        };
-
-        fetchCsrfToken();
-    }, []);
-
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    const handleNext = () => {
+        if (activeStep === steps.length - 1) {
+            handleSubmit();
+        } else {
+            setActiveStep(prevStep => prevStep + 1);
+        }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        if (!validateEmail(email)) {
-            setErrorMessage('Por favor, introduce un correo electrónico válido.');
-            return;
-        }
-    
+    const handleBack = () => {
+        setActiveStep(prevStep => prevStep - 1);
+    };
+
+    const handleSubmit = async () => {
         if (password.length < 6) {
             setErrorMessage('La contraseña debe tener al menos 6 caracteres.');
             return;
         }
-    
+
         try {
             const businessData = {
                 username: name,
@@ -65,9 +52,9 @@ const SignUp = ({ setIsAuthenticated }) => {
                 email,
                 password
             };
-    
+
             const response = await createBusiness(businessData);
-    
+
             if (response) {
                 setIsAuthenticated(true);
                 window.location.href = '/login';
@@ -75,8 +62,100 @@ const SignUp = ({ setIsAuthenticated }) => {
                 setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
             }
         } catch (error) {
-            console.error('Error durante el registro:', error);
             setErrorMessage(error.message || 'Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
+        }
+    };
+
+    const getStepContent = (step) => {
+        switch (step) {
+            case 0:
+                return (
+                    <>
+                        <TextField
+                            label="Nombre de la Empresa"
+                            variant="outlined"
+                            fullWidth
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            autoComplete="organization"
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Descripción"
+                            variant="outlined"
+                            fullWidth
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            autoComplete="description"
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Categoría"
+                            variant="outlined"
+                            fullWidth
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                            required
+                            autoComplete="category"
+                            margin="normal"
+                        />
+                    </>
+                );
+            case 1:
+                return (
+                    <>
+                        <TextField
+                            label="Dirección"
+                            variant="outlined"
+                            fullWidth
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            required
+                            autoComplete="address"
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Horarios de Operación"
+                            variant="outlined"
+                            fullWidth
+                            value={operatingHours}
+                            onChange={(e) => setOperatingHours(e.target.value)}
+                            required
+                            autoComplete="operating-hours"
+                            margin="normal"
+                        />
+                    </>
+                );
+            case 2:
+                return (
+                    <>
+                        <TextField
+                            label="Correo Electrónico"
+                            variant="outlined"
+                            fullWidth
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                            margin="normal"
+                        />
+                        <TextField
+                            label="Contraseña"
+                            variant="outlined"
+                            type="password"
+                            fullWidth
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            autoComplete="new-password"
+                            margin="normal"
+                        />
+                    </>
+                );
+            default:
+                return 'Unknown step';
         }
     };
 
@@ -90,103 +169,21 @@ const SignUp = ({ setIsAuthenticated }) => {
                     <Typography variant="h6" gutterBottom>
                         Registra tu empresa para empezar a gestionar tu negocio.
                     </Typography>
+                    <Stepper activeStep={activeStep} alternativeLabel>
+                        {steps.map(label => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
                     <StyledContainer>
-                        <Typography variant="h4" gutterBottom>
-                            Registrar Empresa
-                        </Typography>
                         {errorMessage && (
                             <Alert severity="error" onClose={() => setErrorMessage('')} sx={{ mb: 2 }}>
                                 {errorMessage}
                             </Alert>
                         )}
-                        <form onSubmit={handleSubmit} aria-label="Formulario de registro">
-                            <TextField
-                                label="Nombre de la Empresa"
-                                variant="outlined"
-                                fullWidth
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                                autoComplete="organization"
-                                aria-required="true"
-                                aria-label="Nombre de la Empresa"
-                                helperText="El nombre de la empresa debe ser único"
-                                margin="normal"
-                            />
-                            <TextField
-                                label="Descripción"
-                                variant="outlined"
-                                fullWidth
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                required
-                                autoComplete="description"
-                                aria-required="true"
-                                aria-label="Descripción"
-                                margin="normal"
-                            />
-                            <TextField
-                                label="Categoría"
-                                variant="outlined"
-                                fullWidth
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                                required
-                                autoComplete="category"
-                                aria-required="true"
-                                aria-label="Categoría"
-                                margin="normal"
-                            />
-                            <TextField
-                                label="Dirección"
-                                variant="outlined"
-                                fullWidth
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                required
-                                autoComplete="address"
-                                aria-required="true"
-                                aria-label="Dirección"
-                                margin="normal"
-                            />
-                            <TextField
-                                label="Horarios de Operación"
-                                variant="outlined"
-                                fullWidth
-                                value={operatingHours}
-                                onChange={(e) => setOperatingHours(e.target.value)}
-                                required
-                                autoComplete="operating-hours"
-                                aria-required="true"
-                                aria-label="Horarios de Operación"
-                                margin="normal"
-                            />
-                            <TextField
-                                label="Correo Electrónico"
-                                variant="outlined"
-                                fullWidth
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                autoComplete="email"
-                                aria-required="true"
-                                aria-label="Correo Electrónico"
-                                margin="normal"
-                            />
-                            <TextField
-                                label="Contraseña"
-                                variant="outlined"
-                                type="password"
-                                fullWidth
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                autoComplete="new-password"
-                                aria-required="true"
-                                aria-label="Contraseña"
-                                helperText="Debe tener al menos 6 caracteres"
-                                margin="normal"
-                            />
+                        <form onSubmit={(e) => e.preventDefault()} aria-label="Formulario de registro">
+                            {getStepContent(activeStep)}
                             <Button
                                 variant="contained"
                                 sx={{
@@ -197,19 +194,23 @@ const SignUp = ({ setIsAuthenticated }) => {
                                         backgroundColor: colors.secondary,
                                     },
                                 }}
-                                type="submit"
-                                fullWidth
-                                disabled={!name || !email || !password}
+                                onClick={handleNext}
+                                disabled={activeStep === steps.length - 1 && (!name || !email || !password)}
                             >
-                                Registrar Empresa
+                                {activeStep === steps.length - 1 ? 'Registrar Empresa' : 'Siguiente'}
                             </Button>
-                            <Typography variant="body2" sx={{ mt: 2 }}>
-                                ¿Ya tienes una cuenta?{' '}
-                                <Link href="/login" variant="body2" style={{ color: '#000000', textDecoration: 'underline' }}>
-                                    Iniciar sesión
-                                </Link>
-                            </Typography>
+                            {activeStep !== 0 && (
+                                <Button onClick={handleBack} sx={{ mt: 2, ml: 1 }}>
+                                    Atrás
+                                </Button>
+                            )}
                         </form>
+                        <Typography variant="body2" sx={{ mt: 2 }}>
+                            ¿Ya tienes una cuenta?{' '}
+                            <Link href="/login" variant="body2" style={{ color: '#000000', textDecoration: 'underline' }}>
+                                Iniciar sesión
+                            </Link>
+                        </Typography>
                     </StyledContainer>
                 </LeftContainer>
                 <RightContainer />

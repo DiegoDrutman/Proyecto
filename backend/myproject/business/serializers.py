@@ -25,7 +25,7 @@ class BusinessSerializer(serializers.ModelSerializer):
         business.set_password(validated_data['password'])
         business.save()
         return business
-    
+
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Username")
     password = serializers.CharField(label="Password", style={'input_type': 'password'}, trim_whitespace=False)
@@ -35,8 +35,8 @@ class BusinessAuthTokenSerializer(serializers.Serializer):
         password = attrs.get('password')
 
         if username and password:
-            business = authenticate(username=username, password=password)
-            if business is None:
+            business = Business.objects.filter(username=username, approved=True).first()
+            if business is None or not business.check_password(password):
                 raise serializers.ValidationError('Unable to log in with provided credentials.', code='authorization')
         else:
             raise serializers.ValidationError('Must include "username" and "password".', code='authorization')

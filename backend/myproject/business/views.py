@@ -8,9 +8,7 @@ from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from .utils import notify_admin_of_new_business
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework import status
+from rest_framework.views import APIView
 
 def get_csrf_token(request):
     csrf_token = get_token(request)
@@ -31,7 +29,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)
+        search_term = self.request.query_params.get('search', None)  # type: ignore
         if search_term:
             queryset = queryset.filter(
                 Q(name__icontains=search_term) |
@@ -54,7 +52,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Negocio aprobado exitosamente.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by('-created_at')
     serializer_class = ProductSerializer
@@ -68,7 +66,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        business_id = self.request.query_params.get('business', None)
+        business_id = self.request.query_params.get('business', None)  # type: ignore
         if business_id:
             queryset = queryset.filter(business_id=business_id)
         return queryset
@@ -76,18 +74,22 @@ class ProductViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-class CustomAuthToken(ObtainAuthToken):
+# Custom authentication logic for businesses without using Django's built-in token system.
+class CustomAuthToken(APIView):
+    permission_classes = [permissions.AllowAny]
     serializer_class = BusinessAuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            business = serializer.validated_data['business']
+        serializer = self.serializer_class(data=request.data, context={'request': request})  # type: ignore
+        if serializer.is_valid():  # type: ignore
+            business = serializer.validated_data['business']  # type: ignore
             if not business.approved:
                 return Response({"detail": "El negocio aún no ha sido aprobado."}, status=status.HTTP_400_BAD_REQUEST)
-            token, created = Token.objects.get_or_create(user=business)
+
+            # Create a simple token-like system (or use JWT or another mechanism if preferred)
+            token = f"business-{business.pk}-{business.username}"
             return Response({
-                'token': token.key,
+                'token': token,
                 'business_id': business.pk,
                 'name': business.name
             })

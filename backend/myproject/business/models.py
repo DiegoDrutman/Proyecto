@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db import models
 
+# Manager para CustomerUser
 class CustomerUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
@@ -22,7 +21,8 @@ class CustomerUserManager(BaseUserManager):
             raise ValueError('El superusuario debe tener is_superuser=True.')
         return self.create_user(username, password, **extra_fields)
 
-class CustomerUser(AbstractBaseUser):
+# Modelo de usuario para superadministradores
+class CustomerUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     is_staff = models.BooleanField(default=False)
@@ -49,7 +49,18 @@ class CustomerUser(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-class Business(AbstractBaseUser):
+# Manager específico para Business
+class BusinessManager(BaseUserManager):
+    def create_business(self, username, password=None, **extra_fields):
+        if not username:
+            raise ValueError('El nombre de usuario debe ser proporcionado')
+        business = self.model(username=username, **extra_fields)
+        business.set_password(password)
+        business.save(using=self._db)
+        return business
+
+# Modelo de negocio (Business)
+class Business(models.Model):
     name = models.CharField(max_length=255, blank=True)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
@@ -61,13 +72,7 @@ class Business(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
 
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
-
-    objects = CustomerUserManager()
+    objects = BusinessManager()
 
     def __str__(self):
         return self.name or self.username
@@ -79,12 +84,7 @@ class Business(AbstractBaseUser):
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
 
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
-
+# Modelo de producto
 class Product(models.Model):
     business = models.ForeignKey(Business, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)

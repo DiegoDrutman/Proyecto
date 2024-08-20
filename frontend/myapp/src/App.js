@@ -4,7 +4,7 @@ import { Box, TextField, Autocomplete, Container } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import Navigation from './components/Navigation/Navigation';
 import { authenticateBusiness, getBusinesses } from './services/api';
-import BusinessProfilePage from './pages/BusinessProfile/BusinessProfile'; // Cambié el nombre de Favorites a BusinessProfile
+import UserProfile from './pages/UserProfile/UserProfile'; // Cambié el nombre de BusinessProfile a UserProfile
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
 import BusinessDetails from './pages/BusinessDetails/BusinessDetails';
@@ -34,7 +34,7 @@ const FullScreenContainer = styled(Box)`
       rgba(0, 0, 0, 0.5), 
       rgba(0, 0, 0, 0.5)
     ),
-    url(${backgroundImage}) no-repeat center center;  // Imagen de fondo
+    url(${backgroundImage}) no-repeat center center;
   color: ${colors.light};
   background-size: cover;
   background-attachment: fixed;
@@ -55,7 +55,7 @@ const ContentWrapper = styled(Container)`
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 50px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 150px; /* Reducir la distancia al top para que quede más abajo */
+  margin-top: 350px; /* Reducir la distancia al top para que quede más abajo */
   margin-bottom: 50px;
   margin-right: 600px !important;
   position: relative;
@@ -136,21 +136,26 @@ const SubHeaderTypography = styled.h2`
 
 const BusinessesContainer = styled(Box)`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start; /* Asegura que los elementos comiencen desde la izquierda */
+  align-items: flex-start;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea */
   width: 100%;
-  padding: 20px 0;
-  margin-top: 50px; /* Ajuste para bajar la posición del contenedor */
-  background-color: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  margin: 50px 0;
+  background-color: transparent;
 `;
+
 
 const BusinessGrid = styled(Box)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual tamaño */
   gap: 20px;
-  width: 100%;
-  max-width: 1200px;
+  width: 100%; /* Asegura que ocupe todo el ancho */
+  max-width: none; /* Elimina cualquier restricción de ancho máximo */
+  margin: 0 auto; /* Centra el contenedor en la pantalla */
+  padding: 20px; /* Agrega algo de padding alrededor */
 `;
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -268,7 +273,7 @@ const App = () => {
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/profile" element={isAuthenticated ? <BusinessProfilePage /> : <Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Cambié de /favorites a /profile */}
+        <Route path="/profile" element={isAuthenticated ? <UserProfile /> : <Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta a UserProfile */}
         <Route path="/business/:id" element={<BusinessDetails />} />
       </Routes>
     </>

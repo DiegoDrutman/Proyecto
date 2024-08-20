@@ -5,28 +5,19 @@ import { colors } from '../../styles/Variables';
 
 // Contenedor de la tarjeta de negocio
 export const BusinessCardContainer = styled(Card)`
-  display: flex;
-  flex-direction: column;
+  flex: 0 1 calc(33.333% - 40px); /* Asegura que cada tarjeta ocupe 1/3 del contenedor con espacio entre ellas */
+  margin: 20px; /* Añade un margen entre las tarjetas */
   background-color: ${colors.warmBackground};
   color: ${colors.dark};
   border-radius: 10px;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
-  width: 100%;
-  max-width: 100%; 
-  height: 400px;
+  height: 350px;
+  border: 3px solid ${colors.primary};
 
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  @media (max-width: 768px) {
-    height: 350px; /* Ajustar la altura en pantallas medianas */
-  }
-
-  @media (max-width: 480px) {
-    height: 300px; /* Ajustar la altura en móviles */
   }
 `;
 

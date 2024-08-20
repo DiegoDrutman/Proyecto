@@ -64,10 +64,12 @@ class Business(models.Model):
     name = models.CharField(max_length=255, blank=True)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)  # Nuevo campo para email
     description = models.TextField(blank=True)
-    category = models.CharField(max_length=255, blank=True)
     address = models.CharField(max_length=255, blank=True)
-    operating_hours = models.CharField(max_length=255, blank=True)
+    opening_hours = models.CharField(max_length=255, blank=True)  # Horario de apertura
+    closing_hours = models.CharField(max_length=255, blank=True)  # Horario de cierre
+    work_days = models.CharField(max_length=255, blank=True)  # Días de trabajo
     image = models.ImageField(upload_to='businesses/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)

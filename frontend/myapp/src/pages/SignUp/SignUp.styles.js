@@ -25,7 +25,6 @@ export const FullScreenContainer = styled(Box)`
     }
 `;
 
-// Contenedor izquierdo
 export const LeftContainer = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -33,33 +32,33 @@ export const LeftContainer = styled(Box)`
     align-items: center;
     width: 100%;
     padding: 20px;
-    margin-top: 150px;
+    margin-top: 100px; /* Aumentar el margen superior para bajar el contenido */
 
     @media (min-width: 768px) {
         width: 65%;
         padding: 40px;
-        margin-top: 0;
+        margin-top: 50px; /* Ajustar el margen superior en pantallas grandes */
     }
 
     @media (max-width: 480px) {
-        margin-top: 100px; /* Reducir el margen superior en móviles */
-        padding: 10px; /* Reducir el padding en móviles */
+        margin-top: 80px; /* Ajustar el margen superior en móviles */
+        padding: 10px;
     }
 `;
 
 // Contenedor estilizado
 export const StyledContainer = styled(Box)`
     width: 100%;
-    max-width: 500px;
+    max-width: 600px; /* Aumentar el ancho máximo */
     text-align: center;
-    padding: 40px 20px;
+    padding: 40px 30px; /* Ajustar padding */
     background-color: ${colors.light};
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
     @media (min-width: 768px) {
-        padding: 90px;
-        border-radius: 70px;
+        padding: 60px 40px; /* Reducir padding en pantallas grandes */
+        border-radius: 50px;
     }
 
     @media (max-width: 480px) {
@@ -67,6 +66,7 @@ export const StyledContainer = styled(Box)`
         border-radius: 15px; /* Ajustar el radio en móviles */
     }
 `;
+
 
 // Contenedor derecho
 export const RightContainer = styled(Box)`

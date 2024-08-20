@@ -50,9 +50,6 @@ const BusinessProfilePage = () => {
                 {business.name}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                Categoría: {business.category}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
                 Dirección: {business.address}
               </Typography>
               <Typography variant="body1" color="textSecondary">

@@ -8,9 +8,15 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif !important; /* Fuente base para todo el cuerpo */
-    background: url(${backgroundImage}) no-repeat center center fixed;
+    background: linear-gradient(
+      rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5)
+    ),
+    url(${backgroundImage}) no-repeat center center fixed;
     background-size: cover;
+    min-height: 100vh;
     color: ${colors.dark} !important;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -29,6 +35,8 @@ const GlobalStyle = createGlobalStyle`
 
   * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 `;
 

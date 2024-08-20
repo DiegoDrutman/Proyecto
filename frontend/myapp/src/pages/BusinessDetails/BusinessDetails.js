@@ -58,9 +58,6 @@ const BusinessDetails = () => {
             <Typography variant="body1">
               <strong>Horario:</strong> {business.operating_hours}
             </Typography>
-            <Typography variant="body1">
-              <strong>Categoría:</strong> {business.category}
-            </Typography>
           </DetailsContainer>
 
           <AddressContainer>

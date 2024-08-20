@@ -29,7 +29,6 @@ axiosInstance.interceptors.request.use(
 const handleRequest = async (request) => {
     try {
         const response = await request();
-        console.log('API response completa:', response); // <-- Asegúrate de ver toda la respuesta
         return response.data;
     } catch (error) {
         console.error('API request error:', error);
@@ -43,7 +42,6 @@ const handleRequest = async (request) => {
         }
     }
 };
-
 
 export const createBusiness = async (businessData) => {
     return handleRequest(() => axiosInstance.post('businesses/', businessData));
@@ -59,6 +57,10 @@ export const authenticateBusiness = async (credentials) => {
 };
 
 export const getBusinessProfile = async () => handleRequest(() => axiosInstance.get('businesses/me/'));
+
+export const updateBusinessProfile = async (profileData) => {
+    return handleRequest(() => axiosInstance.put('businesses/me/', profileData));
+};
 
 export const getBusinesses = async (searchTerm = '') => {
     const url = searchTerm ? `businesses/?search=${encodeURIComponent(searchTerm)}` : 'businesses/';

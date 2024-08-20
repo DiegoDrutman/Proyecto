@@ -10,21 +10,30 @@ class ProductSerializer(serializers.ModelSerializer):
 class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model = Business
-        fields = ['id', 'username', 'password', 'name', 'description', 'category', 'address', 'operating_hours', 'image', 'created_at', 'approved']
+        fields = [
+            'id', 'username', 'password', 'email', 'name', 'description',
+            'address', 'opening_hours', 'closing_hours', 'work_days', 'image', 
+            'created_at', 'approved'
+        ]
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         business = Business(
             username=validated_data['username'],
+            email=validated_data['email'],
             name=validated_data['name'],
             description=validated_data['description'],
-            category=validated_data['category'],
             address=validated_data['address'],
-            operating_hours=validated_data['operating_hours'],
+            opening_hours=validated_data['opening_hours'],
+            closing_hours=validated_data['closing_hours'],
+            work_days=validated_data['work_days'],
+            image=validated_data.get('image', None),  # Logo opcional
             approved=False
         )
         business.set_password(validated_data['password'])
         business.save()
         return business
+
 
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Username")

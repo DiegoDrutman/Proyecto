@@ -1,12 +1,14 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from .models import Business, Product
 from .serializers import BusinessSerializer, ProductSerializer, BusinessAuthTokenSerializer
 from django.db.models import Q
 from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
+from rest_framework.authtoken.models import Token 
 from .utils import notify_admin_of_new_business
 from rest_framework.views import APIView
 
@@ -29,7 +31,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)  # type: ignore
+        search_term = self.request.query_params.get('search', None)
         if search_term:
             queryset = queryset.filter(
                 Q(name__icontains=search_term) |
@@ -41,13 +43,22 @@ class BusinessViewSet(viewsets.ModelViewSet):
         business = serializer.save(approved=False)
         notify_admin_of_new_business(business.id)
 
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='me')
+    def get_own_business(self, request):
+        try:
+            # Buscar el negocio usando el usuario autenticado
+            business = Business.objects.get(pk=request.user.id)  # Cambiado para usar el ID del negocio
+            serializer = self.get_serializer(business)
+            return Response(serializer.data)
+        except Business.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
     @action(detail=True, methods=['post'], permission_classes=[IsSuperuser], url_path='approve', url_name='approve')
     def approve_business(self, request, pk=None):
         try:
             business = self.get_object()
             business.approved = True
             business.save()
-            # Agrega esto para confirmar la aprobación
             print(f"Negocio {business.name} aprobado con éxito. Estado: {business.approved}")
             return Response({'detail': 'Negocio aprobado exitosamente.'}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -86,10 +97,11 @@ class CustomAuthToken(APIView):
             if not business.approved:
                 return Response({"detail": "El negocio aún no ha sido aprobado."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Create a simple token-like system (or use JWT or another mechanism if preferred)
-            token = f"business-{business.pk}-{business.username}"
+            # Crear o recuperar el token asociado al negocio
+            token, created = Token.objects.get_or_create(user=business)
+
             return Response({
-                'token': token,
+                'token': token.key,
                 'business_id': business.pk,
                 'name': business.name
             })

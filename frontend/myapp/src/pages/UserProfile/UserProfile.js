@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Typography, CardContent, Button } from '@mui/material';
+import { Avatar, Typography, CardContent, Button, Alert } from '@mui/material';
 import { getBusinessProfile } from '../../services/api';
+import ProductList from '../../components/ProductList/ProductList';  // Importar ProductList
 import { useNavigate } from 'react-router-dom';
 import {
   ProfileContainer,
@@ -29,13 +30,14 @@ const UserProfile = ({ onLogout }) => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      try {
-        const data = await getBusinessProfile();
-        setProfileData(data);
-      } catch (error) {
-        setErrorMessage('Error al cargar el perfil.');
-      }
-    };
+        try {
+          const data = await getBusinessProfile();
+          console.log('Profile data:', data);  // Verifica que id esté presente
+          setProfileData(data);
+        } catch (error) {
+          setErrorMessage('Error al cargar el perfil.');
+        }
+      };
     fetchProfileData();
   }, []);
 
@@ -53,6 +55,12 @@ const UserProfile = ({ onLogout }) => {
           <Typography variant="h4">{profileData.name}</Typography>
           <Typography variant="subtitle1" color="textSecondary">{profileData.email}</Typography>
         </ProfileHeader>
+
+        {errorMessage && (
+          <Alert severity="error" onClose={() => setErrorMessage('')}>
+            {errorMessage}
+          </Alert>
+        )}
 
         <ProfileDetails>
           <StyledCard>
@@ -80,6 +88,8 @@ const UserProfile = ({ onLogout }) => {
             </CardContent>
           </StyledCard>
         </ProfileDetails>
+
+        {profileData.id && <ProductList businessId={profileData.id} />}
 
         <LogoutButtonContainer>
           <Button variant="contained" color="secondary" onClick={handleLogout}>

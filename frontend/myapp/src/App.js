@@ -11,8 +11,13 @@ import BusinessDetails from './pages/BusinessDetails/BusinessDetails';
 import BusinessList from './components/BusinessList/BusinessList';
 import GlobalStyle from './styles/GlobalStyle';
 import { colors, fontSizes } from './styles/Variables';
-import backgroundImage from './assets/background.jpg';
+import backgroundImage from './assets/new-background.jpg'; // Imagen de fondo actualizada
 import { createFilterOptions } from '@mui/material/Autocomplete';
+
+
+const filterOptions = createFilterOptions({
+  limit: 3,
+});
 
 const fadeIn = keyframes`
   from {
@@ -25,87 +30,73 @@ const fadeIn = keyframes`
 
 const FullScreenContainer = styled(Box)`
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   min-height: 100vh;
   text-align: center;
   background: linear-gradient(
-      rgba(0, 0, 0, 0.5), 
+      rgba(0, 0, 0, 0.5),
       rgba(0, 0, 0, 0.5)
     ),
     url(${backgroundImage}) no-repeat center center;
   color: ${colors.light};
   background-size: cover;
   background-attachment: fixed;
-
-  @media (max-width: 600px) {
-    background-attachment: scroll;
-  }
 `;
 
 const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 600px;
-  width: 50% !important;
-  padding: 30px;
+  max-width: 800px;
+  width: 100%;
+  padding: 40px;
   animation: ${fadeIn} 0.5s ease-in-out;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 50px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 350px;
-  margin-bottom: 50px;
-  margin-right: 600px !important;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin-top: -100px; /* Ajustar según sea necesario */
 `;
-
-const filterOptions = createFilterOptions({
-  limit: 3,
-});
 
 const StyledAutocomplete = styled(Autocomplete)`
   width: 100%;
-  max-width: 700px;
   margin: 20px auto;
   
   .MuiOutlinedInput-root {
     background-color: ${colors.light};
-    border-radius: 20px;
-    height: 70px;
-    font-size: 24px !important;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    height: 60px;
+    font-size: 18px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     transition: box-shadow 0.3s ease;
     &:hover {
-      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
     }
   }
 
   .MuiInputLabel-outlined {
-    font-size: 18px;
+    font-size: 16px;
     color: ${colors.secondary};
   }
 
   .MuiAutocomplete-popper {
     .MuiPaper-root {
-      background-color: rgba(255, 239, 213, 0.9);
+      background-color: rgba(255, 255, 255, 0.95);
       color: ${colors.dark};
-      border-radius: 12px;
-      max-height: 180px;
+      border-radius: 8px;
+      max-height: 150px;
       overflow-y: auto;
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.25);
-      padding: 8px 0;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+      padding: 10px 0;
     }
 
     .MuiAutocomplete-option {
-      font-size: 20px;
-      padding: 12px 16px;
+      font-size: 16px;
+      padding: 10px 20px;
       transition: background-color 0.2s ease, color 0.2s ease;
       &:hover {
-        background-color: ${colors.secondary};
+        background-color: ${colors.primary};
         color: ${colors.light};
       }
     }
@@ -113,21 +104,23 @@ const StyledAutocomplete = styled(Autocomplete)`
 `;
 
 const HeaderTypography = styled.h1`
-  font-family: 'Playfair Display', serif;
-  color: ${colors.light};
-  padding-top: 0px;
-  font-size: 80px;
-  margin-bottom: 10px;
+  font-family: 'Montserrat', sans-serif;
+  color: ${colors.dark};
+  font-size: 64px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+
   @media (max-width: 600px) {
-    font-size: ${fontSizes.large};
+    font-size: ${fontSizes.xlarge};
   }
 `;
 
 const SubHeaderTypography = styled.h2`
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-style: normal;
-  color: ${colors.light};
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: ${colors.secondary};
   margin-bottom: 30px;
   @media (max-width: 600px) {
     font-size: ${fontSizes.medium};
@@ -136,24 +129,25 @@ const SubHeaderTypography = styled.h2`
 
 const BusinessesContainer = styled(Box)`
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   width: 100%;
-  padding: 20px;
-  margin: 50px 0;
+  padding: 20px 10px; /* Reduced padding on the sides */
+  margin: 20px 0; /* Reduced margin on top and bottom */
   background-color: transparent;
 `;
 
 const BusinessGrid = styled(Box)`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 20px; /* Reduced gap between cards */
   width: 100%;
-  max-width: none;
+  max-width: 100%; /* Allows cards to stretch closer to the edges */
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 10px; /* Reduced padding inside the grid */
 `;
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -231,8 +225,8 @@ const App = () => {
             <>
               <FullScreenContainer id="home">
                 <ContentWrapper>
-                  <HeaderTypography>Bienvenido a BizWave!</HeaderTypography>
-                  <SubHeaderTypography>¿Qué negocio estás buscando?</SubHeaderTypography>
+                  <HeaderTypography>Bienvenido a BizWave</HeaderTypography>
+                  <SubHeaderTypography>Encuentra los mejores negocios en tu área</SubHeaderTypography>
                   <StyledAutocomplete
                     freeSolo
                     options={suggestions}

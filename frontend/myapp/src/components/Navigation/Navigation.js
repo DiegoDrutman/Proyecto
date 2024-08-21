@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Toolbar, Box, IconButton, Typography } from '@mui/material';
+import { Toolbar, Box, IconButton, Typography, Menu, MenuItem } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { NavBar, NavLink, IngresarLink } from './Navigation.styles'; // Importar estilos
+import { NavBar, NavLink } from './Navigation.styles'; // Importar estilos
 import { colors } from '../../styles/Variables'; // Importar variables de color desde Variables.js
 
 const Navigation = ({ isAuthenticated }) => {
@@ -82,6 +82,23 @@ const Navigation = ({ isAuthenticated }) => {
           >
             <MenuIcon />
           </IconButton>
+          <Menu
+            anchorEl={mobileAnchorEl}
+            open={Boolean(mobileAnchorEl)}
+            onClose={handleMobileMenuClose}
+          >
+            <MenuItem onClick={() => { navigateAndScroll('home'); handleMobileMenuClose(); }}>
+              Inicio
+            </MenuItem>
+            <MenuItem onClick={() => { navigateAndScroll('all-businesses'); handleMobileMenuClose(); }}>
+              Negocios
+            </MenuItem>
+            {isAuthenticated && (
+              <MenuItem onClick={() => { navigate('/profile'); handleMobileMenuClose(); }}>
+                <AccountCircle /> Perfil
+              </MenuItem>
+            )}
+          </Menu>
         </Box>
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, alignItems: 'center' }}>
           <NavLink

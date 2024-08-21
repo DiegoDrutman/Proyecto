@@ -9,11 +9,11 @@ import {
   AddressContainer,
   SectionTitle,
   HeaderContainer,
-  BusinessImage,
   TextContainer,
   BusinessTitle,
   ProductList, 
   ProductItem,
+  Overlay,
 } from './BusinessDetails.styles';
 
 const BusinessDetails = () => {
@@ -43,12 +43,12 @@ const BusinessDetails = () => {
 
   return (
     <>
-      <HeaderContainer>
+      <HeaderContainer style={{ backgroundImage: `url(${business.image || '/default-image.jpg'})` }}>
+        <Overlay />
         <TextContainer>
           <BusinessTitle>{business.name}</BusinessTitle>
-          <Typography variant="body1">{business.description}</Typography>
+          <Typography variant="body1">{business.description || "No hay descripción disponible."}</Typography>
         </TextContainer>
-        <BusinessImage component="img" src={business.image} alt={business.name} />
       </HeaderContainer>
       
       <BusinessWrapper>
@@ -56,14 +56,14 @@ const BusinessDetails = () => {
           <DetailsContainer>
             <SectionTitle>Detalles</SectionTitle>
             <Typography variant="body1">
-              <strong>Horario:</strong> {business.operating_hours}
+              <strong>Horario:</strong> {business.operating_hours || "N/A"}
             </Typography>
           </DetailsContainer>
 
           <AddressContainer>
             <SectionTitle>Dirección</SectionTitle>
             <Typography variant="body1">
-              {business.address}
+              {business.address || "No hay dirección disponible."}
             </Typography>
           </AddressContainer>
         </InfoContainer>
@@ -73,7 +73,7 @@ const BusinessDetails = () => {
             <SectionTitle>Productos</SectionTitle>
             {business.products.map((product) => (
               <ProductItem key={product.id}>
-                <img src={product.image} alt={product.name} />
+                <img src={product.image || '/default-product.jpg'} alt={product.name} />
                 <Typography variant="h6">{product.name}</Typography>
                 <Typography variant="body1">{product.description}</Typography>
                 <Typography variant="body2">${product.price}</Typography>

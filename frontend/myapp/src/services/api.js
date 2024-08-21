@@ -79,4 +79,32 @@ export const approveBusiness = async (id) => {
   return handleRequest(() => axiosInstance.post(`businesses/${id}/approve/`));
 };
 
+export const getBusinessProducts = async (businessId) => {
+    console.log('Fetching products for businessId:', businessId);  // Verifica el businessId
+    return handleRequest(() =>
+        axiosInstance.get(`/products/?business=${businessId}`)
+    );
+};
+
+export const addProduct = async (businessId, productData) => {
+    return handleRequest(() =>
+        axiosInstance.post('/products/', {
+            ...productData,
+            business: businessId,  // Incluyendo el businessId aquí
+        })
+    );
+};
+
+export const updateProduct = async (productId, productData) => {
+    return handleRequest(() =>
+        axiosInstance.put(`/products/${productId}/`, productData)
+    );
+};
+
+export const deleteProduct = async (productId) => {
+    return handleRequest(() =>
+        axiosInstance.delete(`/products/${productId}/`)
+    );
+};
+
 export default axiosInstance;

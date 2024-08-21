@@ -13,6 +13,5 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'business')  # Mostrar nombre, precio y negocio
-    search_fields = ('name', 'business__name')  # Permitir búsqueda por nombre del producto y del negocio
-    list_filter = ('business', 'price')  # Filtros por negocio y precio
+    list_display = ('name', 'business', 'price', 'offer_price', 'created_at')
+    search_fields = ('name', 'business__name')

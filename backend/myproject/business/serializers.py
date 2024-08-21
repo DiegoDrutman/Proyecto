@@ -6,14 +6,16 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'offer_price', 'image', 'created_at']
-
+        
 class BusinessSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True)  # Agregar esta línea
+
     class Meta:
         model = Business
         fields = [
             'id', 'username', 'password', 'email', 'name', 'description',
             'address', 'opening_hours', 'closing_hours', 'work_days', 'image', 
-            'created_at', 'approved'
+            'created_at', 'approved', 'products'
         ]
         extra_kwargs = {'password': {'write_only': True}}
 

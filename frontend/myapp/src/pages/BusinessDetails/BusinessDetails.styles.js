@@ -2,15 +2,17 @@ import styled from 'styled-components';
 import { Box, Typography } from '@mui/material';
 import { colors, spacing } from '../../styles/Variables';
 
-// Wrapper para los detalles del negocio
 export const BusinessWrapper = styled(Box)`
   display: flex;
-  justify-content: flex-start; /* Alinea los detalles y dirección a la izquierda */
+  justify-content: center;
   align-items: flex-start;
   max-width: 1200px;
   margin: 40px auto;
   padding: ${spacing.medium};
-  flex-wrap: wrap; /* Permitir que los elementos se ajusten en múltiples líneas si es necesario */
+  flex-wrap: wrap;
+  background-color: ${colors.light};
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -18,7 +20,6 @@ export const BusinessWrapper = styled(Box)`
   }
 `;
 
-// Contenedor para los detalles y la dirección juntos
 export const InfoContainer = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -31,84 +32,87 @@ export const InfoContainer = styled(Box)`
   }
 `;
 
-// Contenedor para los detalles del negocio
 export const DetailsContainer = styled(Box)`
   background-color: ${colors.light};
   padding: ${spacing.medium};
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: ${spacing.large};
 `;
 
-// Contenedor para la dirección del negocio
 export const AddressContainer = styled(Box)`
   background-color: ${colors.light};
   padding: ${spacing.medium};
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 
-// Sección superior del negocio
 export const HeaderContainer = styled(Box)`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  background-color: ${colors.primary};
   padding: ${spacing.large};
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   margin: 20px auto;
   max-width: 1200px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  color: ${colors.light};
+  height: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
   @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
 
-// Contenedor para el texto en la sección superior
-export const TextContainer = styled(Box)`
-  flex: 1;
-  color: ${colors.light};
-  margin-right: ${spacing.large};
-
-  @media (max-width: 768px) {
-    margin-right: 0;
-    margin-bottom: ${spacing.large};
-    text-align: center;
-  }
+export const Overlay = styled(Box)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
 `;
 
-// Imagen del negocio en la sección superior
+export const TextContainer = styled(Box)`
+  z-index: 1;
+  text-align: center;
+  color: ${colors.light};
+`;
+
 export const BusinessImage = styled(Box)`
   width: 100%;
   max-width: 400px;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
   @media (max-width: 768px) {
     max-width: 100%;
   }
 `;
 
-// Título del negocio en la sección superior
 export const BusinessTitle = styled(Typography)`
   font-size: 2.5rem;
   font-weight: bold;
   color: ${colors.light};
   margin-bottom: ${spacing.medium};
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 
   @media (max-width: 768px) {
     font-size: 2rem;
   }
 `;
 
-// Título de las secciones
 export const SectionTitle = styled(Typography)`
   margin-bottom: ${spacing.medium};
   font-weight: bold;
   color: ${colors.primary};
+  text-transform: uppercase;
 `;
 
-// Lista de productos
 export const ProductList = styled(Box)`
   flex: 2;
   display: flex;
@@ -116,25 +120,39 @@ export const ProductList = styled(Box)`
   justify-content: flex-start;
   padding: ${spacing.large} 0;
   background-color: ${colors.light};
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-left: ${spacing.large}; /* Mueve los productos a la derecha de los detalles */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-left: ${spacing.large}; 
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    margin-top: ${spacing.large};
+  }
 `;
 
-// Elemento de producto individual
 export const ProductItem = styled(Box)`
-  width: 300px;
+  width: 280px;
   margin: ${spacing.medium};
   text-align: center;
+  background-color: ${colors.light};
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: ${spacing.medium};
 
   img {
     width: 100%;
     height: auto;
-    border-radius: 8px;
+    border-radius: 12px;
+    margin-bottom: ${spacing.small};
   }
 
   h6 {
-    margin-top: ${spacing.medium};
+    margin-top: ${spacing.small};
     color: ${colors.primary};
+  }
+
+  p {
+    margin-top: ${spacing.xsmall};
+    color: ${colors.dark};
   }
 `;

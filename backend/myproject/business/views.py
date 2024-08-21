@@ -40,8 +40,13 @@ class BusinessViewSet(viewsets.ModelViewSet):
         return queryset.filter(approved=True)
 
     def perform_create(self, serializer):
-        business = serializer.save(approved=False)
-        notify_admin_of_new_business(business.id)
+        print("Datos recibidos:", self.request.data)  # Agrega este log para depuración
+        business_id = self.request.data.get('business')
+        if business_id:
+            business = Business.objects.get(id=business_id)
+            serializer.save(business=business)
+        else:
+            raise ValueError("business_id no está presente en los datos proporcionados.")
 
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='me')
     def get_own_business(self, request):
@@ -51,6 +56,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         except Business.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+
 
     @action(detail=True, methods=['post'], permission_classes=[IsSuperuser], url_path='approve', url_name='approve')
     def approve_business(self, request, pk=None):
@@ -76,13 +82,18 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        business_id = self.request.query_params.get('business', None)  # type: ignore
+        business_id = self.request.query_params.get('business', None)
         if business_id:
             queryset = queryset.filter(business_id=business_id)
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save()
+        business_id = self.request.data.get('business')
+        if business_id:
+            business = Business.objects.get(id=business_id)
+            serializer.save(business=business)
+        else:
+            raise ValueError("business_id no está presente en los datos proporcionados.")
 
 class CustomAuthToken(APIView):
     permission_classes = [permissions.AllowAny]

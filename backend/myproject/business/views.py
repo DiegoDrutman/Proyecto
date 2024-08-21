@@ -8,9 +8,9 @@ from django.db.models import Q
 from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from rest_framework.authtoken.models import Token 
 from .utils import notify_admin_of_new_business
 from rest_framework.views import APIView
+import uuid
 
 def get_csrf_token(request):
     csrf_token = get_token(request)
@@ -46,13 +46,12 @@ class BusinessViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='me')
     def get_own_business(self, request):
         try:
-            # Buscar el negocio usando el usuario autenticado
-            business = Business.objects.get(pk=request.user.id)  # Cambiado para usar el ID del negocio
+            business = Business.objects.get(pk=request.user.id)
             serializer = self.get_serializer(business)
             return Response(serializer.data)
         except Business.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
-    
+
     @action(detail=True, methods=['post'], permission_classes=[IsSuperuser], url_path='approve', url_name='approve')
     def approve_business(self, request, pk=None):
         try:
@@ -85,7 +84,6 @@ class ProductViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
-# Custom authentication logic for businesses without using Django's built-in token system.
 class CustomAuthToken(APIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = BusinessAuthTokenSerializer
@@ -97,11 +95,13 @@ class CustomAuthToken(APIView):
             if not business.approved:
                 return Response({"detail": "El negocio aún no ha sido aprobado."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Crear o recuperar el token asociado al negocio
-            token, created = Token.objects.get_or_create(user=business)
+            # Crear un token personalizado (ej: UUID)
+            token = str(uuid.uuid4())
+            business.token = token  # Suponiendo que tienes un campo 'token' en tu modelo Business
+            business.save()
 
             return Response({
-                'token': token.key,
+                'token': token,
                 'business_id': business.pk,
                 'name': business.name
             })

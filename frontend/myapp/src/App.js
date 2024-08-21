@@ -4,7 +4,7 @@ import { Box, TextField, Autocomplete, Container } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import Navigation from './components/Navigation/Navigation';
 import { authenticateBusiness, getBusinesses } from './services/api';
-import UserProfile from './pages/UserProfile/UserProfile'; // Cambié el nombre de BusinessProfile a UserProfile
+import UserProfile from './pages/UserProfile/UserProfile';
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
 import BusinessDetails from './pages/BusinessDetails/BusinessDetails';
@@ -55,7 +55,7 @@ const ContentWrapper = styled(Container)`
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 50px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-top: 350px; /* Reducir la distancia al top para que quede más abajo */
+  margin-top: 350px;
   margin-bottom: 50px;
   margin-right: 600px !important;
   position: relative;
@@ -64,7 +64,7 @@ const ContentWrapper = styled(Container)`
 `;
 
 const filterOptions = createFilterOptions({
-  limit: 3, // Limitar el número de resultados a 3
+  limit: 3,
 });
 
 const StyledAutocomplete = styled(Autocomplete)`
@@ -91,18 +91,18 @@ const StyledAutocomplete = styled(Autocomplete)`
 
   .MuiAutocomplete-popper {
     .MuiPaper-root {
-      background-color: rgba(255, 239, 213, 0.9); /* Fondo suave, casi transparente */
-      color: ${colors.dark}; /* Texto oscuro para contraste */
+      background-color: rgba(255, 239, 213, 0.9);
+      color: ${colors.dark};
       border-radius: 12px;
       max-height: 180px;
       overflow-y: auto;
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.25); /* Sombra más prominente */
-      padding: 8px 0; /* Padding extra alrededor de las opciones */
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.25);
+      padding: 8px 0;
     }
 
     .MuiAutocomplete-option {
-      font-size: 20px; /* Tamaño de fuente mayor para mejor legibilidad */
-      padding: 12px 16px; /* Padding adicional para las opciones */
+      font-size: 20px;
+      padding: 12px 16px;
       transition: background-color 0.2s ease, color 0.2s ease;
       &:hover {
         background-color: ${colors.secondary};
@@ -136,30 +136,28 @@ const SubHeaderTypography = styled.h2`
 
 const BusinessesContainer = styled(Box)`
   display: flex;
-  justify-content: flex-start; /* Asegura que los elementos comiencen desde la izquierda */
+  justify-content: flex-start;
   align-items: flex-start;
-  flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea */
+  flex-wrap: wrap;
   width: 100%;
   padding: 20px;
   margin: 50px 0;
   background-color: transparent;
 `;
 
-
 const BusinessGrid = styled(Box)`
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual tamaño */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  width: 100%; /* Asegura que ocupe todo el ancho */
-  max-width: none; /* Elimina cualquier restricción de ancho máximo */
-  margin: 0 auto; /* Centra el contenedor en la pantalla */
-  padding: 20px; /* Agrega algo de padding alrededor */
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 20px;
 `;
-
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [businessName, setBusinessName] = useState(''); // Cambié userName a businessName
+  const [businessName, setBusinessName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -192,11 +190,11 @@ const App = () => {
 
   const handleLogin = async (credentials) => {
     try {
-      const businessData = await authenticateBusiness(credentials); // Cambié authenticateUser a authenticateBusiness
+      const businessData = await authenticateBusiness(credentials);
       localStorage.setItem('token', businessData.token);
       setIsAuthenticated(true);
-      setBusinessName(businessData.name); // Cambié userName a businessName
-      navigate('/'); // Redirigir a la página principal después del login
+      setBusinessName(businessData.name);
+      navigate('/');
     } catch (error) {
       console.error('Error logging in:', error);
     }
@@ -204,7 +202,7 @@ const App = () => {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setBusinessName(''); // Cambié userName a businessName
+    setBusinessName('');
     localStorage.removeItem('token');
     navigate('/login');
   };
@@ -217,11 +215,11 @@ const App = () => {
 
   return (
     <>
-      <GlobalStyle /> {/* Aplica estilos globales */}
+      <GlobalStyle />
       {location.pathname && (
         <Navigation
           isAuthenticated={isAuthenticated}
-          businessName={businessName} // Cambié userName a businessName
+          businessName={businessName}
           onLogin={handleLogin}
           onLogout={handleLogout}
         />
@@ -233,12 +231,8 @@ const App = () => {
             <>
               <FullScreenContainer id="home">
                 <ContentWrapper>
-                  <HeaderTypography>
-                    Bienvenido a BizWave!
-                  </HeaderTypography>
-                  <SubHeaderTypography>
-                    ¿Qué negocio estás buscando?
-                  </SubHeaderTypography>
+                  <HeaderTypography>Bienvenido a BizWave!</HeaderTypography>
+                  <SubHeaderTypography>¿Qué negocio estás buscando?</SubHeaderTypography>
                   <StyledAutocomplete
                     freeSolo
                     options={suggestions}
@@ -273,7 +267,7 @@ const App = () => {
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/profile" element={isAuthenticated ? <UserProfile /> : <Login setIsAuthenticated={setIsAuthenticated} />} /> {/* Ruta a UserProfile */}
+        <Route path="/profile" element={isAuthenticated ? <UserProfile onLogout={handleLogout} /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/business/:id" element={<BusinessDetails />} />
       </Routes>
     </>

@@ -49,7 +49,6 @@ class CustomerUser(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return True
 
-# Manager específico para Business
 class BusinessManager(BaseUserManager):
     def create_business(self, username, password=None, **extra_fields):
         if not username:
@@ -59,22 +58,37 @@ class BusinessManager(BaseUserManager):
         business.save(using=self._db)
         return business
 
-# Modelo de negocio (Business)
-class Business(models.Model):
+class Business(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, blank=True)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)  # Nuevo campo para email
+    email = models.EmailField(unique=True)
     description = models.TextField(blank=True)
     address = models.CharField(max_length=255, blank=True)
-    opening_hours = models.CharField(max_length=255, blank=True)  # Horario de apertura
-    closing_hours = models.CharField(max_length=255, blank=True)  # Horario de cierre
-    work_days = models.CharField(max_length=255, blank=True)  # Días de trabajo
+    opening_hours = models.CharField(max_length=255, blank=True)
+    closing_hours = models.CharField(max_length=255, blank=True)
+    work_days = models.CharField(max_length=255, blank=True)
     image = models.ImageField(upload_to='businesses/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
+    token = models.CharField(max_length=255, blank=True, null=True)  # Campo para almacenar el token personalizado
+
+    # Evitar conflictos con CustomerUser usando related_name en grupos y permisos
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='business_users',
+        blank=True,
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='business_user_permissions',
+        blank=True,
+    )
 
     objects = BusinessManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.name or self.username
@@ -94,7 +108,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    offer_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # Nuevo campo para ofertas
+    offer_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # Campo para ofertas
 
     def __str__(self):
         return self.name

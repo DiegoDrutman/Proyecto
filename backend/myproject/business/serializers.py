@@ -28,12 +28,11 @@ class BusinessSerializer(serializers.ModelSerializer):
             closing_hours=validated_data['closing_hours'],
             work_days=validated_data['work_days'],
             image=validated_data.get('image', None),  # Logo opcional
-            approved=False
+            approved=False  # El negocio debe ser aprobado manualmente
         )
         business.set_password(validated_data['password'])
         business.save()
         return business
-
 
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Username")
@@ -44,11 +43,13 @@ class BusinessAuthTokenSerializer(serializers.Serializer):
         password = attrs.get('password')
 
         if username and password:
-            business = Business.objects.filter(username=username, approved=True).first()
-            if business is None or not business.check_password(password):
-                raise serializers.ValidationError('Unable to log in with provided credentials.', code='authorization')
+            business = authenticate(username=username, password=password)
+            if business is None:
+                raise serializers.ValidationError('Credenciales incorrectas. Por favor, inténtelo de nuevo.', code='authorization')
+            if not business.approved:
+                raise serializers.ValidationError('Tu cuenta no ha sido aprobada. Contacta al administrador.', code='authorization')
         else:
-            raise serializers.ValidationError('Must include "username" and "password".', code='authorization')
+            raise serializers.ValidationError('Debe incluir "username" y "password".', code='authorization')
 
         attrs['business'] = business
         return attrs

@@ -1,170 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { Alert } from '@mui/material';
-import { getBusinessProfile, updateBusinessProfile } from '../../services/api';
+import { Avatar, Typography, CardContent, Button } from '@mui/material';
+import { getBusinessProfile } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 import {
-    ProfileContainer,
-    ProfileTitle,
-    UpdateButton,
-    StyledTextField,
-    HoursContainer,
-    HoursTextField,
-    Divider,
-    BackgroundOverlay,
-    LogoContainer
+  ProfileContainer,
+  ProfileHeader,
+  ProfileDetails,
+  StyledCard,
+  InfoRow,
+  BackgroundOverlay,
+  LogoutButtonContainer,
 } from './UserProfile.styles';
 
-const UserProfile = () => {
-    const [profileData, setProfileData] = useState({
-        name: '',
-        email: '',
-        description: '',
-        opening_hours: '',
-        closing_hours: '',
-        work_days: '',
-        address: '',
-        logo: '', // Añadir logo si está disponible
-    });
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+const UserProfile = ({ onLogout }) => {
+  const [profileData, setProfileData] = useState({
+    name: '',
+    email: '',
+    description: '',
+    opening_hours: '',
+    closing_hours: '',
+    work_days: '',
+    address: '',
+    logo: '',
+  });
+  const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-                const data = await getBusinessProfile();
-                setProfileData(data);
-            } catch (error) {
-                setErrorMessage('Error al cargar el perfil. Por favor, inténtalo nuevamente.');
-            }
-        };
-        fetchProfileData();
-    }, []);
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setProfileData({
-            ...profileData,
-            [e.target.name]: e.target.value,
-        });
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const data = await getBusinessProfile();
+        setProfileData(data);
+      } catch (error) {
+        setErrorMessage('Error al cargar el perfil.');
+      }
     };
+    fetchProfileData();
+  }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await updateBusinessProfile(profileData);
-            setSuccessMessage('Perfil actualizado con éxito.');
-        } catch (error) {
-            setErrorMessage('Error al actualizar el perfil. Por favor, inténtalo nuevamente.');
-        }
-    };
+  const handleLogout = () => {
+    onLogout();
+    navigate('/login');
+  };
 
-    return (
-        <>
-            <BackgroundOverlay />  {/* Añadir overlay para mejor contraste */}
-            <ProfileContainer>
-                <ProfileTitle variant="h4" gutterBottom>
-                    Perfil de Empresa
-                </ProfileTitle>
+  return (
+    <>
+      <BackgroundOverlay />
+      <ProfileContainer>
+        <ProfileHeader>
+          <Avatar src={profileData.logo} alt="Logo del negocio" sx={{ width: 150, height: 150 }} />
+          <Typography variant="h4">{profileData.name}</Typography>
+          <Typography variant="subtitle1" color="textSecondary">{profileData.email}</Typography>
+        </ProfileHeader>
 
-                {profileData.logo && (
-                    <LogoContainer>
-                        <img src={profileData.logo} alt="Logo del Negocio" />
-                    </LogoContainer>
-                )}
+        <ProfileDetails>
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h6">Descripción</Typography>
+              <Typography>{profileData.description}</Typography>
+            </CardContent>
+          </StyledCard>
 
-                {errorMessage && (
-                    <Alert severity="error" onClose={() => setErrorMessage('')} sx={{ mb: 2 }}>
-                        {errorMessage}
-                    </Alert>
-                )}
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h6">Horario de Trabajo</Typography>
+              <InfoRow>
+                <Typography>Desde: {profileData.opening_hours}</Typography>
+                <Typography>Hasta: {profileData.closing_hours}</Typography>
+              </InfoRow>
+              <Typography>Días de Trabajo: {profileData.work_days}</Typography>
+            </CardContent>
+          </StyledCard>
 
-                {successMessage && (
-                    <Alert severity="success" onClose={() => setSuccessMessage('')} sx={{ mb: 2 }}>
-                        {successMessage}
-                    </Alert>
-                )}
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h6">Dirección</Typography>
+              <Typography>{profileData.address}</Typography>
+            </CardContent>
+          </StyledCard>
+        </ProfileDetails>
 
-                <form onSubmit={handleSubmit}>
-                    <StyledTextField
-                        label="Nombre del Negocio"
-                        name="name"
-                        variant="outlined"
-                        fullWidth
-                        value={profileData.name}
-                        onChange={handleChange}
-                    />
-                    <StyledTextField
-                        label="Correo Electrónico"
-                        name="email"
-                        variant="outlined"
-                        fullWidth
-                        value={profileData.email}
-                        onChange={handleChange}
-                    />
-                    <StyledTextField
-                        label="Descripción"
-                        name="description"
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        value={profileData.description}
-                        onChange={handleChange}
-                    />
-                    
-                    <Divider />  {/* Añadir un separador visual */}
-
-                    <StyledTextField
-                        label="Días de Trabajo"
-                        name="work_days"
-                        variant="outlined"
-                        fullWidth
-                        value={profileData.work_days}
-                        onChange={handleChange}
-                    />
-                    <HoursContainer>
-                        <HoursTextField
-                            label="Horario de Apertura"
-                            name="opening_hours"
-                            variant="outlined"
-                            type="time"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            value={profileData.opening_hours}
-                            onChange={handleChange}
-                        />
-                        <HoursTextField
-                            label="Horario de Cierre"
-                            name="closing_hours"
-                            variant="outlined"
-                            type="time"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            value={profileData.closing_hours}
-                            onChange={handleChange}
-                        />
-                    </HoursContainer>
-                    
-                    <Divider />  {/* Añadir un separador visual */}
-
-                    <StyledTextField
-                        label="Dirección Física"
-                        name="address"
-                        variant="outlined"
-                        fullWidth
-                        value={profileData.address}
-                        onChange={handleChange}
-                    />
-                    <UpdateButton
-                        variant="contained"
-                        type="submit"
-                    >
-                        Actualizar Perfil
-                    </UpdateButton>
-                </form>
-            </ProfileContainer>
-        </>
-    );
+        <LogoutButtonContainer>
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </LogoutButtonContainer>
+      </ProfileContainer>
+    </>
+  );
 };
 
 export default UserProfile;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Toolbar, Box, IconButton, Menu, MenuItem, Typography } from '@mui/material';
+import { Toolbar, Box, IconButton, Typography } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,8 +7,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import { NavBar, NavLink, IngresarLink } from './Navigation.styles'; // Importar estilos
 import { colors } from '../../styles/Variables'; // Importar variables de color desde Variables.js
 
-const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+const Navigation = ({ isAuthenticated }) => {
   const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
@@ -29,26 +28,12 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
     };
   }, []);
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleMobileMenuOpen = (event) => {
     setMobileAnchorEl(event.currentTarget);
   };
 
   const handleMobileMenuClose = () => {
     setMobileAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    onLogout();
-    handleMenuClose();
-    navigate('/login');
   };
 
   const navigateAndScroll = (target) => {
@@ -97,63 +82,6 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Menu
-            id="mobile-menu-appbar"
-            anchorEl={mobileAnchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(mobileAnchorEl)}
-            onClose={handleMobileMenuClose}
-          >
-            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('home'); }}>
-              <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
-                Inicio
-              </Typography>
-            </MenuItem>
-            <MenuItem onClick={() => { handleMobileMenuClose(); navigateAndScroll('all-businesses'); }}>
-              <Typography variant="h6" component="div" style={{ color: colors.dark }}> {/* Usar color de Variables.js */}
-                Negocios
-              </Typography>
-            </MenuItem>
-            {isAuthenticated ? (
-              <>
-                <MenuItem onClick={handleMobileMenuClose}>
-                  <Link to="/profile" style={{ textDecoration: 'none', color: colors.dark }}>
-                    <Typography variant="h6" component="div">
-                      Perfil
-                    </Typography>
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={handleMobileMenuClose}>
-                  <Link to="/user" style={{ textDecoration: 'none', color: colors.dark }}>
-                    <Typography variant="h6" component="div">
-                      Favoritos
-                    </Typography>
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  <Typography variant="h6" component="div" style={{ color: colors.dark }}>
-                    Logout
-                  </Typography>
-                </MenuItem>
-              </>
-            ) : (
-              <MenuItem onClick={handleMobileMenuClose}>
-                <Link to="/signup" style={{ textDecoration: 'none', color: colors.dark }}>
-                  <Typography variant="h6" component="div">
-                    Tengo un negocio
-                  </Typography>
-                </Link>
-              </MenuItem>
-            )}
-          </Menu>
         </Box>
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, alignItems: 'center' }}>
           <NavLink
@@ -170,53 +98,15 @@ const Navigation = ({ isAuthenticated, userName, onLogin, onLogout }) => {
           >
             Negocios
           </NavLink>
-          {isAuthenticated ? (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={handleMenuClose}>
-                  <Link to="/profile" style={{ textDecoration: 'none', color: colors.dark }}> {/* Cambié a /profile */}
-                    <Typography variant="h6" component="div">
-                      Perfil
-                    </Typography>
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  <Typography variant="h6" component="div" style={{ color: colors.dark }}>
-                    Logout
-                  </Typography>
-                </MenuItem>
-              </Menu>
-            </div>
-          ) : (
-            <Link to="/signup" style={{ textDecoration: 'none', color: colors.dark }}>
-              <IngresarLink variant="h6" component="div"> {/* Usar IngresarLink */}
-                Tengo un negocio
-              </IngresarLink>
-            </Link>
+          {isAuthenticated && (
+            <IconButton
+              size="large"
+              aria-label="perfil"
+              onClick={() => navigate('/profile')} // Navega directamente al perfil al hacer clic
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
           )}
         </Box>
       </Toolbar>

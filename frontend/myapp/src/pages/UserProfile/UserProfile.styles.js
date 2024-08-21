@@ -1,75 +1,55 @@
 import styled from 'styled-components';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, Box, Card } from '@mui/material';
 import { colors } from '../../styles/Variables';
 
 export const ProfileContainer = styled(Container)`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  width: 80%;
-  background-color: rgba(255, 255, 255, 0.9);
+  width: 100%;
+  max-width: 900px;
+  background-color: rgba(255, 255, 255, 0.95);
   padding: 50px;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   margin-top: 100px;
-  min-height: calc(100vh - 200px);
 `;
 
-export const ProfileTitle = styled(Typography)`
-  font-size: 42px;
-  font-weight: bold;
-  margin-bottom: 40px; 
-  color: ${colors.dark};
-  text-align: center;
-`;
+export const ProfileHeader = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
 
-export const StyledTextField = styled(TextField)`
-  margin-bottom: 40px; /* Aumentar aún más el espaciado */
-  .MuiInputBase-root {
-    background-color: ${colors.light};
+  h4 {
+    margin-top: 20px;
+    font-size: 32px;
+    font-weight: bold;
   }
-  .MuiOutlinedInput-root {
-    border-radius: 10px;
-    font-size: 18px;
+
+  p {
+    margin-top: 10px;
+    color: ${colors.secondary};
   }
 `;
 
-export const UpdateButton = styled(Button)`
-  background-color: ${colors.primary};
-  color: ${colors.light};
-  padding: 15px 40px;
-  font-size: 22px;
-  margin-top: 40px; /* Ajuste de margen superior */
-  &:hover {
-    background-color: ${colors.secondary};
-  }
+export const ProfileDetails = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 `;
 
-export const HoursContainer = styled(Box)`
+export const StyledCard = styled(Card)`
+  background-color: ${colors.light};
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+`;
+
+export const InfoRow = styled(Box)`
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin-bottom: 40px; /* Aumentar espaciado entre filas */
-  flex-wrap: wrap;
-`;
-
-export const HoursTextField = styled(TextField)`
-  width: 48%;
-  .MuiInputBase-root {
-    background-color: ${colors.light};
-  }
-  .MuiOutlinedInput-root {
-    border-radius: 10px;
-    font-size: 18px;
-  }
-`;
-
-export const Divider = styled(Box)`
-  width: 100%;
-  height: 2px;
-  background-color: ${colors.secondary};
-  margin: 40px 0;
+  margin-top: 10px;
 `;
 
 export const BackgroundOverlay = styled.div`
@@ -78,21 +58,12 @@ export const BackgroundOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);  // Aumentado el fondo oscuro para mejor contraste
   z-index: -1;
 `;
 
-export const LogoContainer = styled(Box)`
+export const LogoutButtonContainer = styled(Box)`
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 40px;
-
-  img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
+  margin-top: 30px;
 `;
-  

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { Box, TextField, Autocomplete, Container } from '@mui/material';
+import { Box, TextField, Autocomplete, Container, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import Navigation from './components/Navigation/Navigation';
-import { authenticateBusiness, getBusinesses } from './services/api';
 import UserProfile from './pages/UserProfile/UserProfile';
 import Login from './pages/Login/Login';
 import Signup from './pages/SignUp/SignUp';
@@ -11,13 +10,9 @@ import BusinessDetails from './pages/BusinessDetails/BusinessDetails';
 import BusinessList from './components/BusinessList/BusinessList';
 import GlobalStyle from './styles/GlobalStyle';
 import { colors, fontSizes } from './styles/Variables';
-import backgroundImage from './assets/new-background.jpg'; // Imagen de fondo actualizada
-import { createFilterOptions } from '@mui/material/Autocomplete';
+import backgroundImage from './assets/new-background.jpg';
+import { authenticateBusiness } from './services/api';
 
-
-const filterOptions = createFilterOptions({
-  limit: 3,
-});
 
 const fadeIn = keyframes`
   from {
@@ -56,7 +51,7 @@ const ContentWrapper = styled(Container)`
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  margin-top: -100px; /* Ajustar según sea necesario */
+  margin-top: -100px;
 `;
 
 const StyledAutocomplete = styled(Autocomplete)`
@@ -133,30 +128,31 @@ const BusinessesContainer = styled(Box)`
   align-items: center;
   flex-wrap: wrap;
   width: 100%;
-  padding: 20px 10px; /* Reduced padding on the sides */
-  margin: 20px 0; /* Reduced margin on top and bottom */
+  padding: 20px 10px;
+  margin: 20px 0;
   background-color: transparent;
 `;
 
 const BusinessGrid = styled(Box)`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px; /* Reduced gap between cards */
+  gap: 20px;
   width: 100%;
-  max-width: 100%; /* Allows cards to stretch closer to the edges */
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 10px; /* Reduced padding inside the grid */
+  padding: 0 10px;
 `;
-
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [businessName, setBusinessName] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const predefinedLocations = ['Hurlingham', 'Moron', 'Ituzaingo', 'Palomar'];
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -164,23 +160,6 @@ const App = () => {
       setIsAuthenticated(true);
     }
   }, []);
-
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        if (searchTerm) {
-          const response = await getBusinesses(searchTerm);
-          setSuggestions(response.map((business) => ({ id: business.id, name: business.name })));
-        } else {
-          setSuggestions([]);
-        }
-      } catch (error) {
-        console.error('Error fetching business suggestions:', error);
-      }
-    };
-
-    fetchSuggestions();
-  }, [searchTerm]);
 
   const handleLogin = async (credentials) => {
     try {
@@ -203,8 +182,20 @@ const App = () => {
 
   const handleSelectBusiness = (event, value) => {
     if (value) {
-      navigate(`/business/${value.id}`);
+      setSelectedLocation(value);
     }
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleSelectAndClose = () => {
+    handleCloseDialog();
   };
 
   return (
@@ -225,16 +216,23 @@ const App = () => {
             <>
               <FullScreenContainer id="home">
                 <ContentWrapper>
-                  <HeaderTypography>Bienvenido a BizWave</HeaderTypography>
-                  <SubHeaderTypography>Encuentra los mejores negocios en tu área</SubHeaderTypography>
+                  <HeaderTypography>¿Qué producto estás buscando?</HeaderTypography>
+                  
+                  <SubHeaderTypography>
+                    {selectedLocation ? `Estás buscando en: ${selectedLocation} 📍` : 'Selecciona una ubicación para comenzar a buscar'}
+                    <Button 
+                      variant="outlined" 
+                      color="primary" 
+                      onClick={handleOpenDialog}
+                      sx={{ marginLeft: 2 }}
+                    >
+                      Más opciones
+                    </Button>
+                  </SubHeaderTypography>
+                  
                   <StyledAutocomplete
-                    freeSolo
-                    options={suggestions}
-                    getOptionLabel={(option) => option.name}
-                    filterOptions={filterOptions}
-                    onInputChange={(event, newInputValue) => {
-                      setSearchTerm(newInputValue);
-                    }}
+                    options={predefinedLocations}
+                    getOptionLabel={(option) => option}
                     onChange={handleSelectBusiness}
                     renderInput={(params) => (
                       <TextField
@@ -253,17 +251,42 @@ const App = () => {
 
               <BusinessesContainer id="all-businesses">
                 <BusinessGrid>
-                  <BusinessList searchTerm={searchTerm} />
+                  <BusinessList searchTerm={selectedLocation} />
                 </BusinessGrid>
               </BusinessesContainer>
             </>
           }
         />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} predefinedLocations={predefinedLocations} />} />
         <Route path="/profile" element={isAuthenticated ? <UserProfile onLogout={handleLogout} /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/business/:id" element={<BusinessDetails />} />
       </Routes>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>Cambiar búsqueda</DialogTitle>
+        <DialogContent sx={{ padding: '20px' }}>
+          <Autocomplete
+            options={predefinedLocations}
+            getOptionLabel={(option) => option}
+            onChange={(event, value) => setSelectedLocation(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Buscar por ubicación"
+                variant="outlined"
+                fullWidth
+                sx={{ marginBottom: 2, fontSize: '1.2rem' }}
+              />
+            )}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSelectAndClose} color="primary">
+            Seleccionar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

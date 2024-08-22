@@ -6,9 +6,9 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'offer_price', 'image', 'created_at']
-        
+
 class BusinessSerializer(serializers.ModelSerializer):
-    products = ProductSerializer(many=True, read_only=True)  # Agregar esta línea
+    products = ProductSerializer(many=True, read_only=True)  # Relación con los productos del negocio
 
     class Meta:
         model = Business
@@ -20,6 +20,7 @@ class BusinessSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        # Guardar el negocio con la configuración correcta de la contraseña y datos básicos
         business = Business(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -35,6 +36,14 @@ class BusinessSerializer(serializers.ModelSerializer):
         business.set_password(validated_data['password'])
         business.save()
         return business
+
+    def validate_address(self, value):
+        # Aquí podrías agregar validación adicional para la dirección, por ejemplo:
+        # Verificar si la dirección existe utilizando una API de geolocalización
+        if not value:
+            raise serializers.ValidationError("La dirección no puede estar vacía.")
+        # Lógica de validación adicional para la dirección
+        return value
 
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Username")

@@ -11,9 +11,12 @@ export const NavBar = styled.div`
   z-index: 1000;
   width: 100%;
   transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+  padding: 8px 20px;  // Ajusta el padding para reducir la altura
+  height: 60px;  // Define una altura más pequeña para la barra de navegación
 
   @media (max-width: 768px) {
-    padding: 10px 15px;
+    padding: 6px 15px;  // Ajusta el padding en pantallas más pequeñas
+    height: 50px;  // Ajusta la altura en pantallas más pequeñas
   }
 `;
 

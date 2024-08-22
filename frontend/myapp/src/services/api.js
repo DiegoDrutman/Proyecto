@@ -62,8 +62,16 @@ export const updateBusinessProfile = async (profileData) => {
   return handleRequest(() => axiosInstance.put('businesses/me/', profileData));
 };
 
-export const getBusinesses = async (searchTerm = '') => {
-  const url = searchTerm ? `businesses/?search=${encodeURIComponent(searchTerm)}` : 'businesses/';
+export const getBusinesses = async (searchTerm = '', location = '', postalCode = '') => {
+  let url = 'businesses/';
+  let query = [];
+
+  if (searchTerm) query.push(`search=${encodeURIComponent(searchTerm)}`);
+  if (location) query.push(`location=${encodeURIComponent(location)}`);
+  if (postalCode) query.push(`postal_code=${encodeURIComponent(postalCode)}`);
+
+  if (query.length) url += `?${query.join('&')}`;
+  
   return handleRequest(() => axiosInstance.get(url));
 };
 
@@ -80,31 +88,43 @@ export const approveBusiness = async (id) => {
 };
 
 export const getBusinessProducts = async (businessId) => {
-    console.log('Fetching products for businessId:', businessId);  // Verifica el businessId
-    return handleRequest(() =>
-        axiosInstance.get(`/products/?business=${businessId}`)
-    );
+  console.log('Fetching products for businessId:', businessId);  // Verifica el businessId
+  return handleRequest(() =>
+    axiosInstance.get(`/products/?business=${businessId}`)
+  );
 };
 
 export const addProduct = async (businessId, productData) => {
-    return handleRequest(() =>
-        axiosInstance.post('/products/', {
-            ...productData,
-            business: businessId,  // Incluyendo el businessId aquí
-        })
-    );
+  return handleRequest(() =>
+    axiosInstance.post('/products/', {
+      ...productData,
+      business: businessId,  // Incluyendo el businessId aquí
+    })
+  );
 };
 
 export const updateProduct = async (productId, productData) => {
-    return handleRequest(() =>
-        axiosInstance.put(`/products/${productId}/`, productData)
-    );
+  return handleRequest(() =>
+    axiosInstance.put(`/products/${productId}/`, productData)
+  );
 };
 
 export const deleteProduct = async (productId) => {
-    return handleRequest(() =>
-        axiosInstance.delete(`/products/${productId}/`)
-    );
+  return handleRequest(() =>
+    axiosInstance.delete(`/products/${productId}/`)
+  );
 };
+
+// Aquí actualizamos la función `getProducts` para utilizar `axiosInstance`
+export const getProducts = async (searchTerm = '') => {
+  const url = searchTerm ? `products/?search=${encodeURIComponent(searchTerm)}` : 'products/';
+  return handleRequest(() => axiosInstance.get(url));
+};
+
+export const getLocations = async (searchTerm = '') => {
+  const url = searchTerm ? `locations/?search=${encodeURIComponent(searchTerm)}` : 'locations/';
+  return handleRequest(() => axiosInstance.get(url));
+};
+
 
 export default axiosInstance;

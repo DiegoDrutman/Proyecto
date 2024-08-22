@@ -1,6 +1,6 @@
 export const colors = {
   primary: '#A0522D',        // Sienna
-  secondary: '#D2B48C',      // Tan
+  secondary: '#A67A55',      // Tan
   light: '#FFEFD5',          // Pale Peach Puff
   dark: '#8B4513',           // SaddleBrown
   accent: '#C19A6B',         // Antique Brass
@@ -9,7 +9,7 @@ export const colors = {
 };
 
 export const fontSizes = {
-  large: '2.5rem',  // Tamaño grande para títulos
+  large: '4rem',  // Tamaño grande para títulos
   medium: '1.5rem', // Tamaño mediano para subtítulos
   small: '1rem',    // Tamaño pequeño para texto regular
 };

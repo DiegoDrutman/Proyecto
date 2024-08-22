@@ -11,63 +11,11 @@ from django.http import JsonResponse
 from .utils import notify_admin_of_new_business
 from rest_framework.views import APIView
 import uuid
+from django.core.mail import send_mail
 
 def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrfToken': csrf_token})
-
-class BusinessViewSet(viewsets.ModelViewSet):
-    queryset = Business.objects.all().order_by('-created_at')
-    serializer_class = BusinessSerializer
-
-    def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
-            permission_classes = [permissions.IsAuthenticated, IsSuperuser]
-        elif self.action == 'create':
-            permission_classes = [permissions.AllowAny]
-        else:
-            permission_classes = [permissions.AllowAny]
-        return [permission() for permission in permission_classes]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)
-        if search_term:
-            queryset = queryset.filter(
-                Q(name__icontains=search_term) |
-                Q(description__icontains=search_term)
-            )
-        return queryset.filter(approved=True)
-
-    def perform_create(self, serializer):
-        print("Datos recibidos:", self.request.data)  # Agrega este log para depuración
-        business_id = self.request.data.get('business')
-        if business_id:
-            business = Business.objects.get(id=business_id)
-            serializer.save(business=business)
-        else:
-            raise ValueError("business_id no está presente en los datos proporcionados.")
-
-    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='me')
-    def get_own_business(self, request):
-        try:
-            business = Business.objects.get(pk=request.user.id)
-            serializer = self.get_serializer(business)
-            return Response(serializer.data)
-        except Business.DoesNotExist:
-            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-
-    @action(detail=True, methods=['post'], permission_classes=[IsSuperuser], url_path='approve', url_name='approve')
-    def approve_business(self, request, pk=None):
-        try:
-            business = self.get_object()
-            business.approved = True
-            business.save()
-            print(f"Negocio {business.name} aprobado con éxito. Estado: {business.approved}")
-            return Response({'detail': 'Negocio aprobado exitosamente.'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by('-created_at')
@@ -75,7 +23,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permission_classes = [permissions.IsAuthenticated, IsSuperuser]
+            permission_classes = [IsSuperuser]
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
@@ -94,6 +42,91 @@ class ProductViewSet(viewsets.ModelViewSet):
             serializer.save(business=business)
         else:
             raise ValueError("business_id no está presente en los datos proporcionados.")
+
+class BusinessViewSet(viewsets.ModelViewSet):
+    queryset = Business.objects.all().order_by('-created_at')
+    serializer_class = BusinessSerializer
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            permission_classes = [permissions.IsAuthenticated, IsSuperuser]
+        elif self.action == 'create':
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.AllowAny]
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        location = self.request.query_params.get('location', None)
+        postal_code = self.request.query_params.get('postal_code', None)
+
+        if search_term:
+            queryset = queryset.filter(
+                Q(name__icontains=search_term) |
+                Q(description__icontains=search_term)
+            )
+        
+        # Filtrar por ubicación si se proporciona
+        if location:
+            queryset = queryset.filter(address__icontains=location)
+        
+        # Filtrar por código postal si se proporciona
+        if postal_code:
+            queryset = queryset.filter(address__icontains=postal_code)
+
+        return queryset.filter(approved=True)
+
+    def perform_create(self, serializer):
+        print("Datos recibidos:", self.request.data)  # Log para depuración
+        
+        # Validación adicional si es necesario
+        address = self.request.data.get('address')
+        if not address:
+            raise ValueError("La dirección es obligatoria.")
+        
+        # Guardar directamente el negocio
+        business = serializer.save()
+
+        # Enviar correo al administrador
+        send_mail(
+            'Nuevo negocio registrado',
+            f'El negocio {business.name} ha sido registrado y está pendiente de aprobación.',
+            'webmaster@example.com',  # Remitente
+            ['admin@example.com'],  # Destinatarios
+            fail_silently=False,
+        )
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated], url_path='me')
+    def get_own_business(self, request):
+        try:
+            business = Business.objects.get(pk=request.user.id)
+            serializer = self.get_serializer(business)
+            return Response(serializer.data)
+        except Business.DoesNotExist:
+            return Response({'detail': 'No encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsSuperuser], url_path='approve', url_name='approve')
+    def approve_business(self, request, pk=None):
+        try:
+            business = self.get_object()
+            business.approved = True
+            business.save()
+            print(f"Negocio {business.name} aprobado con éxito. Estado: {business.approved}")
+            
+            # Enviar correo de notificación al negocio aprobado
+            send_mail(
+                'Negocio Aprobado',
+                f'Tu negocio {business.name} ha sido aprobado.',
+                'webmaster@example.com',  # Remitente
+                [business.email],  # Email del negocio
+                fail_silently=False,
+            )
+
+            return Response({'detail': 'Negocio aprobado exitosamente.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomAuthToken(APIView):
     permission_classes = [permissions.AllowAny]
@@ -118,3 +151,14 @@ class CustomAuthToken(APIView):
             })
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LocationViewSet(viewsets.ViewSet):
+    def list(self, request):
+        search_term = request.query_params.get('search', None)
+        if search_term:
+            queryset = Business.objects.filter(
+                Q(address__icontains=search_term)
+            ).values_list('address', flat=True).distinct()[:3]
+        else:
+            queryset = Business.objects.values_list('address', flat=True).distinct()[:3]
+        return Response(queryset)

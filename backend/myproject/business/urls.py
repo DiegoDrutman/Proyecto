@@ -1,11 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import BusinessViewSet, ProductViewSet, get_csrf_token
+from .views import BusinessViewSet, ProductViewSet, LocationViewSet, get_csrf_token
 
 # Configuración del enrutador para registrar los viewsets
 router = DefaultRouter()
 router.register(r'businesses', BusinessViewSet, basename='business')
 router.register(r'products', ProductViewSet, basename='product')
+router.register(r'locations', LocationViewSet, basename='location')
 
 urlpatterns = [
     path('', include(router.urls)),  # Incluye todas las URL generadas por el enrutador

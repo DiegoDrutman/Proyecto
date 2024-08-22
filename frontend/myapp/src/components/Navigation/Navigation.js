@@ -5,7 +5,6 @@ import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { NavBar, NavLink } from './Navigation.styles'; // Importar estilos
-import { colors } from '../../styles/Variables'; // Importar variables de color desde Variables.js
 
 const Navigation = ({ isAuthenticated }) => {
   const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
@@ -49,28 +48,30 @@ const Navigation = ({ isAuthenticated }) => {
 
   return (
     <NavBar scrolled={scrolled}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit' }}>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{
-                color: colors.dark, // Usar el color de texto desde Variables.js
-                fontWeight: 'bold',
-                fontSize: '2.5rem',
-                fontFamily: 'Dancing Script, cursive', // Aplicar la fuente cursiva
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', // Efecto visual
-                transition: 'transform 0.3s ease', // Efecto de transición
-                '&:hover': {
-                  transform: 'scale(1.1)', // Efecto al pasar el ratón
-                },
-              }}
-            >
-              BizWave
-            </Typography>
-          </Link>
-        </Box>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: '70px', padding: '10px 0' }}>
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', paddingTop: '10px' }}>
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', color: 'inherit' }}>
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{
+              fontFamily: 'Dancing Script, cursive',
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+              margin: 0,
+              padding: 0,
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.1)',
+              },
+              marginTop: '-25px',  // Ajuste para subir el título
+            }}
+          >
+            BizWave
+          </Typography>
+        </Link>
+      </Box>
         <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
           <IconButton
             size="large"
@@ -91,7 +92,10 @@ const Navigation = ({ isAuthenticated }) => {
               Inicio
             </MenuItem>
             <MenuItem onClick={() => { navigateAndScroll('all-businesses'); handleMobileMenuClose(); }}>
-              Negocios
+              Explorar
+            </MenuItem>
+            <MenuItem onClick={() => { navigate('/register-business'); handleMobileMenuClose(); }}>
+              Tengo un negocio
             </MenuItem>
             {isAuthenticated && (
               <MenuItem onClick={() => { navigate('/profile'); handleMobileMenuClose(); }}>
@@ -113,7 +117,14 @@ const Navigation = ({ isAuthenticated }) => {
             component="div"
             onClick={() => navigateAndScroll('all-businesses')}
           >
-            Negocios
+            Explorar
+          </NavLink>
+          <NavLink
+            variant="h6"
+            component="div"
+            onClick={() => navigate('/signup')}
+          >
+            Tengo un negocio
           </NavLink>
           {isAuthenticated && (
             <IconButton

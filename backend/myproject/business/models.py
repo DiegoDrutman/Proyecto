@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 
 # Manager para CustomerUser
 class CustomerUserManager(BaseUserManager):
@@ -49,6 +49,18 @@ class CustomerUser(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return True
 
+    groups = models.ManyToManyField(
+        Group,
+        related_name='customeruser_groups',
+        blank=True
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='customeruser_permissions',
+        blank=True
+    )
+
+# Manager para Business
 class BusinessManager(BaseUserManager):
     def create_business(self, username, password=None, **extra_fields):
         if not username:
@@ -58,6 +70,7 @@ class BusinessManager(BaseUserManager):
         business.save(using=self._db)
         return business
 
+# Modelo de negocio
 class Business(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, blank=True)
     username = models.CharField(max_length=255, unique=True)
@@ -73,18 +86,6 @@ class Business(AbstractBaseUser, PermissionsMixin):
     approved = models.BooleanField(default=False)
     token = models.CharField(max_length=255, blank=True, null=True)  # Campo para almacenar el token personalizado
 
-    # Evitar conflictos con CustomerUser usando related_name en grupos y permisos
-    groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='business_users',
-        blank=True,
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='business_user_permissions',
-        blank=True,
-    )
-
     objects = BusinessManager()
 
     USERNAME_FIELD = 'username'
@@ -96,9 +97,25 @@ class Business(AbstractBaseUser, PermissionsMixin):
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
         self.save()
+        print(f"Contraseña establecida para el negocio: {self.username}")
+
+    def save(self, *args, **kwargs):
+        print(f"Guardando negocio: {self.username}, Token: {self.token}")
+        super().save(*args, **kwargs)
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
+
+    groups = models.ManyToManyField(
+        Group,
+        related_name='business_groups',
+        blank=True
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name='business_permissions',
+        blank=True
+    )
 
 # Modelo de producto
 class Product(models.Model):

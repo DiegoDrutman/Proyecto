@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Business, Product, CustomerUser
+from .models import Business, Product
 
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):
@@ -7,13 +7,6 @@ class BusinessAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email']
     list_filter = ('approved', 'opening_hours', 'closing_hours')
     ordering = ('-created_at',)
-
-@admin.register(CustomerUser)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'is_staff', 'is_superuser', 'last_login')
-    search_fields = ['username']
-    list_filter = ('is_staff', 'is_superuser')
-    ordering = ('-last_login',)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

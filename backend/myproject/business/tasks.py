@@ -3,6 +3,7 @@ from django.conf import settings
 from .models import Business
 import logging
 
+# Configuración básica del logger
 logger = logging.getLogger(__name__)
 
 def notify_admin_of_new_business(business_id):

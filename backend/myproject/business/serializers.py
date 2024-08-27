@@ -1,6 +1,17 @@
 from rest_framework import serializers
 from .models import Business, Product
 from django.contrib.auth import authenticate
+from .models import Location, Zone
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ['id', 'name', 'postal_code']
+
+class ZoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Zone
+        fields = ['id', 'name', 'location']
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,23 +25,25 @@ class BusinessSerializer(serializers.ModelSerializer):
         model = Business
         fields = [
             'id', 'username', 'password', 'email', 'name', 'description',
-            'address', 'opening_hours', 'closing_hours', 'work_days', 'image', 
+            'address', 'opening_hours', 'closing_hours', 'work_days', 'logo',
             'created_at', 'approved', 'products'
         ]
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'approved': {'read_only': True},  # Para evitar que el usuario modifique este campo directamente
+        }
 
     def create(self, validated_data):
         business = Business(
             username=validated_data['username'],
             email=validated_data['email'],
-            name=validated_data['name'],
-            description=validated_data['description'],
-            address=validated_data['address'],
-            opening_hours=validated_data['opening_hours'],
-            closing_hours=validated_data['closing_hours'],
-            work_days=validated_data['work_days'],
-            image=validated_data.get('image', None),
-            approved=False
+            name=validated_data.get('name', ''),
+            description=validated_data.get('description', ''),
+            address=validated_data.get('address', ''),
+            opening_hours=validated_data.get('opening_hours', ''),
+            closing_hours=validated_data.get('closing_hours', ''),
+            work_days=validated_data.get('work_days', ''),
+            logo=validated_data.get('logo', None),
         )
         business.set_password(validated_data['password'])
         business.save()
@@ -40,16 +53,19 @@ class BusinessSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("La dirección no puede estar vacía.")
         return value
+
 class BusinessAuthTokenSerializer(serializers.Serializer):
-    username = serializers.CharField(label="Username")
-    password = serializers.CharField(label="Password", style={'input_type': 'password'}, trim_whitespace=False)
+    username = serializers.CharField(label="Nombre de usuario")
+    password = serializers.CharField(label="Contraseña", style={'input_type': 'password'}, trim_whitespace=False)
 
     def validate(self, attrs):
         username = attrs.get('username')
         password = attrs.get('password')
-
+        
         if username and password:
+            # Autenticar al negocio
             business = authenticate(username=username, password=password)
+            
             if business is None:
                 raise serializers.ValidationError('Credenciales incorrectas. Por favor, inténtelo de nuevo.', code='authorization')
             if not business.approved:

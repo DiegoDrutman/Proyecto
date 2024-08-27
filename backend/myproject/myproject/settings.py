@@ -1,14 +1,19 @@
 from pathlib import Path
 import os
 
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Secret key
 SECRET_KEY = 'mc1rsecretkey9'
 
+# Debug settings
 DEBUG = True
 
+# Allowed hosts
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+# Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -19,20 +24,21 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'business',
+    'business',  # Tu aplicación de negocios
 ]
 
+# CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = False  # Esto debe ser False para acceso desde JS
 CSRF_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
 SESSION_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
 
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -42,7 +48,7 @@ EMAIL_HOST_PASSWORD = 'eyxw ukjd ymck tggk'
 DEFAULT_FROM_EMAIL = 'BizWave <diego.drutman@gmail.com>'
 ADMIN_EMAIL = 'diego.drutman@gmail.com'
 
-# Middleware
+# Middleware settings
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# CORS headers settings
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
@@ -63,6 +70,10 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
 ]
 
+# Authentication settings
+AUTH_USER_MODEL = 'auth.User'  # Volver a la configuración predeterminada
+
+# Django Rest Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -73,8 +84,10 @@ REST_FRAMEWORK = {
     ),
 }
 
+# URLs settings
 ROOT_URLCONF = 'myproject.urls'
 
+# Templates settings
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -91,8 +104,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI settings
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
+# Database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -104,6 +119,7 @@ DATABASES = {
     }
 }
 
+# Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -119,24 +135,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Media settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Static files settings
+STATIC_URL = '/static/'
+
+# Localization settings
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
-
+# Default auto field setting
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Usar el modelo Business como modelo de usuario
-AUTH_USER_MODEL = 'business.CustomerUser'
-
-# Agregar backend de autenticación personalizado
-AUTHENTICATION_BACKENDS = [
-    'business.backends.BusinessBackend',  # Reemplaza 'yourapp' con el nombre de tu aplicación
-    'django.contrib.auth.backends.ModelBackend',
-]

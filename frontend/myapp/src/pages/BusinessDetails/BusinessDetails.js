@@ -15,6 +15,9 @@ import {
   ProductItem,
   Overlay,
 } from './BusinessDetails.styles';
+import defaultBusinessImage from '../../assets/default-image.jpg';
+import defaultProductImage from '../../assets/default-product.jpg';
+
 
 const BusinessDetails = () => {
   const { id } = useParams();
@@ -26,7 +29,11 @@ const BusinessDetails = () => {
     const fetchBusiness = async () => {
       try {
         const data = await getBusinessById(id);
-        setBusiness(data);
+        if (data) {
+          setBusiness(data);
+        } else {
+          setError('No se encontraron datos para este negocio.');
+        }
       } catch (error) {
         setError('Error al cargar los detalles del negocio.');
       } finally {
@@ -43,8 +50,8 @@ const BusinessDetails = () => {
 
   return (
     <>
-      <HeaderContainer style={{ backgroundImage: `url(${business.image || '/default-image.jpg'})` }}>
-        <Overlay />
+      <HeaderContainer style={{ backgroundImage: `url(${business.image || defaultBusinessImage})` }}>
+      <Overlay />
         <TextContainer>
           <BusinessTitle>{business.name}</BusinessTitle>
           <Typography variant="body1">{business.description || "No hay descripción disponible."}</Typography>
@@ -68,18 +75,20 @@ const BusinessDetails = () => {
           </AddressContainer>
         </InfoContainer>
 
-        {business.products && business.products.length > 0 && (
+        {business.products && business.products.length > 0 ? (
           <ProductList>
             <SectionTitle>Productos</SectionTitle>
             {business.products.map((product) => (
               <ProductItem key={product.id}>
-                <img src={product.image || '/default-product.jpg'} alt={product.name} />
+                <img src={product.image || defaultProductImage} alt={product.name} />
                 <Typography variant="h6">{product.name}</Typography>
-                <Typography variant="body1">{product.description}</Typography>
+                <Typography variant="body1">{product.description || 'Sin descripción'}</Typography>
                 <Typography variant="body2">${product.price}</Typography>
               </ProductItem>
             ))}
           </ProductList>
+        ) : (
+          <Typography variant="body1">No hay productos disponibles.</Typography>
         )}
       </BusinessWrapper>
     </>

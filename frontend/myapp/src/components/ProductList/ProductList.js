@@ -1,55 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Button, TextField, Grid } from '@mui/material';
+import { Card, CardContent, Typography, Button, TextField, Grid, Alert } from '@mui/material';
 import { getBusinessProducts, addProduct, updateProduct, deleteProduct } from '../../services/api';
 
 const ProductList = ({ businessId }) => {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: '', price: '' });
   const [editingProduct, setEditingProduct] = useState(null);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
-    console.log('Business ID:', businessId);  // Verifica que no sea null
     const fetchProducts = async () => {
       if (businessId) {
-        const data = await getBusinessProducts(businessId);
-        setProducts(data);
+        try {
+          const data = await getBusinessProducts(businessId);
+          setProducts(data);
+        } catch (error) {
+          setMessage({ type: 'error', text: 'Error al cargar los productos' });
+        }
       }
     };
     fetchProducts();
   }, [businessId]);
 
   const handleAddProduct = async () => {
-    if (!newProduct.name || !newProduct.price) return; // Validación básica
-    console.log('Business ID:', businessId); // Verifica que el businessId se pasa correctamente
-    await addProduct(businessId, newProduct);
-    setNewProduct({ name: '', price: '' }); // Resetea los campos
-    const data = await getBusinessProducts(businessId);
-    setProducts(data);
+    if (!newProduct.name || !newProduct.price) {
+      setMessage({ type: 'error', text: 'Por favor, completa todos los campos' });
+      return;
+    }
+    try {
+      await addProduct(businessId, newProduct);
+      setNewProduct({ name: '', price: '' });
+      const data = await getBusinessProducts(businessId);
+      setProducts(data);
+      setMessage({ type: 'success', text: 'Producto agregado con éxito' });
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error al agregar el producto' });
+    }
   };
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
-    setNewProduct({ name: product.name, price: product.price }); // Pre-llena el formulario
+    setNewProduct({ name: product.name, price: product.price });
   };
 
   const handleUpdateProduct = async () => {
-    if (!editingProduct.name || !editingProduct.price) return; // Validación básica
-    await updateProduct(editingProduct.id, editingProduct);
-    setEditingProduct(null);
-    setNewProduct({ name: '', price: '' }); // Resetea los campos
-    const data = await getBusinessProducts(businessId);
-    setProducts(data);
+    if (!editingProduct.name || !editingProduct.price) {
+      setMessage({ type: 'error', text: 'Por favor, completa todos los campos' });
+      return;
+    }
+    try {
+      await updateProduct(editingProduct.id, editingProduct);
+      setEditingProduct(null);
+      setNewProduct({ name: '', price: '' });
+      const data = await getBusinessProducts(businessId);
+      setProducts(data);
+      setMessage({ type: 'success', text: 'Producto actualizado con éxito' });
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error al actualizar el producto' });
+    }
   };
 
   const handleDeleteProduct = async (id) => {
-    await deleteProduct(id);
-    const data = await getBusinessProducts(businessId);
-    setProducts(data);
+    try {
+      await deleteProduct(id);
+      const data = await getBusinessProducts(businessId);
+      setProducts(data);
+      setMessage({ type: 'success', text: 'Producto eliminado con éxito' });
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error al eliminar el producto' });
+    }
   };
 
   return (
     <div>
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>Products</Typography>
+      <Typography variant="h5" sx={{ marginBottom: 2 }}>Productos</Typography>
+      {message.text && <Alert severity={message.type} onClose={() => setMessage({ type: '', text: '' })}>{message.text}</Alert>}
       <Grid container spacing={2}>
         {products.map(product => (
           <Grid item xs={12} sm={6} md={4} key={product.id}>
@@ -58,10 +83,10 @@ const ProductList = ({ businessId }) => {
                 <Typography variant="h6">{product.name}</Typography>
                 <Typography>${product.price}</Typography>
                 <Button variant="contained" color="primary" onClick={() => handleEditProduct(product)} sx={{ marginTop: 1 }}>
-                  Edit
+                  Editar
                 </Button>
                 <Button variant="contained" color="secondary" onClick={() => handleDeleteProduct(product.id)} sx={{ marginTop: 1 }}>
-                  Delete
+                  Eliminar
                 </Button>
               </CardContent>
             </Card>
@@ -70,39 +95,39 @@ const ProductList = ({ businessId }) => {
       </Grid>
       <div style={{ marginTop: '20px' }}>
         <TextField
-          label="Product Name"
+          label="Nombre del Producto"
           value={newProduct.name}
           onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-          disabled={editingProduct}
+          disabled={editingProduct !== null}
           variant="outlined"
           fullWidth
           sx={{ marginBottom: 2 }}
         />
         <TextField
-          label="Price"
+          label="Precio"
           type="number"
           value={newProduct.price}
           onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-          disabled={editingProduct}
+          disabled={editingProduct !== null}
           variant="outlined"
           fullWidth
           sx={{ marginBottom: 2 }}
         />
         <Button 
           onClick={handleAddProduct} 
-          disabled={editingProduct}
+          disabled={editingProduct !== null}
           variant="contained"
           color="primary"
           sx={{ marginBottom: 2 }}
         >
-          Add Product
+          Agregar Producto
         </Button>
       </div>
       {editingProduct && (
         <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" sx={{ marginBottom: 2 }}>Edit Product</Typography>
+          <Typography variant="h6" sx={{ marginBottom: 2 }}>Editar Producto</Typography>
           <TextField
-            label="Product Name"
+            label="Nombre del Producto"
             value={editingProduct.name}
             onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
             variant="outlined"
@@ -110,7 +135,7 @@ const ProductList = ({ businessId }) => {
             sx={{ marginBottom: 2 }}
           />
           <TextField
-            label="Price"
+            label="Precio"
             type="number"
             value={editingProduct.price}
             onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
@@ -119,10 +144,10 @@ const ProductList = ({ businessId }) => {
             sx={{ marginBottom: 2 }}
           />
           <Button onClick={handleUpdateProduct} variant="contained" color="primary" sx={{ marginRight: 2 }}>
-            Update Product
+            Actualizar Producto
           </Button>
           <Button onClick={() => setEditingProduct(null)} variant="contained" color="secondary">
-            Cancel
+            Cancelar
           </Button>
         </div>
       )}

@@ -1,24 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './App/App';
 import { ThemeProvider as MUIThemeProvider, CssBaseline } from '@mui/material'; 
-import { ThemeProvider as StyledThemeProvider } from 'styled-components'; // Styled-components theme provider
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { createTheme } from '@mui/material/styles'; 
-import GlobalStyle from './styles/GlobalStyle'; // Import global styles
-import { colors, fontSizes } from './styles/Variables'; // Import variables
+import GlobalStyle from './styles/GlobalStyle'; 
+import { colors, fontSizes } from './styles/Variables'; 
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // Define el tema de Material-UI
 const muiTheme = createTheme({
   palette: {
     primary: {
-      main: colors.light, // Usando variable de color
+      main: colors.dark,
     },
     secondary: {
       main: colors.primary,
     },
     background: {
-      default: colors.warmBackground, // Fondo adaptado a un tema cálido para BizWave
+      default: colors.warmBackground,
       paper: '#FFFFFF',
     },
     text: {
@@ -29,7 +29,7 @@ const muiTheme = createTheme({
   typography: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
     h1: {
-      fontSize: fontSizes.large, // Usando variable de tamaño de fuente
+      fontSize: fontSizes.large,
     },
     h4: {
       fontSize: fontSizes.medium,
@@ -51,7 +51,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <StyledThemeProvider theme={styledTheme}>
-      <GlobalStyle /> {/* Aplica los estilos globales aquí */}
+      <GlobalStyle /> 
       <MUIThemeProvider theme={muiTheme}>
         <CssBaseline />
         <Router>

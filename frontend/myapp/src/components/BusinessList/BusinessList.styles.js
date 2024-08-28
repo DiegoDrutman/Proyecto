@@ -16,7 +16,7 @@ export const BusinessGridContainer = styled(Box)`
 
 // Mensaje cuando no se encuentran negocios
 export const NoBusinessesMessage = styled(Typography)`
-  color: ${colors.dark};
+  color: ${colors.secondary};
   text-align: center;
   margin-top: ${spacing.large};
 `;

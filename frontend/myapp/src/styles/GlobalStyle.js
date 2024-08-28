@@ -7,7 +7,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif !important; /* Fuente base para todo el cuerpo */
+    font-family: 'Open Sans', sans-serif !important;
     background: linear-gradient(
       rgba(0, 0, 0, 0.5), 
       rgba(0, 0, 0, 0.5)
@@ -20,12 +20,12 @@ const GlobalStyle = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif !important; /* Elegante para todos los encabezados */
+    font-family: 'Playfair Display', serif !important;
   }
 
   h1 {
-    font-family: 'Dancing Script', cursive !important; /* Mantén un estilo especial para el h1 */
-    font-size: ${fontSizes.large} !important; /* Asegurar que se aplique el tamaño */
+    font-family: 'Dancing Script', cursive !important;
+    font-size: ${fontSizes.large} !important;
   }
 
   a {

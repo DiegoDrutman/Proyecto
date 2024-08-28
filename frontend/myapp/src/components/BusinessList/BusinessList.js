@@ -1,4 +1,3 @@
-// src/pages/BusinessList/BusinessList.js
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Alert } from '@mui/material';
 import { getBusinesses } from '../../services/api'; // Importa correctamente desde api.js
@@ -14,10 +13,11 @@ const BusinessList = ({ searchTerm }) => {
     const fetchBusinesses = async () => {
       try {
         const data = await getBusinesses(searchTerm); // Llama a la API con el término de búsqueda
-        setBusinesses(data); // Actualiza el estado de negocios
+        const approvedBusinesses = data.filter(business => business.approved); // Filtra negocios aprobados
+        setBusinesses(approvedBusinesses); // Actualiza el estado de negocios con solo los aprobados
         setLoading(false);
       } catch (err) {
-        setError('Error al cargar los negocios');
+        setError(err.message || 'Error al cargar los negocios'); // Mostrar el mensaje de error de la API si está disponible
         setLoading(false);
       }
     };

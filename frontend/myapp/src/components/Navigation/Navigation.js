@@ -49,29 +49,29 @@ const Navigation = ({ isAuthenticated }) => {
   return (
     <NavBar scrolled={scrolled}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: '70px', padding: '10px 0' }}>
-      <Box sx={{ display: 'flex', alignItems: 'flex-start', paddingTop: '10px' }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', color: 'inherit' }}>
-          <Typography
-            variant="h4"
-            component="div"
-            sx={{
-              fontFamily: 'Dancing Script, cursive',
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-              margin: 0,
-              padding: 0,
-              transition: 'transform 0.3s ease',
-              '&:hover': {
-                transform: 'scale(1.1)',
-              },
-              marginTop: '-25px',  // Ajuste para subir el título
-            }}
-          >
-            BizWave
-          </Typography>
-        </Link>
-      </Box>
+        <Box sx={{ display: 'flex', alignItems: 'flex-start', paddingTop: '10px' }}>
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', color: 'inherit' }}>
+            <Typography
+              variant="h4"
+              component="div"
+              sx={{
+                fontFamily: 'Dancing Script, cursive',
+                fontSize: '2.5rem',
+                fontWeight: 'bold',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                margin: 0,
+                padding: 0,
+                transition: 'transform 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                },
+                marginTop: '-25px',  // Ajuste para subir el título
+              }}
+            >
+              BizWave
+            </Typography>
+          </Link>
+        </Box>
         <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
           <IconButton
             size="large"
@@ -94,9 +94,11 @@ const Navigation = ({ isAuthenticated }) => {
             <MenuItem onClick={() => { navigateAndScroll('all-businesses'); handleMobileMenuClose(); }}>
               Explorar
             </MenuItem>
-            <MenuItem onClick={() => { navigate('/register-business'); handleMobileMenuClose(); }}>
-              Tengo un negocio
-            </MenuItem>
+            {!isAuthenticated && (
+              <MenuItem onClick={() => { navigate('/signup'); handleMobileMenuClose(); }}>
+                Tengo un negocio
+              </MenuItem>
+            )}
             {isAuthenticated && (
               <MenuItem onClick={() => { navigate('/profile'); handleMobileMenuClose(); }}>
                 <AccountCircle /> Perfil
@@ -119,13 +121,15 @@ const Navigation = ({ isAuthenticated }) => {
           >
             Explorar
           </NavLink>
-          <NavLink
-            variant="h6"
-            component="div"
-            onClick={() => navigate('/signup')}
-          >
-            Tengo un negocio
-          </NavLink>
+          {!isAuthenticated && (
+            <NavLink
+              variant="h6"
+              component="div"
+              onClick={() => navigate('/signup')}
+            >
+              Tengo un negocio
+            </NavLink>
+          )}
           {isAuthenticated && (
             <IconButton
               size="large"

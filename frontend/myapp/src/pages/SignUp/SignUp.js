@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Link, Box } from '@mui/material';
-import { createBusiness } from '../../services/api';
-import { FullScreenContainer, LeftContainer, StyledContainer, RightContainer, BackgroundWrapper } from './SignUp.styles';
-import { colors } from '../../styles/Variables';
+import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Box } from '@mui/material';
+import { axiosInstance } from '../../services/api'; 
+import { FullScreenContainer, StyledContainer, BackgroundWrapper } from './SignUp.styles';
+import { Link } from 'react-router-dom';
 
 const steps = ['Información Básica', 'Detalles de la Empresa', 'Credenciales de Acceso'];
 
@@ -11,7 +11,7 @@ const SignUp = ({ setIsAuthenticated }) => {
     const [businessName, setBusinessName] = useState('');
     const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
-    const [logo, setLogo] = useState(null); // Para almacenar el logo opcional
+    const [logo, setLogo] = useState(null);
     const [openingHours, setOpeningHours] = useState('');
     const [closingHours, setClosingHours] = useState('');
     const [workDays, setWorkDays] = useState('');
@@ -20,25 +20,20 @@ const SignUp = ({ setIsAuthenticated }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [fieldErrors, setFieldErrors] = useState({}); // Para almacenar los errores de cada campo
+    const [fieldErrors, setFieldErrors] = useState({});
 
-    // Función para validar el email
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    // Función de validación para cada paso
     const validateStep = () => {
         let errors = {};
 
         if (activeStep === 0) {
             if (!businessName) errors.businessName = 'El nombre del negocio es obligatorio.';
-            if (!email) {
-                errors.email = 'El correo electrónico es obligatorio.';
-            } else if (!validateEmail(email)) {
-                errors.email = 'El formato del correo electrónico no es válido.';
-            }
+            if (!email) errors.email = 'El correo electrónico es obligatorio.';
+            else if (!validateEmail(email)) errors.email = 'El formato del correo electrónico no es válido.';
             if (!description) errors.description = 'La descripción es obligatoria.';
         }
 
@@ -75,22 +70,36 @@ const SignUp = ({ setIsAuthenticated }) => {
         setActiveStep((prevStep) => prevStep - 1);
     };
 
+    const getCsrfToken = () => {
+        const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+        return csrfToken ? csrfToken.split('=')[1] : null;
+    };
+
     const handleSubmit = async () => {
         try {
-            const businessData = {
-                name: businessName,
-                email,
-                description,
-                logo, // Logo opcional
-                opening_hours: openingHours,
-                closing_hours: closingHours,
-                work_days: workDays,
-                address,
-                username,
-                password,
-            };
+            const formData = new FormData();
+            formData.append('name', businessName);
+            formData.append('email', email);
+            formData.append('description', description);
+            formData.append('opening_hours', openingHours);
+            formData.append('closing_hours', closingHours);
+            formData.append('work_days', workDays);
+            formData.append('address', address);
+            formData.append('username', username);
+            formData.append('password', password);
 
-            const response = await createBusiness(businessData);
+            if (logo) {
+                formData.append('logo', logo);
+            }
+
+            const csrfToken = getCsrfToken();
+
+            const response = await axiosInstance.post('businesses/', formData, {
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
             if (response) {
                 setIsAuthenticated(true);
@@ -196,9 +205,7 @@ const SignUp = ({ setIsAuthenticated }) => {
                                 label="Horario de Apertura"
                                 variant="outlined"
                                 type="time"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
+                                InputLabelProps={{ shrink: true }}
                                 value={openingHours}
                                 onChange={(e) => setOpeningHours(e.target.value)}
                                 required
@@ -210,9 +217,7 @@ const SignUp = ({ setIsAuthenticated }) => {
                                 label="Horario de Cierre"
                                 variant="outlined"
                                 type="time"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
+                                InputLabelProps={{ shrink: true }}
                                 value={closingHours}
                                 onChange={(e) => setClosingHours(e.target.value)}
                                 required
@@ -242,7 +247,7 @@ const SignUp = ({ setIsAuthenticated }) => {
                 return (
                     <>
                         <Typography variant="h6" gutterBottom>
-                            Crea un nombre de usuario para tu cuenta.
+                            ¿Cuál es el nombre de usuario que deseas utilizar?
                         </Typography>
                         <TextField
                             label="Nombre de Usuario"
@@ -257,12 +262,12 @@ const SignUp = ({ setIsAuthenticated }) => {
                             sx={{ mb: 3 }}
                         />
                         <Typography variant="h6" gutterBottom>
-                            Crea una contraseña segura.
+                            ¿Cuál es tu contraseña?
                         </Typography>
                         <TextField
                             label="Contraseña"
-                            variant="outlined"
                             type="password"
+                            variant="outlined"
                             fullWidth
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -273,12 +278,12 @@ const SignUp = ({ setIsAuthenticated }) => {
                             sx={{ mb: 3 }}
                         />
                         <Typography variant="h6" gutterBottom>
-                            Confirma tu contraseña.
+                            Confirmar Contraseña
                         </Typography>
                         <TextField
                             label="Confirmar Contraseña"
-                            variant="outlined"
                             type="password"
+                            variant="outlined"
                             fullWidth
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -291,109 +296,55 @@ const SignUp = ({ setIsAuthenticated }) => {
                     </>
                 );
             default:
-                return 'Paso desconocido';
+                return 'Unknown step';
         }
     };
 
     return (
-        <BackgroundWrapper>
-            <FullScreenContainer>
-                <LeftContainer>
-                    <Typography
-                        variant="h4"
-                        gutterBottom
-                        sx={{
-                            color: colors.light, // Cambia el color del texto a beige
-                        }}
-                    >
-                        Bienvenido a BizWave
-                    </Typography>
-
-                    <Typography
-                        variant="h6"
-                        gutterBottom
-                        sx={{
-                            color: colors.light, // Cambia el color del subtítulo a beige
-                        }}
-                    >
-                        Registra tu empresa para empezar a gestionar tu negocio.
-                    </Typography>
-
-                    <Stepper
-                        activeStep={activeStep}
-                        alternativeLabel
-                        sx={{
-                            mb: 5,
-                            '& .MuiStepLabel-label': {
-                                color: colors.light, // Cambia el color del texto a beige
-                            },
-                            '& .MuiStepIcon-root': {
-                                color: colors.primary, // Cambia el color de los íconos a marrón
-                            },
-                            '& .Mui-completed': {
-                                color: colors.primary + ' !important', // Cambia el color de los íconos completados a marrón
-                            },
-                            '& .Mui-active': {
-                                color: colors.secondary + ' !important', // Cambia el color del ícono activo a marrón oscuro
-                            },
-                        }}
-                    >
+        <FullScreenContainer>
+            <BackgroundWrapper>
+                <StyledContainer>
+                    <Stepper activeStep={activeStep} alternativeLabel>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel>{label}</StepLabel>
                             </Step>
                         ))}
                     </Stepper>
-                    <StyledContainer>
+                    <Box sx={{ p: 3 }}>
                         {errorMessage && (
-                            <Alert severity="error" onClose={() => setErrorMessage('')} sx={{ mb: 2 }}>
+                            <Alert severity="error" sx={{ mb: 2 }}>
                                 {errorMessage}
                             </Alert>
                         )}
-                        <form onSubmit={(e) => e.preventDefault()} aria-label="Formulario de registro">
-                            {getStepContent(activeStep)}
-                            <Box display="flex" justifyContent="space-between" sx={{ mt: 3 }}>
-                                {activeStep !== 0 && (
-                                    <Button
-                                        variant="outlined"
-                                        sx={{
-                                            backgroundColor: colors.light,
-                                            color: colors.primary,
-                                            '&:hover': {
-                                                backgroundColor: colors.secondary,
-                                            },
-                                        }}
-                                        onClick={handleBack}
-                                    >
-                                        Atrás
-                                    </Button>
-                                )}
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: colors.primary,
-                                        color: colors.light,
-                                        '&:hover': {
-                                            backgroundColor: colors.secondary,
-                                        },
-                                    }}
-                                    onClick={handleNext}
-                                >
-                                    {activeStep === steps.length - 1 ? 'Registrar Empresa' : 'Siguiente'}
-                                </Button>
-                            </Box>
-                        </form>
-                        <Typography variant="body2" sx={{ mt: 3 }}>
+                        {getStepContent(activeStep)}
+                        <Box display="flex" justifyContent="space-between" sx={{ mt: 2 }}>
+                            <Button
+                                color="secondary"
+                                variant="outlined"
+                                onClick={handleBack}
+                                disabled={activeStep === 0}
+                            >
+                                Atrás
+                            </Button>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={handleNext}
+                            >
+                                {activeStep === steps.length - 1 ? 'Registrarse' : 'Siguiente'}
+                            </Button>
+                        </Box>
+                        <Typography variant="body2" align="center" sx={{ mt: 3 }}>
                             ¿Ya tienes una cuenta?{' '}
-                            <Link href="/login" variant="body2" style={{ color: '#000000', textDecoration: 'underline' }}>
-                                Iniciar sesión
+                            <Link to="/login" style={{ textDecoration: 'none', color: '#3f51b5' }}>
+                                Inicia sesión aquí
                             </Link>
                         </Typography>
-                    </StyledContainer>
-                </LeftContainer>
-                <RightContainer />
-            </FullScreenContainer>
-        </BackgroundWrapper>
+                    </Box>
+                </StyledContainer>
+            </BackgroundWrapper>
+        </FullScreenContainer>
     );
 };
 

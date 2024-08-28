@@ -1,72 +1,111 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, CircularProgress, Alert, Avatar, Box } from '@mui/material';
-import { getBusinessProfile } from '../../services/api'; // Cambia la función API para obtener el perfil de la empresa
+import { Avatar, Typography, CardContent, Button, Alert, CircularProgress } from '@mui/material';
+import { getBusinessProfile } from '../../services/api';
+import ProductList from '../../components/ProductList/ProductList';
+import { useNavigate } from 'react-router-dom';
 import {
-  FullScreenContainer,
-  ContentWrapper,
-} from './BusinessProfile.styles'; // Renombra los estilos según sea necesario
+  ProfileContainer,
+  ProfileHeader,
+  ProfileDetails,
+  StyledCard,
+  InfoRow,
+  BackgroundOverlay,
+  LogoutButtonContainer,
+} from './BusinessProfile.styles';
 
-const BusinessProfilePage = () => {
-  const [business, setBusiness] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [errorProfile, setErrorProfile] = useState('');
+const BusinessProfile = ({ onLogout }) => {
+  const [profileData, setProfileData] = useState(null); // Cambié el estado inicial a null para manejar la carga
+  const [loading, setLoading] = useState(true); // Estado de carga
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBusinessProfile = async () => {
+    const fetchProfileData = async () => {
       try {
-        setLoadingProfile(true);
-        const businessData = await getBusinessProfile(); // Asegúrate de tener una función para obtener el perfil de la empresa
-        setBusiness(businessData);
-        setLoadingProfile(false);
+        const data = await getBusinessProfile();
+        console.log('Datos del perfil:', data);  // Agrega este log para depuración
+        if (!data || Object.keys(data).length === 0) {
+          setErrorMessage('Error al cargar el perfil.');
+          navigate('/login'); // Redirigir si no se pueden obtener los datos del perfil
+        } else {
+          setProfileData(data);
+        }
       } catch (error) {
-        console.error('Error fetching business profile:', error);
-        setErrorProfile('Error al cargar el perfil de la empresa.');
-        setLoadingProfile(false);
+        setErrorMessage('Error al cargar el perfil.');
+        navigate('/login'); // Redirigir en caso de error
+      } finally {
+        setLoading(false); // Finaliza la carga
       }
     };
+    fetchProfileData();
+  }, [navigate]);
 
-    fetchBusinessProfile();
-  }, []);
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    onLogout();
+    navigate('/login');
+  };
+
+  if (loading) {
+    return <CircularProgress />; // Indicador de carga
+  }
+
+  if (errorMessage) {
+    return (
+      <Alert severity="error" onClose={() => setErrorMessage('')}>
+        {errorMessage}
+      </Alert>
+    );
+  }
 
   return (
-    <FullScreenContainer>
-      <ContentWrapper>
-        <Typography variant="h3" gutterBottom>
-          Mi Empresa
-        </Typography>
-        {loadingProfile ? (
-          <CircularProgress />
-        ) : errorProfile ? (
-          <Alert severity="error">{errorProfile}</Alert>
-        ) : (
-          business && (
-            <Box textAlign="center">
-              <Avatar
-                alt={business.name}
-                src={business.image || 'https://via.placeholder.com/100'}
-                sx={{ width: 100, height: 100, marginBottom: 2 }}
-              />
-              <Typography variant="h4" gutterBottom>
-                {business.name}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Dirección: {business.address}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Miembro desde: {new Date(business.created_at).toLocaleDateString()}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Horario de operación: {business.operating_hours}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                Descripción: {business.description}
-              </Typography>
-            </Box>
-          )
-        )}
-      </ContentWrapper>
-    </FullScreenContainer>
+    <>
+      <BackgroundOverlay />
+      <ProfileContainer>
+        <ProfileHeader>
+          <Avatar src={profileData?.logo || '/default-logo.png'} alt="Logo del negocio" sx={{ width: 150, height: 150 }} />
+          <Typography variant="h4">{profileData?.name || 'Nombre del negocio'}</Typography>
+          <Typography variant="subtitle1" color="textSecondary">{profileData?.email || 'Correo no disponible'}</Typography>
+        </ProfileHeader>
+
+        <ProfileDetails>
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h6">Descripción</Typography>
+              <Typography>{profileData?.description || 'No hay descripción disponible.'}</Typography>
+            </CardContent>
+          </StyledCard>
+
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h6">Horario de Trabajo</Typography>
+              <InfoRow>
+                <Typography>Desde: {profileData?.opening_hours || 'N/A'}</Typography>
+                <Typography>Hasta: {profileData?.closing_hours || 'N/A'}</Typography>
+              </InfoRow>
+              <Typography>Días de Trabajo: {profileData?.work_days || 'No especificado'}</Typography>
+            </CardContent>
+          </StyledCard>
+
+          <StyledCard>
+            <CardContent>
+              <Typography variant="h6">Dirección</Typography>
+              <Typography>{profileData?.address || 'No hay dirección disponible.'}</Typography>
+            </CardContent>
+          </StyledCard>
+        </ProfileDetails>
+
+        {profileData?.id && <ProductList businessId={profileData.id} />}
+
+        <LogoutButtonContainer>
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </LogoutButtonContainer>
+      </ProfileContainer>
+    </>
   );
 };
 
-export default BusinessProfilePage;
+export default BusinessProfile;

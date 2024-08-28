@@ -1,17 +1,18 @@
-// src/components/BusinessCard/BusinessCard.js
 import React from 'react';
 import { CardContent, Typography, CardActionArea } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { BusinessCardContainer, StyledCardMedia } from './BusinessCard.styles'; // Asegúrate de que estás importando desde BusinessCard.styles
+import { BusinessCardContainer, StyledCardMedia } from './BusinessCard.styles';
+import defaultImage from '../../assets/default-business-image.png'
 
 const BusinessCard = ({ business }) => {
   const navigate = useNavigate();
 
-  if (!business) return null;
-  const defaultImage = 'default-business-image.png';
+  if (!business || !business.approved) return null; // Asegurarse de que solo se muestran negocios aprobados
 
   const handleCardClick = () => {
-    navigate(`/business/${business.id}`); // Redirige a la página de detalles del negocio
+    if (business.id) {
+      navigate(`/business/${business.id}`); // Redirige a la página de detalles del negocio
+    }
   };
 
   return (

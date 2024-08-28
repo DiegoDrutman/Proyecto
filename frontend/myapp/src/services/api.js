@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const API_URL = 'http://localhost:8000/api/';
 
@@ -11,15 +10,22 @@ const axiosInstance = axios.create({
   },
 });
 
+// Obtiene el CSRF token de las cookies
+export const getCsrfToken = () => {
+  const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+  return csrfToken ? csrfToken.split('=')[1] : null;
+};
+
+// Interceptor para incluir el CSRF token en las solicitudes si está presente
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    const csrftoken = Cookies.get('csrftoken');
-    if (token) {
-      config.headers.Authorization = `Token ${token}`;
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      config.headers['X-CSRFToken'] = csrfToken;
     }
-    if (csrftoken) {
-      config.headers['X-CSRFToken'] = csrftoken;
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Token ${token}`;
     }
     return config;
   },
@@ -31,32 +37,48 @@ const handleRequest = async (request) => {
     const response = await request();
     return response.data;
   } catch (error) {
-    console.error('API request error:', error);
+    console.error('Error en la solicitud de la API:', error);
     if (error.response) {
-      console.error('Response data:', error.response.data);
-      throw new Error(error.response.data.detail || 'API request failed');
+      if (error.response.status === 401) {
+        console.error('Token inválido, eliminando...');
+        localStorage.removeItem('token');  // Eliminar el token si es inválido
+        window.location.href = '/login';   // Redirigir al login
+      }
+      throw new Error(error.response.data.detail || 'Error en la solicitud de la API');
     } else if (error.request) {
-      throw new Error('No response received from server');
+      throw new Error('No se recibió respuesta del servidor');
     } else {
-      throw new Error('Request setup error');
+      throw new Error('Error en la configuración de la solicitud');
     }
   }
 };
 
-export const createBusiness = async (businessData) => {
-  return handleRequest(() => axiosInstance.post('businesses/', businessData));
-};
+// Métodos de la API
 
-export const authenticateBusiness = async (credentials) => {
-  return handleRequest(() =>
-    axiosInstance.post('api-token-auth/', {
-      username: credentials.username,
-      password: credentials.password,
+export const createBusiness = async (businessData) => {
+  const csrfToken = getCsrfToken();
+  return handleRequest(() => 
+    axiosInstance.post('businesses/', businessData, {
+      headers: {
+        'X-CSRFToken': csrfToken,
+        'Content-Type': 'multipart/form-data',
+      }
     })
   );
 };
 
-export const getBusinessProfile = async () => handleRequest(() => axiosInstance.get('businesses/me/'));
+export const authenticateBusiness = async (credentials) => {
+  try {
+    const response = await axiosInstance.post('api-token-auth/', credentials);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getBusinessProfile = async () => {
+  return handleRequest(() => axiosInstance.get('businesses/me/'));
+};
 
 export const updateBusinessProfile = async (profileData) => {
   return handleRequest(() => axiosInstance.put('businesses/me/', profileData));
@@ -88,7 +110,6 @@ export const approveBusiness = async (id) => {
 };
 
 export const getBusinessProducts = async (businessId) => {
-  console.log('Fetching products for businessId:', businessId);  // Verifica el businessId
   return handleRequest(() =>
     axiosInstance.get(`/products/?business=${businessId}`)
   );
@@ -98,7 +119,7 @@ export const addProduct = async (businessId, productData) => {
   return handleRequest(() =>
     axiosInstance.post('/products/', {
       ...productData,
-      business: businessId,  // Incluyendo el businessId aquí
+      business: businessId,
     })
   );
 };
@@ -115,16 +136,14 @@ export const deleteProduct = async (productId) => {
   );
 };
 
-// Aquí actualizamos la función `getProducts` para utilizar `axiosInstance`
 export const getProducts = async (searchTerm = '') => {
   const url = searchTerm ? `products/?search=${encodeURIComponent(searchTerm)}` : 'products/';
   return handleRequest(() => axiosInstance.get(url));
 };
 
-export const getLocations = async (searchTerm = '') => {
-  const url = searchTerm ? `locations/?search=${encodeURIComponent(searchTerm)}` : 'locations/';
-  return handleRequest(() => axiosInstance.get(url));
+export const getLocations = async () => {
+  return handleRequest(() => axiosInstance.get('locations/'));
 };
 
-
-export default axiosInstance;
+// Exporta axiosInstance como una exportación nombrada
+export { axiosInstance };

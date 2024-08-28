@@ -9,7 +9,7 @@ export const colors = {
 };
 
 export const fontSizes = {
-  large: '4rem',  // Tamaño grande para títulos
+  large: '4rem',    // Tamaño grande para títulos
   medium: '1.5rem', // Tamaño mediano para subtítulos
   small: '1rem',    // Tamaño pequeño para texto regular
 };

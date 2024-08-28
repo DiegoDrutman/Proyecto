@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-import uuid
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 class BusinessManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -25,7 +24,7 @@ class BusinessManager(BaseUserManager):
 
         return self.create_user(username, password, **extra_fields)
 
-class Business(AbstractBaseUser):
+class Business(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
@@ -54,8 +53,21 @@ class Business(AbstractBaseUser):
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)
 
+    def has_perm(self, perm, obj=None):
+        """
+        Devuelve True si el usuario tiene el permiso especificado.
+        """
+        return True
+
+    def has_module_perms(self, app_label):
+        """
+        Devuelve True si el usuario tiene permisos para ver la aplicación 'app_label'.
+        """
+        return True
+
     def __str__(self):
         return self.name or self.username
+
 
 # Modelo de producto
 class Product(models.Model):

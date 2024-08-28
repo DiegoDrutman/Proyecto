@@ -8,6 +8,13 @@ class BusinessAdmin(admin.ModelAdmin):
     list_filter = ('approved', 'opening_hours', 'closing_hours')
     ordering = ('-created_at',)
 
+    def get_queryset(self, request):
+        """
+        Sobrescribe el queryset para excluir a los superusuarios de la lista de negocios.
+        """
+        qs = super().get_queryset(request)
+        return qs.filter(is_superuser=False)  # Excluir superusuarios
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'business', 'price', 'offer_price', 'created_at')

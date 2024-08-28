@@ -71,7 +71,7 @@ CORS_ALLOW_HEADERS = [
 ]
 
 # Authentication settings
-AUTH_USER_MODEL = 'auth.User'  # Volver a la configuración predeterminada
+AUTH_USER_MODEL = 'business.Business' # Volver a la configuración predeterminada
 
 # Django Rest Framework settings
 REST_FRAMEWORK = {

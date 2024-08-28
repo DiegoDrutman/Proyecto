@@ -62,6 +62,8 @@ class BusinessAuthTokenSerializer(serializers.Serializer):
         username = attrs.get('username')
         password = attrs.get('password')
         
+        print(f"Autenticando: {username}")  # Añade esto para verificar el username
+        
         if username and password:
             # Autenticar al negocio
             business = authenticate(username=username, password=password)

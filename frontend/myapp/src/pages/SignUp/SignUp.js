@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Box } from '@mui/material';
+import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Box, MenuItem } from '@mui/material';
 import { axiosInstance } from '../../services/api'; 
 import { FullScreenContainer, StyledContainer, BackgroundWrapper } from './SignUp.styles';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,7 @@ const SignUp = ({ setIsAuthenticated }) => {
     const [closingHours, setClosingHours] = useState('');
     const [workDays, setWorkDays] = useState('');
     const [address, setAddress] = useState('');
+    const [location, setLocation] = useState(''); // Nuevo estado para la ubicación
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -42,6 +43,7 @@ const SignUp = ({ setIsAuthenticated }) => {
             if (!openingHours) errors.openingHours = 'El horario de apertura es obligatorio.';
             if (!closingHours) errors.closingHours = 'El horario de cierre es obligatorio.';
             if (!address) errors.address = 'La dirección es obligatoria.';
+            if (!location) errors.location = 'La ubicación es obligatoria.'; // Validar la ubicación
         }
 
         if (activeStep === 2) {
@@ -85,22 +87,23 @@ const SignUp = ({ setIsAuthenticated }) => {
             formData.append('closing_hours', closingHours);
             formData.append('work_days', workDays);
             formData.append('address', address);
+            formData.append('location_id', parseInt(location)); // Convertir location a número entero
             formData.append('username', username);
             formData.append('password', password);
-
+    
             if (logo) {
                 formData.append('logo', logo);
             }
-
+    
             const csrfToken = getCsrfToken();
-
+    
             const response = await axiosInstance.post('businesses/', formData, {
                 headers: {
                     'X-CSRFToken': csrfToken,
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
+    
             if (response) {
                 setIsAuthenticated(true);
                 window.location.href = '/login';
@@ -241,6 +244,26 @@ const SignUp = ({ setIsAuthenticated }) => {
                             margin="normal"
                             sx={{ mb: 3 }}
                         />
+                        <Typography variant="h6" gutterBottom>
+                            Selecciona la ubicación de tu negocio
+                        </Typography>
+                        <TextField
+                            select
+                            label="Ubicación"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            variant="outlined"
+                            fullWidth
+                            required
+                            margin="normal"
+                            sx={{ mb: 3 }}
+                        >
+                            <MenuItem value="Hurlingham">Hurlingham</MenuItem>
+                            <MenuItem value="Morón">Morón</MenuItem>
+                            <MenuItem value="Ituzaingó">Ituzaingó</MenuItem>
+                            <MenuItem value="Palomar">Palomar</MenuItem>
+                        </TextField>
+                        {fieldErrors.location && <Typography color="error">{fieldErrors.location}</Typography>}
                     </>
                 );
             case 2:

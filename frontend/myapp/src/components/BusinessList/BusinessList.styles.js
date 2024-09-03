@@ -5,9 +5,9 @@ import { colors, spacing } from '../../styles/Variables';
 // Contenedor principal para el listado de negocios utilizando Flexbox
 export const BusinessGridContainer = styled(Box)`
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea */
-  justify-content: flex-start; /* Asegura que los elementos se alineen al inicio */
-  gap: ${spacing.medium}; /* Espacio entre las tarjetas */
+  flex-wrap: wrap;
+  justify-content: center; /* Cambiado a center para centrar las tarjetas */
+  gap: ${spacing.medium};
   width: 100%;
   padding: ${spacing.large} 0;
   margin: 0 auto;

@@ -1,29 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { CircularProgress, Alert } from '@mui/material';
-import { getBusinesses } from '../../services/api'; // Importa correctamente desde api.js
-import BusinessCard from '../BusinessCard/BusinessCard'; // Importa el componente correctamente
-import { BusinessGridContainer, NoBusinessesMessage } from './BusinessList.styles'; // Importa los estilos desde el archivo correcto
+import { getBusinesses } from '../../services/api';
+import BusinessCard from '../BusinessCard/BusinessCard';
+import { BusinessGridContainer, NoBusinessesMessage } from './BusinessList.styles';
 
 const BusinessList = ({ searchTerm }) => {
-  const [businesses, setBusinesses] = useState([]); // Estado para negocios
+  const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
-        const data = await getBusinesses(searchTerm); // Llama a la API con el término de búsqueda
-        const approvedBusinesses = data.filter(business => business.approved); // Filtra negocios aprobados
-        setBusinesses(approvedBusinesses); // Actualiza el estado de negocios con solo los aprobados
+        const data = await getBusinesses(searchTerm);
+        console.log('Businesses Data:', data); // Depuración
+
+        const approvedBusinesses = data.filter(business => business.approved);
+        console.log('Approved Businesses:', approvedBusinesses); // Verifica los negocios aprobados
+
+        // Verificar el campo logo en cada business
+        approvedBusinesses.forEach(business => {
+          if (!business.logo) {
+            console.warn(`El negocio con ID ${business.id} no tiene un logo definido.`);
+          }
+        });
+
+        setBusinesses(approvedBusinesses);
         setLoading(false);
       } catch (err) {
-        setError(err.message || 'Error al cargar los negocios'); // Mostrar el mensaje de error de la API si está disponible
+        setError(err.message || 'Error al cargar los negocios');
         setLoading(false);
       }
     };
 
     fetchBusinesses();
-  }, [searchTerm]); // Añade searchTerm como dependencia para la búsqueda dinámica
+  }, [searchTerm]);
 
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;

@@ -16,11 +16,10 @@ class BusinessBackend(ModelBackend):
                 logger.warning(f"Intento de inicio de sesión para un negocio no aprobado: {username}")
                 return None  # No permitir inicio de sesión si el negocio no está aprobado
             
-            # Verificar la contraseña del negocio
-            if business.check_password(password):
+            if password and business.check_password(password):
                 return business
             else:
-                logger.warning(f"Contraseña incorrecta para el negocio: {username}")
+                logger.warning("Contraseña incorrecta o no proporcionada.")
                 return None
         
         except Business.DoesNotExist:

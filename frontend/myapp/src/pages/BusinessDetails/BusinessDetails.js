@@ -18,7 +18,6 @@ import {
 import defaultBusinessImage from '../../assets/default-image.jpg';
 import defaultProductImage from '../../assets/default-product.jpg';
 
-
 const BusinessDetails = () => {
   const { id } = useParams();
   const [business, setBusiness] = useState(null);
@@ -29,7 +28,8 @@ const BusinessDetails = () => {
     const fetchBusiness = async () => {
       try {
         const data = await getBusinessById(id);
-        if (data) {
+        console.log('Datos del negocio:', data); // Log para verificar los datos
+        if (data && Object.keys(data).length > 0) {
           setBusiness(data);
         } else {
           setError('No se encontraron datos para este negocio.');
@@ -40,7 +40,7 @@ const BusinessDetails = () => {
         setLoading(false);
       }
     };
-
+  
     fetchBusiness();
   }, [id]);
 
@@ -50,10 +50,10 @@ const BusinessDetails = () => {
 
   return (
     <>
-      <HeaderContainer style={{ backgroundImage: `url(${business.image || defaultBusinessImage})` }}>
-      <Overlay />
+      <HeaderContainer style={{ backgroundImage: `url(${business.logo || defaultBusinessImage})` }}>
+        <Overlay />
         <TextContainer>
-          <BusinessTitle>{business.name}</BusinessTitle>
+          <BusinessTitle>{business.name || "Nombre no disponible"}</BusinessTitle>
           <Typography variant="body1">{business.description || "No hay descripción disponible."}</Typography>
         </TextContainer>
       </HeaderContainer>
@@ -63,7 +63,7 @@ const BusinessDetails = () => {
           <DetailsContainer>
             <SectionTitle>Detalles</SectionTitle>
             <Typography variant="body1">
-              <strong>Horario:</strong> {business.operating_hours || "N/A"}
+              <strong>Horario:</strong> {business.opening_hours || "N/A"} - {business.closing_hours || "N/A"}
             </Typography>
           </DetailsContainer>
 
@@ -80,10 +80,10 @@ const BusinessDetails = () => {
             <SectionTitle>Productos</SectionTitle>
             {business.products.map((product) => (
               <ProductItem key={product.id}>
-                <img src={product.image || defaultProductImage} alt={product.name} />
-                <Typography variant="h6">{product.name}</Typography>
+                <img src={product.image || defaultProductImage} alt={product.name || "Producto sin nombre"} />
+                <Typography variant="h6">{product.name || "Producto sin nombre"}</Typography>
                 <Typography variant="body1">{product.description || 'Sin descripción'}</Typography>
-                <Typography variant="body2">${product.price}</Typography>
+                <Typography variant="body2">${product.price != null ? product.price : 'Precio no disponible'}</Typography>
               </ProductItem>
             ))}
           </ProductList>

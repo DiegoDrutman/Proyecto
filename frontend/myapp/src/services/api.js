@@ -119,7 +119,7 @@ export const addProduct = async (businessId, productData) => {
   return handleRequest(() =>
     axiosInstance.post('/products/', {
       ...productData,
-      business: businessId,
+      business: businessId,  // Asegúrate de que businessId está siendo enviado correctamente
     })
   );
 };

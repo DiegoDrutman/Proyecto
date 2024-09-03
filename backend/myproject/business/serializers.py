@@ -12,7 +12,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'offer_price', 'image', 'created_at']
-        
+
 class BusinessSerializer(serializers.ModelSerializer):
     location_id = serializers.PrimaryKeyRelatedField(
         queryset=Location.objects.all(),
@@ -33,8 +33,13 @@ class BusinessSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        location = validated_data.pop('location_id', None)
-        business = Business(
+        location_id = validated_data.pop('location_id')
+        
+        # Asegurarnos de que el location_id es un número entero
+        if isinstance(location_id, Location):
+            location_id = location_id.id
+        
+        business = Business.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
             name=validated_data.get('name', ''),
@@ -44,12 +49,13 @@ class BusinessSerializer(serializers.ModelSerializer):
             closing_hours=validated_data.get('closing_hours', ''),
             work_days=validated_data.get('work_days', ''),
             logo=validated_data.get('logo', None),
-            location_id=location
+            location_id=location_id  # Asegurarse de que location_id es un número entero
         )
         business.set_password(validated_data['password'])
         business.save()
         return business
-    
+
+
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Nombre de usuario")
     password = serializers.CharField(label="Contraseña", style={'input_type': 'password'}, trim_whitespace=False)

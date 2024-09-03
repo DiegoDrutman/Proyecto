@@ -83,7 +83,16 @@ class BusinessViewSet(viewsets.ModelViewSet):
         return queryset.filter(approved=True)
 
     def perform_create(self, serializer):
-        serializer.save()
+        business = serializer.save()
+
+        # Enviar correo de confirmación
+        send_mail(
+            subject='Registro de negocio exitoso',
+            message=f'Tu negocio {business.name} ha sido registrado con éxito y está pendiente de aprobación.',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[business.email],
+            fail_silently=False,
+        )
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated], url_path='me')
     def obtener_negocio_propio(self, request):
@@ -109,6 +118,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
         )
 
         return Response({'status': 'Negocio aprobado.'}, status=status.HTTP_200_OK)
+
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):

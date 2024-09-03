@@ -87,7 +87,7 @@ const SignUp = ({ setIsAuthenticated }) => {
             formData.append('closing_hours', closingHours);
             formData.append('work_days', workDays);
             formData.append('address', address);
-            formData.append('location_id', parseInt(location)); // Convertir location a número entero
+            formData.append('location_id', location); // location ya es un número entero
             formData.append('username', username);
             formData.append('password', password);
     
@@ -251,17 +251,17 @@ const SignUp = ({ setIsAuthenticated }) => {
                             select
                             label="Ubicación"
                             value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            onChange={(e) => setLocation(parseInt(e.target.value))} // Convertir el valor a número entero
                             variant="outlined"
                             fullWidth
                             required
                             margin="normal"
                             sx={{ mb: 3 }}
                         >
-                            <MenuItem value="Hurlingham">Hurlingham</MenuItem>
-                            <MenuItem value="Morón">Morón</MenuItem>
-                            <MenuItem value="Ituzaingó">Ituzaingó</MenuItem>
-                            <MenuItem value="Palomar">Palomar</MenuItem>
+                            <MenuItem value={1}>Hurlingham</MenuItem>
+                            <MenuItem value={2}>Morón</MenuItem>
+                            <MenuItem value={3}>Ituzaingó</MenuItem>
+                            <MenuItem value={4}>Palomar</MenuItem>
                         </TextField>
                         {fieldErrors.location && <Typography color="error">{fieldErrors.location}</Typography>}
                     </>

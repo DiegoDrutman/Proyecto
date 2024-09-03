@@ -77,7 +77,7 @@ class Business(AbstractBaseUser, PermissionsMixin):
     closing_hours = models.CharField(max_length=255, blank=True)
     work_days = models.CharField(max_length=255, blank=True)
     logo = models.ImageField(upload_to='business_logos/', blank=True, null=True)
-    location = models.ForeignKey(Location, related_name='businesses', on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, related_name='businesses', on_delete=models.CASCADE)    
     approved = models.BooleanField(default=False)
     token = models.CharField(max_length=36, blank=True, null=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)

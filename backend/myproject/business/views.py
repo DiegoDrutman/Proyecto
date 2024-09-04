@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from .models import Business, Product, Location
-from .serializers import BusinessSerializer, ProductSerializer, BusinessAuthTokenSerializer
+from .serializers import BusinessSerializer, ProductSerializer
 from django.db.models import Q
 from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
@@ -30,13 +30,13 @@ class ProductViewSet(viewsets.ModelViewSet):
                 business = Business.objects.get(id=business_id)
                 serializer.save(business=business)
             except Business.DoesNotExist:
-                raise serializers.ValidationError({"business": "El negocio con el id proporcionado no existe."})
+                raise serializers.ValidationError({"business": "El negocio con el ID proporcionado no existe."})
         else:
-            raise serializers.ValidationError({"business": "business_id no está presente en los datos proporcionados."})
+            raise serializers.ValidationError({"business": "El ID del negocio no está presente en los datos proporcionados."})
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            permission_classes = [permissions.IsAuthenticated]  # Permitir a cualquier usuario autenticado
+            permission_classes = [permissions.IsAuthenticated]
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
@@ -102,13 +102,17 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(business)
         return Response(serializer.data)
-
+    
+    # Crear el token cuando se aprueba el negocio
     @action(detail=True, methods=['post'], permission_classes=[IsSuperuser])
     def aprobar_negocio(self, request, pk=None):
         business = self.get_object()
         business.approved = True
         business.save()
 
+        # Crear el token para el negocio
+        token, _ = Token.objects.get_or_create(user=business)
+        
         send_mail(
             'Negocio aprobado',
             f'¡Felicidades! Tu negocio {business.name} ha sido aprobado.',
@@ -119,19 +123,26 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
         return Response({'status': 'Negocio aprobado.'}, status=status.HTTP_200_OK)
 
-
-class CustomAuthToken(ObtainAuthToken):
+class CustomAuthToken(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'username': user.username
-        })
 
+        business = serializer.validated_data['user']
+
+        # Aquí es donde ocurre el problema
+        if isinstance(business, Business):
+            # Aquí se debe manejar un caso donde el business pueda tener su propio token.
+            # Token personalizado o lógica adecuada
+            token, created = BusinessToken.objects.get_or_create(business=business)
+            return Response({
+                'token': token.token,
+                'user_id': business.pk,
+                'username': business.username
+            })
+        else:
+            return Response({'error': 'Credenciales incorrectas o negocio no aprobado.'}, status=400)
+        
 class LocationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer

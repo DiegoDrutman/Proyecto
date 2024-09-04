@@ -13,6 +13,11 @@ DEBUG = True
 # Allowed hosts
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+AUTHENTICATION_BACKENDS = [
+    'business.backends.BusinessBackend',  # Tu backend personalizado para negocios
+    'django.contrib.auth.backends.ModelBackend',  # Backend predeterminado para superusuarios
+]
+
 # Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -71,7 +76,7 @@ CORS_ALLOW_HEADERS = [
 ]
 
 # Authentication settings
-AUTH_USER_MODEL = 'business.CustomerUser' # Volver a la configuración predeterminada
+AUTH_USER_MODEL = 'business.CustomerUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

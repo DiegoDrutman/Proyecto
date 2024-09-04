@@ -21,52 +21,28 @@ const Login = ({ setIsAuthenticated }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const trimmedUsername = username.trim();
     const trimmedPassword = password.trim();
-  
-    // Verifica los datos que se van a enviar
-    console.log('Datos a enviar:', { username: trimmedUsername, password: trimmedPassword });
-  
-    localStorage.removeItem('token');  // Eliminar cualquier token anterior antes de autenticar
-  
+
+    localStorage.removeItem('token');
+
     try {
       const response = await authenticateBusiness({
         username: trimmedUsername,
         password: trimmedPassword,
       });
 
-      console.log('Datos a enviar:', { username: trimmedUsername, password: trimmedPassword });
-  
       if (response.token) {
         localStorage.setItem('token', response.token);
         setIsAuthenticated(true);
         navigate('/profile');
       } else {
-        setError('La autenticación falló. Por favor, inténtalo de nuevo.');
+        setError('La autenticación falló.');
       }
     } catch (error) {
-      console.error('Error al autenticar:', error.response ? error.response.data : error.message);
-      if (error.response) {
-        switch (error.response.status) {
-          case 403:
-            setError('Tu cuenta o negocio aún no ha sido aprobado.');
-            break;
-          case 401:
-            setError('Credenciales inválidas. Por favor, intenta de nuevo.');
-            break;
-          case 400:
-            setError('Credenciales incorrectas o formato no válido. Detalles: ' + error.response.data);
-            break;
-          default:
-            setError('Error en el servidor. Por favor, intenta más tarde.');
-        }
-      } else if (error.request) {
-        setError('Error en el servidor. No se recibió respuesta.');
-      } else {
-        setError('Error de configuración. Por favor, inténtalo de nuevo.');
-      }
-    }    
+      setError('Error al autenticar.');
+    }
   };
 
   return (
@@ -85,12 +61,9 @@ const Login = ({ setIsAuthenticated }) => {
               id="username"
               label="Nombre de usuario"
               name="username"
-              autoComplete="username"
-              autoFocus
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              aria-label="Introduce tu nombre de usuario"
-              helperText={error && !username ? 'Por favor verifica tu nombre de usuario.' : ''}
+              autoFocus
             />
             <TextField
               margin="normal"
@@ -100,23 +73,17 @@ const Login = ({ setIsAuthenticated }) => {
               label="Contraseña"
               type="password"
               id="password"
-              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              aria-label="Introduce tu contraseña"
-              helperText={error && !password ? 'Por favor verifica tu contraseña.' : ''}
             />
             <SubmitButton type="submit" fullWidth variant="contained" disabled={!username || !password}>
               Ingresar
             </SubmitButton>
           </form>
           <SignupLink>
-            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                ¿No tienes cuenta?{' '}
-                  <Link to="/signup" style={{ textDecoration: 'none', color: '#3f51b5' }}>
-                          Registrate aquí
-                  </Link>
-           </Typography>
+            <Typography variant="body2" align="center">
+              ¿No tienes cuenta? <Link to="/signup">Registrate aquí</Link>
+            </Typography>
           </SignupLink>
         </StyledContainer>
       </LeftContainer>

@@ -11,5 +11,4 @@ router.register(r'locations', LocationViewSet, basename='location')
 urlpatterns = [
     path('', include(router.urls)),  # Incluye todas las URL generadas por el enrutador
     path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),  # Ruta para obtener el token CSRF
-    path('business/me/', BusinessViewSet.as_view({'get': 'get_own_business'}), name='business-me')
 ]

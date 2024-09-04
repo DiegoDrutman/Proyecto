@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Box, MenuItem } from '@mui/material';
 import { axiosInstance } from '../../services/api'; 
 import { FullScreenContainer, StyledContainer, BackgroundWrapper } from './SignUp.styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const steps = ['Información Básica', 'Detalles de la Empresa', 'Credenciales de Acceso'];
 
@@ -16,12 +16,14 @@ const SignUp = ({ setIsAuthenticated }) => {
     const [closingHours, setClosingHours] = useState('');
     const [workDays, setWorkDays] = useState('');
     const [address, setAddress] = useState('');
-    const [location, setLocation] = useState(''); // Nuevo estado para la ubicación
+    const [location, setLocation] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
+
+    const navigate = useNavigate();  // Hook para navegar
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,7 +45,7 @@ const SignUp = ({ setIsAuthenticated }) => {
             if (!openingHours) errors.openingHours = 'El horario de apertura es obligatorio.';
             if (!closingHours) errors.closingHours = 'El horario de cierre es obligatorio.';
             if (!address) errors.address = 'La dirección es obligatoria.';
-            if (!location) errors.location = 'La ubicación es obligatoria.'; // Validar la ubicación
+            if (!location) errors.location = 'La ubicación es obligatoria.';
         }
 
         if (activeStep === 2) {
@@ -87,26 +89,26 @@ const SignUp = ({ setIsAuthenticated }) => {
             formData.append('closing_hours', closingHours);
             formData.append('work_days', workDays);
             formData.append('address', address);
-            formData.append('location_id', location); // location ya es un número entero
+            formData.append('location_id', location);
             formData.append('username', username);
             formData.append('password', password);
-    
+
             if (logo) {
                 formData.append('logo', logo);
             }
-    
+
             const csrfToken = getCsrfToken();
-    
+
             const response = await axiosInstance.post('businesses/', formData, {
                 headers: {
                     'X-CSRFToken': csrfToken,
                     'Content-Type': 'multipart/form-data',
                 },
             });
-    
+
             if (response) {
                 setIsAuthenticated(true);
-                window.location.href = '/login';
+                navigate('/login');  // Reemplaza window.location.href por navigate
             } else {
                 setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
             }
@@ -372,3 +374,4 @@ const SignUp = ({ setIsAuthenticated }) => {
 };
 
 export default SignUp;
+

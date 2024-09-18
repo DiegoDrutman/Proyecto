@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from .models import Business, Product, Location
-from .serializers import BusinessSerializer, ProductSerializer
+from .serializers import BusinessSerializer, ProductSerializer, LocationSerializer
 from django.db.models import Q
 from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
@@ -13,8 +13,12 @@ from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
 from rest_framework.authtoken.models import Token
-from .serializers import LocationSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework import serializers
+import logging
+
+# Configuración básica del logger
+logger = logging.getLogger(__name__)
 
 def get_csrf_token(request):
     return JsonResponse({'csrfToken': get_token(request)})
@@ -27,10 +31,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         business_id = self.request.data.get('business')
         if business_id:
             try:
-                business = Business.objects.get(id=business_id)
+                business = Business.objects.get(id=business_id, approved=True)
                 serializer.save(business=business)
             except Business.DoesNotExist:
-                raise serializers.ValidationError({"business": "El negocio con el ID proporcionado no existe."})
+                raise serializers.ValidationError({"business": "El negocio con el ID proporcionado no existe o no está aprobado."})
         else:
             raise serializers.ValidationError({"business": "El ID del negocio no está presente en los datos proporcionados."})
 
@@ -61,7 +65,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
-
+    
     def get_queryset(self):
         queryset = super().get_queryset()
         search_term = self.request.query_params.get('search', None)
@@ -86,63 +90,68 @@ class BusinessViewSet(viewsets.ModelViewSet):
         business = serializer.save()
 
         # Enviar correo de confirmación
-        send_mail(
-            subject='Registro de negocio exitoso',
-            message=f'Tu negocio {business.name} ha sido registrado con éxito y está pendiente de aprobación.',
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[business.email],
-            fail_silently=False,
-        )
+        try:
+            send_mail(
+                subject='Registro de negocio exitoso',
+                message=f'Tu negocio {business.name} ha sido registrado con éxito y está pendiente de aprobación.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[business.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            logger.error(f"Error al enviar el correo: {e}")
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated], url_path='me')
     def obtener_negocio_propio(self, request):
         business = request.user
+        if not isinstance(business, Business):
+            return Response({'detail': 'Este usuario no es un negocio.'}, status=status.HTTP_400_BAD_REQUEST)
+
         if not business.is_authenticated:
             return Response({'detail': 'Usuario no autenticado.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         serializer = self.get_serializer(business)
         return Response(serializer.data)
-    
-    # Crear el token cuando se aprueba el negocio
+        
     @action(detail=True, methods=['post'], permission_classes=[IsSuperuser])
     def aprobar_negocio(self, request, pk=None):
         business = self.get_object()
+
         business.approved = True
         business.save()
 
         # Crear el token para el negocio
         token, _ = Token.objects.get_or_create(user=business)
-        
-        send_mail(
-            'Negocio aprobado',
-            f'¡Felicidades! Tu negocio {business.name} ha sido aprobado.',
-            settings.DEFAULT_FROM_EMAIL,
-            [business.email],
-            fail_silently=False,
-        )
+
+        try:
+            send_mail(
+                'Negocio aprobado',
+                f'¡Felicidades! Tu negocio {business.name} ha sido aprobado.',
+                settings.DEFAULT_FROM_EMAIL,
+                [business.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            logger.error(f"Error al enviar el correo: {e}")
 
         return Response({'status': 'Negocio aprobado.'}, status=status.HTTP_200_OK)
 
-class CustomAuthToken(APIView):
+class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
 
-        business = serializer.validated_data['user']
-
-        # Aquí es donde ocurre el problema
-        if isinstance(business, Business):
-            # Aquí se debe manejar un caso donde el business pueda tener su propio token.
-            # Token personalizado o lógica adecuada
-            token, created = BusinessToken.objects.get_or_create(business=business)
-            return Response({
-                'token': token.token,
-                'user_id': business.pk,
-                'username': business.username
-            })
+        # Verificamos que el usuario es un negocio
+        if isinstance(user, Business):  # Verificamos que sea instancia de Business
+            if user.approved:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'token': token.key,
+                    'user_id': user.pk,
+                    'username': user.username
+                })
+            else:
+                return Response({'error': 'El negocio aún no ha sido aprobado.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'error': 'Credenciales incorrectas o negocio no aprobado.'}, status=400)
-        
-class LocationViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Location.objects.all()
-    serializer_class = LocationSerializer
+            return Response({'error': 'Credenciales incorrectas.'}, status=status.HTTP_400_BAD_REQUEST)

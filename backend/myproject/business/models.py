@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+# Modelo para las ubicaciones
 class Location(models.Model):
     name = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=10)
@@ -8,6 +9,10 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
+
+# Manager para el superusuario
 class CustomerUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -21,12 +26,23 @@ class CustomerUserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('El superusuario debe tener is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('El superusuario debe tener is_superuser=True.')
+
         return self.create_user(email, password, **extra_fields)
 
+# Modelo para el superusuario
 class CustomerUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
+    # Agrega related_name a los campos groups y user_permissions
+    groups = models.ManyToManyField(Group, related_name='customeruser_groups')
+    user_permissions = models.ManyToManyField(Permission, related_name='customeruser_user_permissions')
 
     objects = CustomerUserManager()
 
@@ -36,6 +52,7 @@ class CustomerUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+# Manager para el modelo Business
 class BusinessManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
@@ -48,6 +65,7 @@ class BusinessManager(BaseUserManager):
     def create_superuser(self, username, password=None, **extra_fields):
         raise NotImplementedError("El modelo Business no debería crear superusuarios")
 
+# Modelo para los negocios
 class Business(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
@@ -66,6 +84,7 @@ class Business(AbstractBaseUser):
     def __str__(self):
         return self.name or self.username
 
+# Modelo para los productos
 class Product(models.Model):
     business = models.ForeignKey(Business, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)

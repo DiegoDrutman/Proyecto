@@ -2,9 +2,10 @@ from rest_framework.permissions import BasePermission
 
 class IsSuperuser(BasePermission):
     """
-    Permiso para permitir solo a los superadministradores realizar ciertas acciones.
+    Permiso personalizado que permite solo a los superadministradores (superusuarios)
+    realizar ciertas acciones, como la aprobación de negocios.
     """
 
     def has_permission(self, request, view):
-        # Solo permitir si el usuario es un superusuario
-        return request.user and request.user.is_superuser
+        # Verificar si el usuario está autenticado y si es un superusuario
+        return bool(request.user and request.user.is_authenticated and request.user.is_superuser)

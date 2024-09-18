@@ -1,3 +1,4 @@
+# business/backends.py
 from django.contrib.auth.backends import ModelBackend
 from .models import Business
 import logging
@@ -6,23 +7,30 @@ import logging
 logger = logging.getLogger(__name__)
 
 class BusinessBackend(ModelBackend):
+    """
+    Este backend autentica un negocio en lugar de un CustomerUser.
+    """
     def authenticate(self, request, username=None, password=None, **kwargs):
         try:
-            # Intentar obtener el negocio con el nombre de usuario proporcionado
+            logger.info(f"Autenticando negocio: {username}")
             business = Business.objects.get(username=username)
             
-            # Verificar si el negocio está aprobado
             if not business.approved:
-                logger.info(f"Intento de inicio de sesión para un negocio no aprobado: {username}")
-                return None  # No permitir inicio de sesión si el negocio no está aprobado
+                logger.info(f"El negocio {username} no está aprobado")
+                return None
             
-            # Verificar si la contraseña es correcta
             if business.check_password(password):
+                logger.info(f"Autenticación exitosa para {username}")
                 return business
             else:
-                logger.warning(f"Contraseña incorrecta para el negocio: {username}")
+                logger.info(f"Contraseña incorrecta para {username}")
                 return None
-        
         except Business.DoesNotExist:
-            logger.error(f"Negocio no encontrado: {username}")
+            logger.error(f"Negocio con username {username} no existe")
+            return None
+
+    def get_user(self, user_id):
+        try:
+            return Business.objects.get(pk=user_id)
+        except Business.DoesNotExist:
             return None

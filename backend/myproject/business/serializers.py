@@ -2,16 +2,19 @@ from rest_framework import serializers
 from .models import Business, Product, Location
 from django.contrib.auth import authenticate
 
+# Serializador para la ubicación
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ['id', 'name', 'postal_code']
 
+# Serializador para los productos
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'description', 'price', 'offer_price', 'image', 'created_at']
 
+# Serializador para el negocio
 class BusinessSerializer(serializers.ModelSerializer):
     location_id = serializers.PrimaryKeyRelatedField(
         queryset=Location.objects.all(),
@@ -27,27 +30,31 @@ class BusinessSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'approved': {'read_only': True},
+            'approved': {'read_only': True},  # El campo 'approved' no debe ser modificado por el negocio
         }
 
+    # Método para crear el negocio
     def create(self, validated_data):
-        location = validated_data.pop('location_id')
+        location_id = validated_data.pop('location_id', None)
+        if isinstance(location_id, Location):
+            location_id = location_id.id
 
-        # Asegurarse de que 'location' es un número, no un objeto
-        if isinstance(location, Location):
-            location = location.id
-
-        business = Business.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            name=validated_data.get('name', ''),
-            description=validated_data.get('description', ''),
-            address=validated_data.get('address', ''),
-            location_id=location,  # Asegurarse de que location_id sea un número
-        )
-        business.set_password(validated_data['password'])
-        business.save()
-        return business
+        try:
+            # Crear el negocio con los datos proporcionados
+            business = Business.objects.create(
+                username=validated_data['username'],
+                email=validated_data['email'],
+                name=validated_data.get('name', ''),
+                description=validated_data.get('description', ''),
+                address=validated_data.get('address', ''),
+                location_id=location_id,
+            )
+            # Asignar y encriptar la contraseña
+            business.set_password(validated_data['password'])
+            business.save()
+            return business
+        except Exception as e:
+            raise serializers.ValidationError(f"Error al crear el negocio: {str(e)}")
 
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Nombre de usuario")
@@ -61,8 +68,12 @@ class BusinessAuthTokenSerializer(serializers.Serializer):
         business = authenticate(username=username, password=password)
 
         if business is None:
-            raise serializers.ValidationError('Credenciales incorrectas o cuenta no aprobada.', code='authorization')
+            raise serializers.ValidationError('Credenciales incorrectas o la cuenta no está aprobada.', code='authorization')
 
-        # Si todo está bien, añade el negocio a los atributos validados
+        # Verificar si el negocio está aprobado
+        if not business.approved:
+            raise serializers.ValidationError('La cuenta aún no ha sido aprobada por el administrador.', code='authorization')
+
+        # Añadir el negocio autenticado al contexto de validación
         attrs['user'] = business
         return attrs

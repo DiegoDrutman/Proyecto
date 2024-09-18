@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Rutas del panel de administración
     path('api/', include('business.urls')),  # Incluye las rutas del módulo business
     path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),  # Autenticación estándar de DRF
-    path('api/api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth'),  # Autenticación personalizada para tokens
+    path('api/api-token-auth/', CustomAuthToken.as_view(), name='api_token_auth'),  # Autenticación para superusuarios
 ]
 
 # Sirve archivos media cuando DEBUG está activado (solo en desarrollo)

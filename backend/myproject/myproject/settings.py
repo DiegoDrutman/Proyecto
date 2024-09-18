@@ -5,18 +5,21 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret key
-SECRET_KEY = 'mc1rsecretkey9'
+SECRET_KEY = 'mc1rsecretkey9'  # Cambia esto a una clave segura para producción
 
 # Debug settings
-DEBUG = True
+DEBUG = True  # Cambia a False en producción
 
 # Allowed hosts
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Agrega tu dominio en producción
 
+# Authentication backends
 AUTHENTICATION_BACKENDS = [
-    'business.backends.BusinessBackend',  # Tu backend personalizado para negocios
-    'django.contrib.auth.backends.ModelBackend',  # Backend predeterminado para superusuarios
+    'business.backends.BusinessBackend',  # Autenticación para los negocios
+    'django.contrib.auth.backends.ModelBackend',  # Autenticación para CustomerUser
 ]
+
+AUTH_USER_MODEL = 'business.CustomerUser' 
 
 # Installed apps
 INSTALLED_APPS = [
@@ -34,22 +37,22 @@ INSTALLED_APPS = [
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3000",  # Cambia esto para tu frontend en producción
 ]
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_HTTPONLY = False  # Esto debe ser False para acceso desde JS
+CSRF_COOKIE_HTTPONLY = False  # Esto debe ser True en producción para mayor seguridad
 CSRF_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
 SESSION_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS
 
-# Email settings
+# Email settings (cambia a variables de entorno en producción)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'diego.drutman@gmail.com'
-EMAIL_HOST_PASSWORD = 'eyxw ukjd ymck tggk'
+EMAIL_HOST_PASSWORD = 'eyxw ukjd ymck tggk'  # Cambia a variables de entorno para seguridad
 DEFAULT_FROM_EMAIL = 'BizWave <diego.drutman@gmail.com>'
 ADMIN_EMAIL = 'diego.drutman@gmail.com'
 
@@ -75,8 +78,6 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
 ]
 
-# Authentication settings
-AUTH_USER_MODEL = 'business.CustomerUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -117,7 +118,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'mc1rpostgresql9',
+        'PASSWORD': 'mc1rpostgresql9',  # Cambia a una variable de entorno en producción
         'HOST': 'localhost',
         'PORT': '5432',
     }

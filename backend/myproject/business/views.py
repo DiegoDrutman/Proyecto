@@ -1,14 +1,12 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from .models import Business, Product, Location
-from .serializers import BusinessSerializer, ProductSerializer, LocationSerializer
+from .models import Business, Product, BusinessToken
+from .serializers import BusinessSerializer, ProductSerializer
 from django.db.models import Q
 from .permissions import IsSuperuser
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from rest_framework.views import APIView
 from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
@@ -16,6 +14,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import serializers
 import logging
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.crypto import get_random_string
 
 # Configuración básica del logger
 logger = logging.getLogger(__name__)
@@ -136,16 +136,25 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
         return Response({'status': 'Negocio aprobado.'}, status=status.HTTP_200_OK)
 
+
 class CustomAuthToken(ObtainAuthToken):
+
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
+        logger.info("Autenticando negocio...")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
+        logger.info(f"Usuario autenticado: {user}")
 
-        # Verificamos que el usuario es un negocio
-        if isinstance(user, Business):  # Verificamos que sea instancia de Business
+        if isinstance(user, Business):
+            logger.info(f"Negocio autenticado: {user.username}")
             if user.approved:
-                token, created = Token.objects.get_or_create(user=user)
+                # Crear o recuperar el token para el negocio
+                token, created = BusinessToken.objects.get_or_create(business=user)
+                if created:
+                    token.key = get_random_string(40)  # Generar un token único
+                    token.save()
                 return Response({
                     'token': token.key,
                     'user_id': user.pk,
@@ -154,4 +163,5 @@ class CustomAuthToken(ObtainAuthToken):
             else:
                 return Response({'error': 'El negocio aún no ha sido aprobado.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
+            logger.error("El usuario autenticado no es un negocio")
             return Response({'error': 'Credenciales incorrectas.'}, status=status.HTTP_400_BAD_REQUEST)

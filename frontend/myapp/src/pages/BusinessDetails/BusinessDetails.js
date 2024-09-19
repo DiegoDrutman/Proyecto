@@ -75,24 +75,30 @@ const BusinessDetails = () => {
           </AddressContainer>
         </InfoContainer>
 
-        {business.products && business.products.length > 0 ? (
-          <ProductList>
-            <SectionTitle>Productos</SectionTitle>
-            {business.products.map((product) => (
-              <ProductItem key={product.id}>
-                <img src={product.image || defaultProductImage} alt={product.name || "Producto sin nombre"} />
-                <Typography variant="h6">{product.name || "Producto sin nombre"}</Typography>
-                <Typography variant="body1">{product.description || 'Sin descripción'}</Typography>
-                <Typography variant="body2">${product.price != null ? product.price : 'Precio no disponible'}</Typography>
-              </ProductItem>
-            ))}
-          </ProductList>
-        ) : (
-          <Typography variant="body1">No hay productos disponibles.</Typography>
-        )}
+        <ProductSection products={business.products} />
       </BusinessWrapper>
     </>
   );
 };
+
+const ProductSection = ({ products }) => (
+  <>
+    {products && products.length > 0 ? (
+      <ProductList>
+        <SectionTitle>Productos</SectionTitle>
+        {products.map((product) => (
+          <ProductItem key={product.id}>
+            <img src={product.image || defaultProductImage} alt={product.name || "Producto sin nombre"} />
+            <Typography variant="h6">{product.name || "Producto sin nombre"}</Typography>
+            <Typography variant="body1">{product.description || 'Sin descripción'}</Typography>
+            <Typography variant="body2">${product.price != null ? product.price : 'Precio no disponible'}</Typography>
+          </ProductItem>
+        ))}
+      </ProductList>
+    ) : (
+      <Typography variant="body1">No hay productos disponibles.</Typography>
+    )}
+  </>
+);
 
 export default BusinessDetails;

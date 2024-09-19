@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Typography } from '@mui/material';
+import { TextField, Typography, CircularProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { authenticateBusiness } from '../../services/api';
 import {
@@ -16,33 +16,46 @@ const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     const trimmedUsername = username.trim();
     const trimmedPassword = password.trim();
-
+  
     localStorage.removeItem('token');
-
+    setLoading(true); // Mostrar el spinner
+  
     try {
       const response = await authenticateBusiness({
         username: trimmedUsername,
         password: trimmedPassword,
       });
-
+  
       if (response.token) {
         localStorage.setItem('token', response.token);
         setIsAuthenticated(true);
         navigate('/profile');
       } else {
-        setError('La autenticación falló.');
+        setError('Nombre de usuario o contraseña incorrectos.');
       }
     } catch (error) {
-      setError('Error al autenticar.');
+      if (error.response && error.response.status === 401) {
+        setError('Credenciales incorrectas o cuenta no aprobada.');
+      } else {
+        setError('Error al autenticar. Verifica tus credenciales e inténtalo de nuevo.');
+      }
+    } finally {
+      setLoading(false); // Ocultar el spinner
     }
+  };
+
+  // Limpiar el mensaje de error cuando el usuario empieza a escribir
+  const handleInputChange = (setter) => (e) => {
+    setError('');
+    setter(e.target.value);
   };
 
   return (
@@ -62,7 +75,7 @@ const Login = ({ setIsAuthenticated }) => {
               label="Nombre de usuario"
               name="username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleInputChange(setUsername)}
               autoFocus
             />
             <TextField
@@ -74,15 +87,15 @@ const Login = ({ setIsAuthenticated }) => {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleInputChange(setPassword)}
             />
-            <SubmitButton type="submit" fullWidth variant="contained" disabled={!username || !password}>
-              Ingresar
+            <SubmitButton type="submit" fullWidth variant="contained" disabled={!username || !password || loading}>
+              {loading ? <CircularProgress size={24} /> : 'Ingresar'}
             </SubmitButton>
           </form>
           <SignupLink>
             <Typography variant="body2" align="center">
-              ¿No tienes cuenta? <Link to="/signup">Registrate aquí</Link>
+              ¿No tienes cuenta? <Link to="/signup">Regístrate aquí</Link>
             </Typography>
           </SignupLink>
         </StyledContainer>

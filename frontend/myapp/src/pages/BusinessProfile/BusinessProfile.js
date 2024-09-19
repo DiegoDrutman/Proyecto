@@ -14,8 +14,8 @@ import {
 } from './BusinessProfile.styles';
 
 const BusinessProfile = ({ onLogout }) => {
-  const [profileData, setProfileData] = useState(null); // Cambié el estado inicial a null para manejar la carga
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [profileData, setProfileData] = useState(null); 
+  const [loading, setLoading] = useState(true); 
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
@@ -24,23 +24,29 @@ const BusinessProfile = ({ onLogout }) => {
     const fetchProfileData = async () => {
       try {
         const data = await getBusinessProfile();
-        console.log('Datos del perfil:', data);  // Agrega este log para depuración
+        console.log('Datos del perfil:', data);  // Depuración
         if (!data || Object.keys(data).length === 0) {
           setErrorMessage('Error al cargar el perfil.');
-          navigate('/login'); // Redirigir si no se pueden obtener los datos del perfil
+          navigate('/login');
         } else {
           setProfileData(data);
         }
       } catch (error) {
-        setErrorMessage('Error al cargar el perfil.');
-        navigate('/login'); // Redirigir en caso de error
+        if (error.response && error.response.status === 401) {
+          setErrorMessage('Token inválido o negocio no aprobado.');
+          localStorage.removeItem('token');
+          navigate('/login');
+        } else {
+          setErrorMessage('Error al cargar el perfil.');
+        }
       } finally {
-        setLoading(false); // Finaliza la carga
+        setLoading(false);
       }
     };
+  
     fetchProfileData();
   }, [navigate]);
-
+  
   const handleLogout = () => {
     localStorage.removeItem('token');
     onLogout();
@@ -48,7 +54,11 @@ const BusinessProfile = ({ onLogout }) => {
   };
 
   if (loading) {
-    return <CircularProgress />; // Indicador de carga
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress /> 
+      </div>
+    );
   }
 
   if (errorMessage) {
@@ -71,36 +81,34 @@ const BusinessProfile = ({ onLogout }) => {
 
         <ProfileDetails>
           <StyledCard>
-            <CardContent>
-              <Typography variant="h6">Descripción</Typography>
-              <Typography>{profileData?.description || 'No hay descripción disponible.'}</Typography>
-            </CardContent>
-          </StyledCard>
-
-          <StyledCard>
-            <CardContent>
-              <Typography variant="h6">Horario de Trabajo</Typography>
+          <CardContent>
               <InfoRow>
-                <Typography>Desde: {profileData?.opening_hours || 'N/A'}</Typography>
-                <Typography>Hasta: {profileData?.closing_hours || 'N/A'}</Typography>
+                <Typography variant="h6">Descripción:</Typography>
+                <Typography variant="body1">{profileData?.description || 'No hay descripción disponible'}</Typography>
               </InfoRow>
-              <Typography>Días de Trabajo: {profileData?.work_days || 'No especificado'}</Typography>
-            </CardContent>
-          </StyledCard>
-
-          <StyledCard>
-            <CardContent>
-              <Typography variant="h6">Dirección</Typography>
-              <Typography>{profileData?.address || 'No hay dirección disponible.'}</Typography>
+              <InfoRow>
+                <Typography variant="h6">Dirección:</Typography>
+                <Typography variant="body1">{profileData?.address || 'Dirección no disponible'}</Typography>
+              </InfoRow>
+              <InfoRow>
+                <Typography variant="h6">Horario:</Typography>
+                <Typography variant="body1">
+                  {profileData?.opening_hours || 'No disponible'} - {profileData?.closing_hours || 'No disponible'}
+                </Typography>
+              </InfoRow>
             </CardContent>
           </StyledCard>
         </ProfileDetails>
 
-        {profileData?.id && <ProductList businessId={profileData.id} />}
+        {profileData?.products && profileData.products.length > 0 ? (
+          <ProductList products={profileData.products} />
+        ) : (
+          <Typography variant="body1">No hay productos disponibles.</Typography>
+        )}
 
         <LogoutButtonContainer>
           <Button variant="contained" color="secondary" onClick={handleLogout}>
-            Logout
+            Cerrar sesión
           </Button>
         </LogoutButtonContainer>
       </ProfileContainer>
@@ -109,3 +117,5 @@ const BusinessProfile = ({ onLogout }) => {
 };
 
 export default BusinessProfile;
+
+             

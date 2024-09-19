@@ -16,7 +16,7 @@ export const getCsrfToken = () => {
   return csrfToken ? csrfToken.split('=')[1] : null;
 };
 
-// Interceptor para incluir el CSRF token en las solicitudes si está presente
+// Interceptor para incluir el CSRF token y el token de autenticación en las solicitudes si están presentes
 axiosInstance.interceptors.request.use(
   (config) => {
     const csrfToken = getCsrfToken();
@@ -43,9 +43,9 @@ const handleRequest = async (request) => {
     if (error.response) {
       if (error.response.status === 401) {
         console.error('Token inválido, eliminando...');
-        localStorage.removeItem('token');  // Eliminar el token si es inválido
-        window.location.href = '/login';   // Redirigir al login
-      }
+        localStorage.removeItem('token');
+        window.location.href = '/login'; // Redirigir al login si el token es inválido
+      }      
       throw new Error(error.response.data.detail || 'Error en la solicitud de la API');
     } else if (error.request) {
       throw new Error('No se recibió respuesta del servidor');
@@ -69,13 +69,10 @@ export const createBusiness = async (businessData) => {
   );
 };
 
+// Actualizamos la ruta de autenticación para negocios
 export const authenticateBusiness = async (credentials) => {
-  try {
-    const response = await axiosInstance.post('api-token-auth/', credentials);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  console.log('Enviando credenciales para autenticación:', credentials);
+  return handleRequest(() => axiosInstance.post('api-token-auth-business/', credentials));
 };
 
 export const getBusinessProfile = async () => {
@@ -113,13 +110,13 @@ export const approveBusiness = async (id) => {
 
 export const getBusinessProducts = async (businessId) => {
   return handleRequest(() =>
-    axiosInstance.get(`/products/?business=${businessId}`)
+    axiosInstance.get(`products/?business=${businessId}`)
   );
 };
 
 export const addProduct = async (businessId, productData) => {
   return handleRequest(() =>
-    axiosInstance.post('/products/', {
+    axiosInstance.post('products/', {
       ...productData,
       business: businessId,  // Asegúrate de que businessId está siendo enviado correctamente
     })
@@ -128,13 +125,13 @@ export const addProduct = async (businessId, productData) => {
 
 export const updateProduct = async (productId, productData) => {
   return handleRequest(() =>
-    axiosInstance.put(`/products/${productId}/`, productData)
+    axiosInstance.put(`products/${productId}/`, productData)
   );
 };
 
 export const deleteProduct = async (productId) => {
   return handleRequest(() =>
-    axiosInstance.delete(`/products/${productId}/`)
+    axiosInstance.delete(`products/${productId}/`)
   );
 };
 

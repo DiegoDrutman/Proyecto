@@ -61,11 +61,11 @@ const Navigation = ({ isAuthenticated }) => {
                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
                 margin: 0,
                 padding: 0,
-                transition: 'transform 0.3s ease',
+                transition: 'transform 0.5s ease',  // Aumento del tiempo de transición para suavizar el hover
                 '&:hover': {
                   transform: 'scale(1.1)',
                 },
-                marginTop: '-25px',  // Ajuste para subir el título
+                marginTop: '-25px',
               }}
             >
               BizWave
@@ -131,14 +131,27 @@ const Navigation = ({ isAuthenticated }) => {
             </NavLink>
           )}
           {isAuthenticated && (
-            <IconButton
-              size="large"
-              aria-label="perfil"
-              onClick={() => navigate('/profile')} // Navega directamente al perfil al hacer clic
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            <>
+              <IconButton
+                size="large"
+                aria-label="perfil"
+                onClick={() => navigate('/profile')}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <IconButton
+                size="large"
+                aria-label="cerrar sesión"
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  navigate('/login');
+                }}
+                color="inherit"
+              >
+                <Typography variant="body2">Cerrar sesión</Typography>
+              </IconButton>
+            </>
           )}
         </Box>
       </Toolbar>

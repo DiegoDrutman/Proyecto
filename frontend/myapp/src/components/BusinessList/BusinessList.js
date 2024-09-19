@@ -13,10 +13,10 @@ const BusinessList = ({ searchTerm }) => {
     const fetchBusinesses = async () => {
       try {
         const data = await getBusinesses(searchTerm);
-        console.log('Businesses Data:', data); // Depuración
+        console.log('Businesses Data:', data);
 
         const approvedBusinesses = data.filter(business => business.approved);
-        console.log('Approved Businesses:', approvedBusinesses); // Verifica los negocios aprobados
+        console.log('Approved Businesses:', approvedBusinesses);
 
         // Verificar el campo logo en cada business
         approvedBusinesses.forEach(business => {
@@ -36,8 +36,21 @@ const BusinessList = ({ searchTerm }) => {
     fetchBusinesses();
   }, [searchTerm]);
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Alert severity="error">{error}</Alert>;
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Alert severity="error">{error}</Alert>
+      </div>
+    );
+  }
 
   return (
     <BusinessGridContainer>
@@ -47,7 +60,7 @@ const BusinessList = ({ searchTerm }) => {
         ))
       ) : (
         <NoBusinessesMessage variant="h6">
-          No se encontraron negocios.
+          {searchTerm ? `No se encontraron negocios que coincidan con "${searchTerm}".` : 'No se encontraron negocios.'}
         </NoBusinessesMessage>
       )}
     </BusinessGridContainer>

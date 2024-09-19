@@ -12,8 +12,6 @@ const BusinessCard = ({ business }) => {
   // Aquí usamos el logo directamente si está definido
   const logoUrl = business.logo || defaultImage;
 
-  console.log('Business Logo URL:', logoUrl);
-
   const handleCardClick = () => {
     if (business.id) {
       navigate(`/business/${business.id}`);
@@ -22,13 +20,21 @@ const BusinessCard = ({ business }) => {
 
   return (
     <CardActionArea onClick={handleCardClick}>
-      <BusinessCardContainer>
+      <BusinessCardContainer
+        sx={{
+          boxShadow: 3, // Añadir sombra a la tarjeta
+          transition: 'transform 0.2s ease-in-out', // Transición suave para hover
+          '&:hover': {
+            transform: 'scale(1.05)', // Aumentar tamaño al pasar el cursor
+          },
+        }}
+      >
         <CardMedia
           component="img"
           image={logoUrl}  // Usamos logoUrl directamente
           alt={business.name || 'Imagen del negocio'}
           title={business.name || 'Imagen del negocio'}
-          sx={{ height: 140 }}
+          sx={{ height: 140, objectFit: 'cover' }}  // Mantener la imagen centrada y con relación de aspecto
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
@@ -36,7 +42,7 @@ const BusinessCard = ({ business }) => {
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ marginTop: '8px' }}>
             {business.description
-              ? `${business.description.substring(0, 50)}...`
+              ? `${business.description.substring(0, 100)}...`  // Limitar a 100 caracteres
               : 'No hay descripción disponible'}
           </Typography>
         </CardContent>

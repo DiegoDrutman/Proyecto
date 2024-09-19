@@ -4,9 +4,10 @@ import { getBusinessProducts, addProduct, updateProduct, deleteProduct } from '.
 
 const ProductList = ({ businessId }) => {
   const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: '', price: '' });
+  const [productForm, setProductForm] = useState({ name: '', price: '' });
   const [editingProduct, setEditingProduct] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,44 +24,53 @@ const ProductList = ({ businessId }) => {
   }, [businessId]);
 
   const handleAddProduct = async () => {
-    if (!newProduct.name || !newProduct.price) {
+    if (!productForm.name || !productForm.price) {
       setMessage({ type: 'error', text: 'Por favor, completa todos los campos' });
       return;
     }
+
+    setIsProcessing(true);
     try {
-      await addProduct(businessId, newProduct);
-      setNewProduct({ name: '', price: '' });
+      await addProduct(businessId, productForm);
+      setProductForm({ name: '', price: '' });
       const data = await getBusinessProducts(businessId);
       setProducts(data);
       setMessage({ type: 'success', text: 'Producto agregado con éxito' });
     } catch (error) {
       setMessage({ type: 'error', text: 'Error al agregar el producto' });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
-    setNewProduct({ name: product.name, price: product.price });
+    setProductForm({ name: product.name, price: product.price });
   };
 
   const handleUpdateProduct = async () => {
-    if (!editingProduct.name || !editingProduct.price) {
+    if (!productForm.name || !productForm.price) {
       setMessage({ type: 'error', text: 'Por favor, completa todos los campos' });
       return;
     }
+
+    setIsProcessing(true);
     try {
-      await updateProduct(editingProduct.id, editingProduct);
+      await updateProduct(editingProduct.id, productForm);
       setEditingProduct(null);
-      setNewProduct({ name: '', price: '' });
+      setProductForm({ name: '', price: '' });
       const data = await getBusinessProducts(businessId);
       setProducts(data);
       setMessage({ type: 'success', text: 'Producto actualizado con éxito' });
     } catch (error) {
       setMessage({ type: 'error', text: 'Error al actualizar el producto' });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleDeleteProduct = async (id) => {
+    setIsProcessing(true);
     try {
       await deleteProduct(id);
       const data = await getBusinessProducts(businessId);
@@ -68,7 +78,14 @@ const ProductList = ({ businessId }) => {
       setMessage({ type: 'success', text: 'Producto eliminado con éxito' });
     } catch (error) {
       setMessage({ type: 'error', text: 'Error al eliminar el producto' });
+    } finally {
+      setIsProcessing(false);
     }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+    setProductForm({ name: '', price: '' });
   };
 
   return (
@@ -94,11 +111,13 @@ const ProductList = ({ businessId }) => {
         ))}
       </Grid>
       <div style={{ marginTop: '20px' }}>
+        <Typography variant="h6" sx={{ marginBottom: 2 }}>
+          {editingProduct ? 'Editar Producto' : 'Agregar Producto'}
+        </Typography>
         <TextField
           label="Nombre del Producto"
-          value={newProduct.name}
-          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-          disabled={editingProduct !== null}
+          value={productForm.name}
+          onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
           variant="outlined"
           fullWidth
           sx={{ marginBottom: 2 }}
@@ -106,51 +125,33 @@ const ProductList = ({ businessId }) => {
         <TextField
           label="Precio"
           type="number"
-          value={newProduct.price}
-          onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-          disabled={editingProduct !== null}
+          value={productForm.price}
+          onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
           variant="outlined"
           fullWidth
           sx={{ marginBottom: 2 }}
         />
-        <Button 
-          onClick={handleAddProduct} 
-          disabled={editingProduct !== null}
-          variant="contained"
-          color="primary"
-          sx={{ marginBottom: 2 }}
-        >
-          Agregar Producto
-        </Button>
+        {editingProduct ? (
+          <>
+            <Button onClick={handleUpdateProduct} variant="contained" color="primary" disabled={isProcessing} sx={{ marginRight: 2 }}>
+              Actualizar Producto
+            </Button>
+            <Button onClick={handleCancelEdit} variant="contained" color="secondary" disabled={isProcessing}>
+              Cancelar
+            </Button>
+          </>
+        ) : (
+          <Button 
+            onClick={handleAddProduct} 
+            variant="contained" 
+            color="primary" 
+            disabled={isProcessing} 
+            sx={{ marginBottom: 2 }}
+          >
+            Agregar Producto
+          </Button>
+        )}
       </div>
-      {editingProduct && (
-        <div style={{ marginTop: '20px' }}>
-          <Typography variant="h6" sx={{ marginBottom: 2 }}>Editar Producto</Typography>
-          <TextField
-            label="Nombre del Producto"
-            value={editingProduct.name}
-            onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-            variant="outlined"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            label="Precio"
-            type="number"
-            value={editingProduct.price}
-            onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-            variant="outlined"
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <Button onClick={handleUpdateProduct} variant="contained" color="primary" sx={{ marginRight: 2 }}>
-            Actualizar Producto
-          </Button>
-          <Button onClick={() => setEditingProduct(null)} variant="contained" color="secondary">
-            Cancelar
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

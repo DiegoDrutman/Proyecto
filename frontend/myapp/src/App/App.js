@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from '@mui/material';
 import Navigation from '../components/Navigation/Navigation';
-import BusinessProfile from '../pages/BusinessProfile/BusinessProfile';  // Renombrado
+import BusinessProfile from '../pages/BusinessProfile/BusinessProfile';
 import Login from '../pages/Login/Login';
 import Signup from '../pages/SignUp/SignUp';
 import BusinessDetails from '../pages/BusinessDetails/BusinessDetails';
@@ -26,6 +26,7 @@ const App = () => {
   const [businessName, setBusinessName] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const [loginError, setLoginError] = useState(null);  // Estado para el error de login
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,20 +45,16 @@ const App = () => {
           console.error('Token inválido o negocio no aprobado:', error);
           localStorage.removeItem('token');
           setIsAuthenticated(false);
-          if (location.pathname.startsWith('/profile')) {
-            navigate('/login');
-          }
+          navigate('/login'); // Redirigir si el token es inválido
         }
       } else {
         setIsAuthenticated(false);
-        if (location.pathname.startsWith('/profile')) {
-          navigate('/login');
-        }
+        navigate('/login');
       }
     };
   
     verifyToken();
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate]);  
 
   const handleLogin = async (credentials) => {
     try {
@@ -65,12 +62,14 @@ const App = () => {
       localStorage.setItem('token', businessData.token);
       setIsAuthenticated(true);
       setBusinessName(businessData.name);
-      navigate('/');
+      setLoginError(null);
+      navigate('/profile'); // Redirigir al perfil
     } catch (error) {
       console.error('Error logging in:', error);
+      setLoginError('Error al iniciar sesión. Verifica tus credenciales.');
     }
   };
-
+  
   const handleLogout = () => {
     setIsAuthenticated(false);
     setBusinessName('');
@@ -128,7 +127,7 @@ const App = () => {
             </>
           }
         />
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} error={loginError} />} />  {/* Mostrar error en el login */}
         <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} predefinedLocations={predefinedLocations} />} />
         <Route path="/profile" element={isAuthenticated ? <BusinessProfile onLogout={handleLogout} /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/business/:id" element={<BusinessDetails />} />

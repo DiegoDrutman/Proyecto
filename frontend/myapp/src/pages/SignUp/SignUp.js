@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Box, MenuItem } from '@mui/material';
+import { TextField, Button, Typography, Stepper, Step, StepLabel, Alert, Box, MenuItem, CircularProgress } from '@mui/material';
 import { axiosInstance } from '../../services/api'; 
 import { FullScreenContainer, StyledContainer, BackgroundWrapper } from './SignUp.styles';
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,8 +22,9 @@ const SignUp = ({ setIsAuthenticated }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate();  // Hook para navegar
+    const navigate = useNavigate();
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,6 +63,7 @@ const SignUp = ({ setIsAuthenticated }) => {
 
     const handleNext = () => {
         if (validateStep()) {
+            setErrorMessage('');
             if (activeStep === steps.length - 1) {
                 handleSubmit();
             } else {
@@ -74,13 +76,9 @@ const SignUp = ({ setIsAuthenticated }) => {
         setActiveStep((prevStep) => prevStep - 1);
     };
 
-    const getCsrfToken = () => {
-        const csrfToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
-        return csrfToken ? csrfToken.split('=')[1] : null;
-    };
-
     const handleSubmit = async () => {
         try {
+            setLoading(true);
             const formData = new FormData();
             formData.append('name', businessName);
             formData.append('email', email);
@@ -97,23 +95,22 @@ const SignUp = ({ setIsAuthenticated }) => {
                 formData.append('logo', logo);
             }
 
-            const csrfToken = getCsrfToken();
-
             const response = await axiosInstance.post('businesses/', formData, {
                 headers: {
-                    'X-CSRFToken': csrfToken,
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
             if (response) {
                 setIsAuthenticated(true);
-                navigate('/login');  // Reemplaza window.location.href por navigate
+                navigate('/login');
             } else {
                 setErrorMessage('Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
             }
         } catch (error) {
             setErrorMessage(error.message || 'Error en el registro. Por favor, verifica tus datos e intenta de nuevo.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -253,7 +250,7 @@ const SignUp = ({ setIsAuthenticated }) => {
                             select
                             label="Ubicación"
                             value={location}
-                            onChange={(e) => setLocation(parseInt(e.target.value))} // Convertir el valor a número entero
+                            onChange={(e) => setLocation(parseInt(e.target.value))}
                             variant="outlined"
                             fullWidth
                             required
@@ -356,8 +353,9 @@ const SignUp = ({ setIsAuthenticated }) => {
                                 color="primary"
                                 variant="contained"
                                 onClick={handleNext}
+                                disabled={loading}
                             >
-                                {activeStep === steps.length - 1 ? 'Registrarse' : 'Siguiente'}
+                                {loading ? <CircularProgress size={24} /> : activeStep === steps.length - 1 ? 'Registrarse' : 'Siguiente'}
                             </Button>
                         </Box>
                         <Typography variant="body2" align="center" sx={{ mt: 3 }}>
@@ -374,4 +372,3 @@ const SignUp = ({ setIsAuthenticated }) => {
 };
 
 export default SignUp;
-

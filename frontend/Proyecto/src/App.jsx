@@ -22,16 +22,17 @@ import {
   LocationButtonSecondary,
 } from './App.styles';
 
-const App = ({ predefinedLocations }) => {
+const App = ({ predefinedLocations = [] }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [businessName, setBusinessName] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-  const [loginError, setLoginError] = useState(null);  // Estado para el error de login
+  const [loginError, setLoginError] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Modificar verificación del token para no redirigir al login al cargar la página
   useEffect(() => {
     const verifyToken = async () => {
       const token = localStorage.getItem('token');
@@ -44,17 +45,16 @@ const App = ({ predefinedLocations }) => {
           console.error('Token inválido o negocio no aprobado:', error);
           localStorage.removeItem('token');
           setIsAuthenticated(false);
-          navigate('/login'); // Redirigir si el token es inválido
         }
       } else {
         setIsAuthenticated(false);
-        navigate('/login');
       }
     };
-  
-    verifyToken();
-  }, [location.pathname, navigate]);  
 
+    verifyToken();
+  }, [location.pathname]);
+
+  // Proteger manualmente la ruta del perfil
   const handleLogin = async (credentials) => {
     try {
       const businessData = await authenticateBusiness(credentials);
@@ -62,13 +62,13 @@ const App = ({ predefinedLocations }) => {
       setIsAuthenticated(true);
       setBusinessName(businessData.name);
       setLoginError(null);
-      navigate('/profile'); // Redirigir al perfil
+      navigate('/profile');
     } catch (error) {
       console.error('Error logging in:', error);
       setLoginError('Error al iniciar sesión. Verifica tus credenciales.');
     }
   };
-  
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     setBusinessName('');
@@ -101,9 +101,10 @@ const App = ({ predefinedLocations }) => {
         />
       )}
       <Routes>
+        {/* Página principal y rutas públicas */}
         <Route
           path="/"
-          element={
+          element={(
             <>
               <FullScreenContainer id="home">
                 <ContentWrapper>
@@ -124,11 +125,19 @@ const App = ({ predefinedLocations }) => {
                 </BusinessGrid>
               </BusinessesContainer>
             </>
+          )}
+        />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} error={loginError} />} />
+        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} predefinedLocations={predefinedLocations} />} />
+
+        {/* Redirigir manualmente si no está autenticado */}
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated ? <BusinessProfile onLogout={handleLogout} /> : <Login setIsAuthenticated={setIsAuthenticated} />
           }
         />
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} error={loginError} />} />  {/* Mostrar error en el login */}
-        <Route path="/signup" element={<Signup setIsAuthenticated={setIsAuthenticated} predefinedLocations={predefinedLocations} />} />
-        <Route path="/profile" element={isAuthenticated ? <BusinessProfile onLogout={handleLogout} /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
+
         <Route path="/business/:id" element={<BusinessDetails />} />
       </Routes>
 
@@ -161,7 +170,7 @@ const App = ({ predefinedLocations }) => {
 
 // Añadir PropTypes para validar las props
 App.propTypes = {
-  predefinedLocations: PropTypes.arrayOf(PropTypes.string).isRequired,  // Validar que predefinedLocations sea un array de strings
+  predefinedLocations: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default App;

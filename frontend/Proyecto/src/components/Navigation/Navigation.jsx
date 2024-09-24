@@ -3,7 +3,7 @@ import { Toolbar, Box, IconButton, Typography, Menu, MenuItem } from '@mui/mater
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { scroller } from 'react-scroll';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import AccountCircle from '@mui/icons-material/AccountCircle'; // Importación corregida
 import { NavBar, NavLink } from './Navigation.styles'; // Importar estilos
 import PropTypes from 'prop-types'; // Importar PropTypes
 
@@ -48,7 +48,7 @@ const Navigation = ({ isAuthenticated }) => {
   };
 
   return (
-    <NavBar scrolled={scrolled}>
+    <NavBar $scrolled={scrolled}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', height: '70px', padding: '10px 0' }}>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', paddingTop: '10px' }}>
           <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', color: 'inherit' }}>
@@ -62,7 +62,7 @@ const Navigation = ({ isAuthenticated }) => {
                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
                 margin: 0,
                 padding: 0,
-                transition: 'transform 0.5s ease',  // Aumento del tiempo de transición para suavizar el hover
+                transition: 'transform 0.5s ease',
                 '&:hover': {
                   transform: 'scale(1.1)',
                 },

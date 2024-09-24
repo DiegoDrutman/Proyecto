@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App/App';
+import App from './App';
 import { ThemeProvider as MUIThemeProvider, CssBaseline } from '@mui/material'; 
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { createTheme } from '@mui/material/styles'; 

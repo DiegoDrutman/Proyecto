@@ -37,10 +37,10 @@ INSTALLED_APPS = [
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Cambia esto para tu frontend en producción
+    "http://localhost:5173",  # Permite el frontend en este puerto
 ]
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_HTTPONLY = False  # Esto debe ser True en producción para mayor seguridad
 CSRF_COOKIE_SECURE = False  # Cambia a True en producción con HTTPS

@@ -1,11 +1,13 @@
 export const colors = {
-  primary: '#A0522D',        // Sienna
-  secondary: '#A67A55',      // Tan
-  light: '#FFEFD5',          // Pale Peach Puff
-  dark: '#8B4513',           // SaddleBrown
-  accent: '#C19A6B',         // Antique Brass
-  warmBackground: '#FFF8DC', // Cornsilk
-  background: '#FFFFFF',     // White
+  primary: '#000000',        // Negro
+  secondary: '#FFFFFF',      // Blanco
+  dark: '#333333',           // Gris oscuro para textos principales
+  light: '#F5F5F5',          // Gris claro para el fondo
+  warmBackground: '#FAFAFA', // Fondo cálido
+  buttonBackground: '#000000',   // Fondo de los botones en negro
+  buttonText: '#FFFFFF',         // Texto de los botones en blanco
+  buttonHoverBackground: '#666666', // Fondo de los botones en hover
+  buttonHoverText: '#FFFFFF',    // Texto de los botones en hover
 };
 
 export const fontSizes = {

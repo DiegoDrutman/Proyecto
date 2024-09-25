@@ -3,14 +3,14 @@ import { Typography } from '@mui/material';
 import { colors } from '../../styles/Variables';
 
 export const NavBar = styled.div`
-  background-color: ${(props) => (props.$scrolled ? colors.dark : colors.light)};
+  background-color: ${colors.light};  // Mantiene el color claro en todo momento
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   z-index: 1000;
   width: 100%;
-  transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+  transition: backdrop-filter 0.3s ease, box-shadow 0.3s ease;
   padding: 8px 20px;
   height: 60px;
 

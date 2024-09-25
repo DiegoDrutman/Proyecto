@@ -16,23 +16,28 @@ export const FullScreenContainer = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
   text-align: center;
   background: linear-gradient(
       rgba(0, 0, 0, 0.5),
       rgba(0, 0, 0, 0.5)
     ),
     url(${backgroundImage}) no-repeat center center;
-  color: ${colors.light};
   background-size: cover;
   background-attachment: fixed;
+  color: ${colors.light};
+  margin: 0;
+  padding: 0;
+  overflow: hidden;  // Asegúrate de que no haya scroll adicional innecesario
 `;
+
 
 export const ContentWrapper = styled(Container)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   max-width: 800px;
   width: 100%;
   padding: 40px;
@@ -40,8 +45,11 @@ export const ContentWrapper = styled(Container)`
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  margin-top: -100px;
+  margin: auto;
+  height: auto;
+  min-height: 400px;
 `;
+
 
 export const StyledAutocomplete = styled(TextField)`
   width: 100%;
@@ -50,8 +58,8 @@ export const StyledAutocomplete = styled(TextField)`
   .MuiOutlinedInput-root {
     background-color: ${colors.light};
     border-radius: 12px;
-    height: 60px;
-    font-size: 18px;
+    height: 70px;  // Aumentamos la altura para hacerlo más prominente
+    font-size: 20px;  // Aumentamos el tamaño de la fuente
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     transition: box-shadow 0.3s ease;
     &:hover {
@@ -60,10 +68,11 @@ export const StyledAutocomplete = styled(TextField)`
   }
 
   .MuiInputLabel-outlined {
-    font-size: 16px;
+    font-size: 18px;
     color: ${colors.secondary};
   }
 `;
+
 
 export const HeaderTypography = styled.h1`
   font-family: 'Montserrat', sans-serif;
@@ -74,7 +83,7 @@ export const HeaderTypography = styled.h1`
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 
   @media (max-width: 600px) {
-    font-size: ${fontSizes.xlarge};
+    font-size: ${fontSizes.large};
   }
 `;
 
@@ -98,7 +107,10 @@ export const BusinessesContainer = styled(Box)`
   padding: 20px 10px;
   margin: 20px 0;
   background-color: transparent;
+  min-height: 200px;  // Aseguramos que tenga un mínimo de altura
+  text-align: center;  // Centramos el texto de "No se encontraron negocios"
 `;
+
 
 export const BusinessGrid = styled(Box)`
   display: grid;

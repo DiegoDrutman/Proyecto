@@ -5,24 +5,19 @@ from .models import Business, Product, BusinessToken
 from .serializers import BusinessSerializer, ProductSerializer
 from django.db.models import Q
 from .permissions import IsSuperuser
-from django.middleware.csrf import get_token
-from django.http import JsonResponse
-from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import serializers
 import logging
-from django.views.decorators.csrf import csrf_exempt
 from django.utils.crypto import get_random_string
+from .utils import notify_admin_of_new_business
 
 # Configuración básica del logger
 logger = logging.getLogger(__name__)
 
-def get_csrf_token(request):
-    return JsonResponse({'csrfToken': get_token(request)})
-
+### ProductViewSet ###
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all().order_by('-created_at')
     serializer_class = ProductSerializer
@@ -52,6 +47,8 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(business_id=business_id)
         return queryset
 
+
+### BusinessViewSet ###
 class BusinessViewSet(viewsets.ModelViewSet):
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
@@ -87,19 +84,8 @@ class BusinessViewSet(viewsets.ModelViewSet):
         return queryset.filter(approved=True)
 
     def perform_create(self, serializer):
-        business = serializer.save()
-
-        # Enviar correo de confirmación
-        try:
-            send_mail(
-                subject='Registro de negocio exitoso',
-                message=f'Tu negocio {business.name} ha sido registrado con éxito y está pendiente de aprobación.',
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[business.email],
-                fail_silently=False,
-            )
-        except Exception as e:
-            logger.error(f"Error al enviar el correo: {e}")
+        business = serializer.save()  # Guardar el negocio
+        notify_admin_of_new_business(business.id)  # Llamar a la función que envía el correo al admin
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated], url_path='me')
     def obtener_negocio_propio(self, request):
@@ -137,9 +123,8 @@ class BusinessViewSet(viewsets.ModelViewSet):
         return Response({'status': 'Negocio aprobado.'}, status=status.HTTP_200_OK)
 
 
+### CustomAuthToken ###
 class CustomAuthToken(ObtainAuthToken):
-
-    @csrf_exempt
     def post(self, request, *args, **kwargs):
         logger.info("Autenticando negocio...")
         serializer = self.get_serializer(data=request.data)

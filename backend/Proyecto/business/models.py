@@ -9,20 +9,8 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
-
 # Manager para el superusuario
 class CustomerUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('El correo electrónico debe ser proporcionado')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -32,8 +20,8 @@ class CustomerUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('El superusuario debe tener is_superuser=True.')
 
-        return self.create_user(email, password, **extra_fields)
-
+        return self.model(email=email, **extra_fields)
+    
 # Modelo para el superusuario
 class CustomerUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -68,7 +56,7 @@ class BusinessManager(BaseUserManager):
 # Modelo para los negocios
 class Business(AbstractBaseUser):
     username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=True)  # El email puede ser opcional
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     address = models.CharField(max_length=255, blank=True)
@@ -79,10 +67,11 @@ class Business(AbstractBaseUser):
     objects = BusinessManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = []  # No se necesita requerir otros campos para la autenticación
 
     def __str__(self):
         return self.name or self.username
+
 
 # Modelo para los productos
 class Product(models.Model):

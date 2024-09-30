@@ -47,25 +47,27 @@ export const LeftContainer = styled(Box)`
 `;
 
 // Contenedor estilizado
-export const StyledContainer = styled(Box)`
-    width: 100%;
-    max-width: 600px; /* Aumentar el ancho máximo */
-    text-align: center;
-    padding: 40px 30px; /* Ajustar padding */
-    background-color: ${colors.light};
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    export const StyledContainer = styled(Box)`
+        width: 100%;
+        max-width: 800px; /* Aumentar el ancho máximo */
+        text-align: center;
+        padding: 20px 30px; /* Ajustar padding */
+        background-color: ${colors.light};
+        border-radius: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-left: 150px;
+        margin-top: 50px;
 
-    @media (min-width: 768px) {
-        padding: 60px 40px; /* Reducir padding en pantallas grandes */
-        border-radius: 50px;
-    }
+        @media (min-width: 768px) {
+            padding: 10px 20px; /* Reducir padding en pantallas grandes */
+            border-radius: 50px;
+        }
 
-    @media (max-width: 480px) {
-        padding: 20px; /* Reducir padding en móviles */
-        border-radius: 15px; /* Ajustar el radio en móviles */
-    }
-`;
+        @media (max-width: 480px) {
+            padding: 20px; /* Reducir padding en móviles */
+            border-radius: 15px; /* Ajustar el radio en móviles */
+        }
+    `;
 
 
 // Contenedor derecho

@@ -34,25 +34,25 @@ class BusinessSerializer(serializers.ModelSerializer):
         }
 
     # Método para crear el negocio
-def create(self, validated_data):
-    location_id = validated_data.pop('location_id', None)
+    def create(self, validated_data):
+        location_id = validated_data.pop('location_id', None)
 
-    try:
-        # Crear el negocio con los datos proporcionados
-        business = Business.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            name=validated_data.get('name', ''),
-            description=validated_data.get('description', ''),
-            address=validated_data.get('address', ''),
-            location_id=location_id,
-        )
-        # Asignar y encriptar la contraseña
-        business.set_password(validated_data['password'])
-        business.save()
-        return business
-    except Exception as e:
-        raise serializers.ValidationError(f"Error al crear el negocio: {str(e)}")
+        try:
+            # Crear el negocio con los datos proporcionados
+            business = Business.objects.create(
+                username=validated_data['username'],
+                email=validated_data.get('email', ''),
+                name=validated_data.get('name', ''),
+                description=validated_data.get('description', ''),
+                address=validated_data.get('address', ''),
+                location_id=location_id,
+            )
+            # Asignar y encriptar la contraseña
+            business.set_password(validated_data['password'])
+            business.save()
+            return business
+        except Exception as e:
+            raise serializers.ValidationError(f"Error al crear el negocio: {str(e)}")
 
 class BusinessAuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(label="Nombre de usuario")
@@ -69,7 +69,7 @@ class BusinessAuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError('Credenciales incorrectas o la cuenta no está aprobada.', code='authorization')
 
         # Verificar si el negocio está aprobado
-        if not business.approved:
+        if not business.approved: # type: ignore
             raise serializers.ValidationError('La cuenta aún no ha sido aprobada por el administrador.', code='authorization')
 
         # Añadir el negocio autenticado al contexto de validación

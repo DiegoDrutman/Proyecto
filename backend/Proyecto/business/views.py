@@ -13,6 +13,8 @@ from rest_framework import serializers
 import logging
 from django.utils.crypto import get_random_string
 from .utils import notify_admin_of_new_business
+from django.core.mail import send_mail
+
 
 # Configuración básica del logger
 logger = logging.getLogger(__name__)
@@ -23,7 +25,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
 
     def perform_create(self, serializer):
-        business_id = self.request.data.get('business')
+        business_id = self.request.data.get('business')  # type: ignore
         if business_id:
             try:
                 business = Business.objects.get(id=business_id, approved=True)
@@ -42,7 +44,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        business_id = self.request.query_params.get('business', None)
+        business_id = self.request.query_params.get('business', None) # type: ignore 
         if business_id:
             queryset = queryset.filter(business_id=business_id)
         return queryset
@@ -65,9 +67,9 @@ class BusinessViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)
-        location = self.request.query_params.get('location', None)
-        postal_code = self.request.query_params.get('postal_code', None)
+        search_term = self.request.query_params.get('search', None) # type: ignore
+        location = self.request.query_params.get('location', None) # type: ignore
+        postal_code = self.request.query_params.get('postal_code', None) # type: ignore
 
         if search_term:
             queryset = queryset.filter(
@@ -129,7 +131,7 @@ class CustomAuthToken(ObtainAuthToken):
         logger.info("Autenticando negocio...")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data['user'] # type: ignore
         logger.info(f"Usuario autenticado: {user}")
 
         if isinstance(user, Business):

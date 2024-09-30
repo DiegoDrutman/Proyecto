@@ -15,8 +15,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Agrega tu dominio en producción
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Autenticación para superusuarios
     'business.backends.BusinessBackend',  # Autenticación para los negocios
-    'django.contrib.auth.backends.ModelBackend',  # Autenticación para CustomerUser
 ]
 
 AUTH_USER_MODEL = 'business.CustomerUser' 

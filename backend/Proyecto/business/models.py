@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 
 # Modelo para las ubicaciones
 class Location(models.Model):
@@ -11,6 +11,15 @@ class Location(models.Model):
 
 # Manager para el superusuario
 class CustomerUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('El correo electrónico debe ser proporcionado')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)  # Encripta la contraseña
+        user.save(using=self._db)
+        return user
+
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -20,8 +29,8 @@ class CustomerUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('El superusuario debe tener is_superuser=True.')
 
-        return self.model(email=email, **extra_fields)
-    
+        return self.create_user(email, password, **extra_fields)  # Llama a create_user para crear el superusuario
+
 # Modelo para el superusuario
 class CustomerUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -72,7 +81,6 @@ class Business(AbstractBaseUser):
     def __str__(self):
         return self.name or self.username
 
-
 # Modelo para los productos
 class Product(models.Model):
     business = models.ForeignKey(Business, related_name='products', on_delete=models.CASCADE)
@@ -86,6 +94,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+# Modelo para los tokens de autenticación del negocio
 class BusinessToken(models.Model):
     business = models.OneToOneField(Business, on_delete=models.CASCADE, related_name='auth_token')
     key = models.CharField(max_length=40, unique=True)

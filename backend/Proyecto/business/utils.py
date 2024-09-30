@@ -12,7 +12,7 @@ def notify_admin_of_new_business(business_id):
         business = Business.objects.get(id=business_id)
         subject = f'Nuevo Negocio Pendiente de Aprobación: {business.name}'
         message = (
-            f'El negocio "{business.name}" (ID: {business.id}) está pendiente de aprobación.\n\n'
+            f'El negocio "{business.name}" (ID: {business.id}) está pendiente de aprobación.\n\n' # type: ignore
             f'Revisa los detalles en el panel de administración:\n\n'
             f'Nombre: {business.name}\n'
             f'Correo: {business.email}\n'
